@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author strike
+ * @author Braully Rocha da Silva
  */
 public class MapCountOpt extends ArrayList<Integer> {
 

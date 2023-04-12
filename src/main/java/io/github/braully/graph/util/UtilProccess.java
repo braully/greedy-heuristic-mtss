@@ -108,7 +108,6 @@ public class UtilProccess {
         String time = String.format("%02d:%02d:%02d.%d", hour, minute, second, millis);
         System.out.printf("%s\n", time);
     }
-    
-//    public static InputStream openFile()
 
+//    public static InputStream openFile()
 }

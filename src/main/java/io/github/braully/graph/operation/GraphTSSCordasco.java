@@ -6,6 +6,8 @@ import io.github.braully.graph.util.UtilProccess;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -23,27 +25,12 @@ import java.util.logging.Logger;
  */
 public class GraphTSSCordasco extends AbstractHeuristic implements IGraphOperation {
 
+    public static final Logger log = Logger.getLogger(GraphTSSCordasco.class.getSimpleName());
     public static final String description = "TSS-Cordasco";
 
     public String getName() {
-        StringBuilder sb = new StringBuilder(description);
-        for (String par : parameters.keySet()) {
-            Boolean get = parameters.get(par);
-            if (get != null) {
-                if (get) {
-                    sb.append("+");
-                } else {
-                    sb.append("-");
-                }
-                sb.append(par);
-            }
-        }
-        return sb.toString();
+        return description;
     }
-
-    private static final Logger log = Logger.getLogger(GraphTSSCordasco.class.getSimpleName());
-    public int K = 2;
-    public Integer marjority;
 
     @Override
     public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {
@@ -208,13 +195,17 @@ public class GraphTSSCordasco extends AbstractHeuristic implements IGraphOperati
     public static void main(String... args) throws FileNotFoundException, IOException {
         GraphTSSCordasco optss = new GraphTSSCordasco();
 
-        System.out.println("Teste greater: ");
+        System.out.println("Execution Sample: Livemocha database R=2");
 
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
-        graph = UtilGraph.loadBigDataset(
-                new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/BlogCatalog/nodes.csv"),
-                new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/BlogCatalog/edges.csv"));
+        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
+        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
+
+        InputStream streamnode = urinode.toURL().openStream();
+        InputStream streamedges = uriedges.toURL().openStream();
+
+        graph = UtilGraph.loadBigDataset(streamnode, streamedges);
 
         System.out.println(graph.toResumedString());
         optss.setR(10);

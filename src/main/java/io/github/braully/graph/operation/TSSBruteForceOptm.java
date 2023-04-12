@@ -32,7 +32,7 @@ public class TSSBruteForceOptm
         Set<Integer> minHullSet = null;
 
         try {
-            minHullSet = findMinHullSetGraph(graph);
+            minHullSet = findHullSet(graph);
             hullNumber = minHullSet.size();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -48,7 +48,7 @@ public class TSSBruteForceOptm
     }
 
     @Override
-    public Set<Integer> findMinHullSetGraph(UndirectedSparseGraphTO<Integer, Integer> graph) {
+    public Set<Integer> findHullSet(UndirectedSparseGraphTO<Integer, Integer> graph) {
         Set<Integer> ceilling = calcCeillingHullNumberGraph(graph);
         Set<Integer> hullSet = ceilling;
         if (graph == null || graph.getVertices().isEmpty()) {
@@ -102,7 +102,7 @@ public class TSSBruteForceOptm
     private Set<Integer> calcCeillingHullNumberGraph(UndirectedSparseGraphTO<Integer, Integer> graph) {
         Set<Integer> ceilling = new HashSet<>();
         if (graph != null) {
-            Set<Integer> optimizedHullSet = super.buildOptimizedHullSet(graph);
+            Set<Integer> optimizedHullSet = super.buildHullSet(graph);
             if (optimizedHullSet != null) {
                 ceilling.addAll(optimizedHullSet);
             }
@@ -196,7 +196,7 @@ public class TSSBruteForceOptm
 
         graph = UtilGraph.loadGraphES("0-12,0-27,1-7,1-10,1-16,2-17,2-21,2-24,3-7,3-17,3-23,4-6,4-9,4-12,5-8,5-29,6-9,6-16,7-17,7-23,10-15,10-18,11-18,11-23,11-28,12-28,13-22,13-28,14-16,15-17,15-18,16-20,17-26,18-21,19-27,19-28,21-24,22-27,23-27,24-28,24-29,27-29,25,");
         opf.setK(2);
-        Set<Integer> findMinHullSetGraph = opf.findMinHullSetGraph(graph);
+        Set<Integer> findMinHullSetGraph = opf.findHullSet(graph);
         boolean checkIfHullSet = opf.checkIfHullSet(graph, findMinHullSetGraph);
         if (!checkIfHullSet) {
             System.out.println("ALERT: ----- RESULTADO ANTERIOR IS NOT HULL SET");
