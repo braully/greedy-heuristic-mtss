@@ -22,25 +22,24 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GraphHNVTmp
+public class HNV2
         extends AbstractHeuristic implements IGraphOperation {
 
-    static final Logger log = Logger.getLogger(GraphHNVTmp.class.getSimpleName());
-    static final String description = "HHnV2-Tmp";
+    static final Logger log = Logger.getLogger(HNV2.class.getSimpleName());
+    static final String description = "HNV2";
 
     public static String getDescription() {
         return description;
     }
 
     public String getName() {
-        return "HHnV2:st:pa:tt2";
+        return description;
     }
 
-    public GraphHNVTmp() {
+    public HNV2() {
     }
 
     int[] skip = null;
-    int[] scount = null;
     int[] auxb = null;
     //
     protected UtilBFS bdls;
@@ -108,16 +107,14 @@ public class GraphHNVTmp
         Integer maxVertex = (Integer) graph.maxVertex() + 1;
 
         int[] aux = new int[maxVertex];
-        scount = new int[maxVertex];
         degree = new int[maxVertex];
         skip = new int[maxVertex];
         auxb = new int[maxVertex];
-
+        scount = new int[maxVertex];
         for (int i = 0; i < maxVertex; i++) {
             aux[i] = 0;
             skip[i] = -1;
             scount[i] = 0;
-
         }
         initKr(graph);
 
@@ -288,19 +285,6 @@ public class GraphHNVTmp
         aux[verti] = aux[verti] + kr[verti];
         if (s != null) {
             s.add(verti);
-            Collection<Integer> neighbors = graph.getNeighborsUnprotected(verti);
-            for (Integer vertn : neighbors) {
-                if ((++scount[vertn]) == kr[vertn] && s.contains(vertn)) {
-                    if (verbose) {
-                        System.out.println("Scount > kr: " + vertn + " removendo de S ");
-                    }
-                    s.remove(vertn);
-                    Collection<Integer> nn = graph.getNeighborsUnprotected(vertn);
-                    for (Integer vnn : nn) {
-                        scount[vnn]--;
-                    }
-                }
-            }
         }
         mustBeIncluded.clear();
         mustBeIncluded.add(verti);
@@ -321,6 +305,28 @@ public class GraphHNVTmp
     Map<Integer, Integer> sizesPartial = new HashMap<>();
     int minimumSize = Integer.MAX_VALUE;
     int reducedCount = 0;
+
+    protected int[] scount = null;
+
+    public Set<Integer> refineResultStep1(UndirectedSparseGraphTO<Integer, Integer> graphRead,
+            Set<Integer> tmp, int tamanhoAlvo) {
+        Set<Integer> s = new LinkedHashSet<>(tmp);
+
+        for (Integer v : tmp) {
+            Collection<Integer> nvs = graphRead.getNeighborsUnprotected(v);
+            int scont = 0;
+            for (Integer nv : nvs) {
+                scount[nv]++;
+                if (s.contains(nv)) {
+                    scont++;
+                }
+            }
+            if (scont >= kr[v]) {
+                s.remove(v);
+            }
+        }
+        return s;
+    }
 
     public Set<Integer> refineResultStep2(UndirectedSparseGraphTO<Integer, Integer> graphRead,
             Set<Integer> tmp, int tamanhoAlvo) {
@@ -351,9 +357,6 @@ public class GraphHNVTmp
 
             for (int i = 0; i < aux.length; i++) {
                 aux[i] = 0;
-                if (scount[i] > maiorScount) {
-                    maiorScount = scount[i];
-                }
             }
 
             mustBeIncluded.clear();
@@ -378,10 +381,6 @@ public class GraphHNVTmp
 
             if (contadd >= tamanhoAlvo) {
                 s = t;
-                Collection<Integer> neighbors = graphRead.getNeighborsUnprotected(v);
-                for (Integer vertn : neighbors) {
-                    scount[vertn]--;
-                }
             } else {
                 //            int tamt = contadd - t.size();
                 int tamt = contadd;
@@ -417,16 +416,18 @@ public class GraphHNVTmp
             }
         }
 
-        int menortRef = minimumSize + reducedCount + 1;
+        int menortRef = minimumSize + 1 + reducedCount;
 
         for_p:
         for (int h = 0; h < ltmp.size(); h++) {
             Integer x = ltmp.get(h);
+            //
             if (degree[x] < kr[x] || !s.contains(x)) {
                 continue;
             }
             Integer get = sizesPartial.get(x);
-            if (get == null || get > menortRef) {
+            if (get == null
+                    || get > menortRef) {
                 if (scount[x] < kr[x] - 1) {
                     continue;
                 }
@@ -513,22 +514,6 @@ public class GraphHNVTmp
                         }
                     }
                     if (contz == tamanhoAlvo) {
-                        for (Integer vertn : nsX) {
-                            scount[vertn]--;
-                        }
-                        for (Integer vertn : graphRead.getNeighborsUnprotected(x)) {
-                            scount[vertn]--;
-                        }
-                        for (Integer vertn : graphRead.getNeighborsUnprotected(z)) {
-                            if ((++scount[vertn]) == kr[vertn] && t.contains(vertn)) {
-                                t.remove(vertn);
-                                Collection<Integer> nn = graphRead.getNeighborsUnprotected(vertn);
-                                for (Integer vnn : nn) {
-                                    scount[vnn]--;
-                                }
-                            }
-                        }
-
                         t.add(z);
                         s = t;
                         ltmp = new ArrayList<>(s);
@@ -541,10 +526,16 @@ public class GraphHNVTmp
         return s;
     }
 
+    Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
+        s = refineResultStep2(graph, s, targetSize);
+        s = refineResultStep3(graph, s, targetSize);
+        return s;
+    }
+
     public static void main(String... args) throws IOException {
         System.out.println("Execution Sample: Livemocha database R=2");
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
-        GraphHNVTmp op = new GraphHNVTmp();
+        HNV2 op = new HNV2();
 
         URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
         URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
@@ -552,8 +543,7 @@ public class GraphHNVTmp
         InputStream streamnode = urinode.toURL().openStream();
         InputStream streamedges = uriedges.toURL().openStream();
 
-        graph = UtilGraph.loadBigDataset(streamnode,
-                streamedges);
+        graph = UtilGraph.loadBigDataset(streamnode, streamedges);
 
         op.setVerbose(true);
 
@@ -568,9 +558,4 @@ public class GraphHNVTmp
         );
     }
 
-    Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
-        s = refineResultStep2(graph, s, targetSize);
-        s = refineResultStep3(graph, s, targetSize);
-        return s;
-    }
 }

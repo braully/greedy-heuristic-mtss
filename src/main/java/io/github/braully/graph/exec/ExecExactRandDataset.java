@@ -21,9 +21,9 @@ public class ExecExactRandDataset {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         TSSBruteForceOptm opf = new TSSBruteForceOptm();
-        GraphTSSCordasco tss = new GraphTSSCordasco();
-        GraphHNV hnv2 = new GraphHNV();
-
+        TSSCordasco tss = new TSSCordasco();
+        HNV2 hnv2 = new HNV2();
+        HNV1 hnv1 = new HNV1();
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
@@ -31,22 +31,24 @@ public class ExecExactRandDataset {
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
             opf,
             tss,
-            hnv2
+            hnv2,
+            hnv1
         };
         String[] grupo = new String[]{
             "Optm",
             "TSS",
+            "HNV",
             "HNV"
         };
         Integer[] result = new Integer[operations.length];
         long totalTime[] = new long[operations.length];
 
-        for (String op : new String[]{
-            "k",
-            "r",
-            "m"
-        }) {
-            for (int k = 1; k < 5; k++) {
+        for (int k = 1; k <= 9; k++) {
+            for (String op : new String[]{
+                "k",
+                "r",
+                "m"
+            }) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     opf.setR(k);
@@ -54,20 +56,18 @@ public class ExecExactRandDataset {
                     System.out.println("-------------\n\nR: " + k);
                 } else if (op.equals("m")) {
                     op = "m";
-                    opf.setMarjority(k);
-                    tss.setMarjority(k);
-                    hnv2.setMarjority(k);
+                    double perc = ((float) k) / 10.0;
+                    tss.setPercent(perc);
+                    hnv2.setPercent(perc);
+                    hnv1.setPercent(perc);
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
                     opf.setK(k);
                     tss.setK(k);
                     hnv2.setK(k);
+                    hnv1.setK(k);
                     System.out.println("-------------\n\nk: " + k);
-                }
-                if (op.equals("m") && k == 1) {
-                    System.out.println("Será ignorado m=1");
-                    continue;
                 }
 
                 BufferedReader files = new BufferedReader(new FileReader(strFile));

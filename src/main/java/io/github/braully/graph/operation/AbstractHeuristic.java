@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -19,11 +20,13 @@ public abstract class AbstractHeuristic implements IGraphOperation {
     public static final String type = "Contamination";
     public static final String PARAM_NAME_HULL_NUMBER = "number";
     public static final String PARAM_NAME_HULL_SET = "set";
+    protected static Random randomUtil = new Random();
 
     //
-    public Integer K;
-    public Integer R;
-    public Integer marjority;
+    public Integer kTreshold;
+    public Integer rTreshold;
+    public Double percentTreshold;
+    public Boolean randomTreshold;
     //
     protected int[] kr;
     protected boolean verbose;
@@ -35,35 +38,54 @@ public abstract class AbstractHeuristic implements IGraphOperation {
     }
 
     public void setK(Integer K) {
-        this.K = K;
-        this.marjority = null;
-        this.R = null;
+        this.kTreshold = K;
+        this.percentTreshold = null;
+        this.rTreshold = null;
+        this.randomTreshold = null;
     }
 
     public void setR(Integer R) {
-        this.R = R;
-        this.K = null;
-        this.marjority = null;
+        this.rTreshold = R;
+        this.kTreshold = null;
+        this.percentTreshold = null;
+        this.randomTreshold = null;
     }
 
-    public void setMarjority(Integer marjority) {
-        this.marjority = marjority;
-        this.K = null;
-        this.R = null;
+    public void setPercent(Double marjority) {
+        this.percentTreshold = marjority;
+        this.kTreshold = null;
+        this.rTreshold = null;
+        this.randomTreshold = null;
     }
 
     public void initKr(UndirectedSparseGraphTO graph) {
         int vertexCount = (Integer) graph.maxVertex() + 1;
         kr = new int[vertexCount];
         for (int i = 0; i < vertexCount; i++) {
-            if (R != null) {
-                kr[i] = Math.min(R, graph.degree(i));
-            } else if (K != null) {
-                kr[i] = K;
-            } else if (marjority != null) {
-                kr[i] = roundUp(graph.degree(i), marjority);
+            int degree = graph.degree(i);
+            if (rTreshold != null) {
+                kr[i] = Math.min(rTreshold, graph.degree(i));
+            } else if (kTreshold != null) {
+                kr[i] = kTreshold;
+            } else if (percentTreshold != null) {
+                //                kr[i] = roundUp(degree, majority);
+                double ki = Math.ceil(percentTreshold * degree);
+                int kii = (int) Math.ceil(ki);
+                kr[i] = kii;
+            } else if (randomTreshold != null) {
+                if (degree > 0) {
+                    int random = random(degree);
+                    kr[i] = random;
+                } else {
+                    kr[i] = degree;
+                }
             }
         }
+    }
+
+    public static int random(int num) {
+        //Probability ignored, for future use, , Integer probability
+        return randomUtil.nextInt(num);
     }
 
     public static int roundUp(int num, int divisor) {

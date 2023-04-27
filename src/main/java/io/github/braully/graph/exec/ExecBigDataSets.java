@@ -2,8 +2,9 @@ package io.github.braully.graph.exec;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.operation.AbstractHeuristic;
-import io.github.braully.graph.operation.GraphHNV;
-import io.github.braully.graph.operation.GraphTSSCordasco;
+import io.github.braully.graph.operation.TSSCordasco;
+import io.github.braully.graph.operation.HNV1;
+import io.github.braully.graph.operation.HNV2;
 import io.github.braully.graph.operation.IGraphOperation;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
 import io.github.braully.graph.util.UtilGraph;
@@ -46,10 +47,12 @@ public class ExecBigDataSets {
             "Last.fm", //            "YouTube2"
         };
 
-        GraphTSSCordasco tss = new GraphTSSCordasco();
+        TSSCordasco tss = new TSSCordasco();
 //        GraphTSSGreedy tssg = new GraphTSSGreedy();
 
-        GraphHNV hnv2 = new GraphHNV();
+        HNV2 hnv2 = new HNV2();
+        HNV1 hnv1 = new HNV1();
+
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
             tss,
             //            heur1,
@@ -60,7 +63,8 @@ public class ExecBigDataSets {
             //            tssg,
             //            heur5t2
             //            optm,
-            //            optm2, 
+            //            optm2,
+            hnv1,
             hnv2
         };
         long totalTime[] = new long[operations.length];
@@ -80,28 +84,28 @@ public class ExecBigDataSets {
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
             "m",
-            "k",
+            //            "k",
             "r"
         }) {
-            for (int k = 1; k <= 10; k++) {
+            for (int k = 1; k <= 9; k++) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     hnv2.setR(k);
+                    hnv1.setR(k);
                     System.out.println("-------------\n\nR: " + k);
                 } else if (op.equals("m")) {
                     op = "m";
-                    tss.setMarjority(k);
-                    hnv2.setMarjority(k);
+                    double perc = ((float) k) / 10.0;
+                    tss.setPercent(perc);
+                    hnv2.setPercent(perc);
+                    hnv1.setPercent(perc);
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
                     tss.setK(k);
                     hnv2.setK(k);
+                    hnv1.setK(k);
                     System.out.println("-------------\n\nk: " + k);
-                }
-                if (op.equals("m") && k == 1) {
-                    System.out.println("ignored m=1");
-                    continue;
                 }
                 for (String s : dataSets) {
                     System.out.println("\n-DATASET: " + s);

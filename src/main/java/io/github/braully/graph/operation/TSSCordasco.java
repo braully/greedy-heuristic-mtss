@@ -23,9 +23,9 @@ import java.util.logging.Logger;
  * https://github.com/rodrigomafort/TSSGenetico/blob/master/TSSCordasco.cpp
  * https://github.com/rodrigomafort/TSSGenetico
  */
-public class GraphTSSCordasco extends AbstractHeuristic implements IGraphOperation {
+public class TSSCordasco extends AbstractHeuristic implements IGraphOperation {
 
-    public static final Logger log = Logger.getLogger(GraphTSSCordasco.class.getSimpleName());
+    public static final Logger log = Logger.getLogger(TSSCordasco.class.getSimpleName());
     public static final String description = "TSS-Cordasco";
 
     public String getName() {
@@ -54,7 +54,7 @@ public class GraphTSSCordasco extends AbstractHeuristic implements IGraphOperati
         Set s = tssCordasco(graph);
 
         try {
-            response.put("R", this.R);
+            response.put("R", this.rTreshold);
             response.put("TSS", "" + s);
             response.put(IGraphOperation.DEFAULT_PARAM_NAME_SET, s);
             response.put("|TSS|", s.size());
@@ -193,7 +193,7 @@ public class GraphTSSCordasco extends AbstractHeuristic implements IGraphOperati
     }
 
     public static void main(String... args) throws FileNotFoundException, IOException {
-        GraphTSSCordasco optss = new GraphTSSCordasco();
+        TSSCordasco optss = new TSSCordasco();
 
         System.out.println("Execution Sample: Livemocha database R=2");
 

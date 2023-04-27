@@ -23,7 +23,7 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
  * @author Braully Rocha da Silva
  */
 public class TSSBruteForceOptm
-        extends GraphHNV implements IGraphOperation {
+        extends HNV2 implements IGraphOperation {
 
     static final String description = "TSS-BF-Optm";
 
@@ -189,9 +189,9 @@ public class TSSBruteForceOptm
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         TSSBruteForceOptm opf = new TSSBruteForceOptm();
-        GraphTSSCordasco tss = new GraphTSSCordasco();
-        GraphHNV hnv2 = new GraphHNV();
-
+        TSSCordasco tss = new TSSCordasco();
+        HNV2 hnv2 = new HNV2();
+        HNV1 hnv1 = new HNV1();
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
         graph = UtilGraph.loadGraphES("0-12,0-27,1-7,1-10,1-16,2-17,2-21,2-24,3-7,3-17,3-23,4-6,4-9,4-12,5-8,5-29,6-9,6-16,7-17,7-23,10-15,10-18,11-18,11-23,11-28,12-28,13-22,13-28,14-16,15-17,15-18,16-20,17-26,18-21,19-27,19-28,21-24,22-27,23-27,24-28,24-29,27-29,25,");
@@ -210,11 +210,13 @@ public class TSSBruteForceOptm
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
             opf,
             tss,
+            hnv1,
             hnv2
         };
         String[] grupo = new String[]{
             "Optm",
             "TSS",
+            "HNV",
             "HNV"
         };
         Integer[] result = new Integer[operations.length];
@@ -224,11 +226,13 @@ public class TSSBruteForceOptm
             "m", //            "k",
         //            "r"
         }) {
-            for (int k = 10; k >= 1; k--) {
+            for (int k = 1; k <= 9; k++) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     opf.setR(k);
                     hnv2.setR(k);
+                    hnv1.setR(k);
+
                     System.out.println("-------------\n\nR: " + k);
 //                    if (k <= 2) {
 //                        System.out.println("Pulando resultados já processados: " + op + " " + k);
@@ -236,21 +240,21 @@ public class TSSBruteForceOptm
 //                    }
                 } else if (op.equals("m")) {
                     op = "m";
-                    opf.setMarjority(k);
-                    tss.setMarjority(k);
-                    hnv2.setMarjority(k);
+                    double percent = ((double) k) / 10.0;
+                    opf.setPercent(percent);
+                    tss.setPercent(percent);
+                    hnv2.setPercent(percent);
+                    hnv1.setPercent(percent);
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
                     opf.setK(k);
                     tss.setK(k);
                     hnv2.setK(k);
+                    hnv1.setK(k);
                     System.out.println("-------------\n\nk: " + k);
                 }
-                if (op.equals("m") && k == 1) {
-                    System.out.println("Será ignorado m=1 e k=1");
-                    continue;
-                }
+
                 BufferedReader files = new BufferedReader(new FileReader(strFile));
                 String line = null;
                 int contgraph = 0;
