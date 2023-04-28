@@ -54,7 +54,7 @@ public class ExecBigDataSets {
         HNV1 hnv1 = new HNV1();
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            //            tss,
+            tss,
             //            heur1,
             //            heur2, 
             //            heur3, heur4,
@@ -64,7 +64,8 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-            hnv1, //            hnv2
+            hnv1,
+            hnv2
         };
         long totalTime[] = new long[operations.length];
         Integer[] result = new Integer[operations.length];
@@ -82,11 +83,11 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            //            "m",
-            "k",
-            "r"
+            "m",
+            //            "k",
+//            "r"
         }) {
-            for (int k = 1; k <= 9; k++) {
+            for (int k = 9; k <= 9; k++) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     hnv2.setR(k);
