@@ -83,7 +83,7 @@ public class ExecBigDataSets {
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
             //            "m",
-            //            "k",
+            "k",
             "r"
         }) {
             for (int k = 1; k <= 9; k++) {
