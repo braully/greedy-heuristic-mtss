@@ -22,6 +22,7 @@ public class ExecExactRandDataset {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         TSSBruteForceOptm opf = new TSSBruteForceOptm();
         TSSCordasco tss = new TSSCordasco();
+        TIPDecomp tip = new TIPDecomp();
         HNV2 hnv2 = new HNV2();
         HNV1 hnv1 = new HNV1();
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
@@ -30,12 +31,14 @@ public class ExecExactRandDataset {
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
             opf,
+            tip,
             tss,
             hnv2,
             hnv1
         };
         String[] grupo = new String[]{
             "Optm",
+            "Decomp",
             "TSS",
             "HNV",
             "HNV"
@@ -52,6 +55,8 @@ public class ExecExactRandDataset {
                 if (op.equals("r")) {
                     tss.setR(k);
                     opf.setR(k);
+                    hnv1.setR(k);
+                    tip.setR(k);
                     hnv2.setR(k);
                     System.out.println("-------------\n\nR: " + k);
                 } else if (op.equals("m")) {
@@ -60,6 +65,7 @@ public class ExecExactRandDataset {
                     tss.setPercent(perc);
                     hnv2.setPercent(perc);
                     hnv1.setPercent(perc);
+                    tip.setPercent(perc);
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
@@ -67,6 +73,7 @@ public class ExecExactRandDataset {
                     tss.setK(k);
                     hnv2.setK(k);
                     hnv1.setK(k);
+                    tip.setK(k);
                     System.out.println("-------------\n\nk: " + k);
                 }
 

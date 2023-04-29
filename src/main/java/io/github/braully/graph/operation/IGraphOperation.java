@@ -4,7 +4,7 @@ import io.github.braully.graph.UndirectedSparseGraphTO;
 import java.util.Map;
 
 /**
- * Graph operation.
+ * Graph operation. Standard interface for use in web graph problems tool.
  *
  * @author braully
  */

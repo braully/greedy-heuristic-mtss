@@ -7,6 +7,7 @@ import io.github.braully.graph.operation.HNV1;
 import io.github.braully.graph.operation.HNV2;
 import io.github.braully.graph.operation.IGraphOperation;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
+import io.github.braully.graph.operation.TIPDecomp;
 import io.github.braully.graph.util.UtilGraph;
 import io.github.braully.graph.util.UtilProccess;
 import java.io.BufferedWriter;
@@ -52,6 +53,7 @@ public class ExecBigDataSets {
 
         HNV2 hnv2 = new HNV2();
         HNV1 hnv1 = new HNV1();
+        TIPDecomp tip = new TIPDecomp();
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
             //            tss,
@@ -64,6 +66,7 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
+            tip,
             hnv1, //            hnv2
         };
         long totalTime[] = new long[operations.length];
@@ -82,15 +85,16 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            //            "m",
+            "m",
             "k",
             "r"
         }) {
-            for (int k = 8; k <= 9; k++) {
+            for (int k = 1; k <= 9; k++) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     hnv2.setR(k);
                     hnv1.setR(k);
+                    tip.setR(k);
                     System.out.println("-------------\n\nR: " + k);
                 } else if (op.equals("m")) {
                     op = "m";
@@ -98,12 +102,14 @@ public class ExecBigDataSets {
                     tss.setPercent(perc);
                     hnv2.setPercent(perc);
                     hnv1.setPercent(perc);
+                    tip.setPercent(perc);
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
                     tss.setK(k);
                     hnv2.setK(k);
                     hnv1.setK(k);
+                    tip.setK(k);
                     System.out.println("-------------\n\nk: " + k);
                 }
                 for (String s : dataSets) {
