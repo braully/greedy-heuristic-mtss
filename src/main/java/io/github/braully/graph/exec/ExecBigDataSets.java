@@ -684,7 +684,7 @@ public class ExecBigDataSets {
         TIPDecomp tip = new TIPDecomp();
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            tss,
+//            tss,
             //            heur1,
             //            heur2, 
             //            heur3, heur4,
