@@ -21,11 +21,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class HNV1
+public class HNV0
         extends AbstractHeuristic implements IGraphOperation {
 
-    static final Logger log = Logger.getLogger(HNV1.class.getSimpleName());
-    static final String description = "HNV1";
+    static final Logger log = Logger.getLogger(HNV0.class.getSimpleName());
+    static final String description = "HNV0";
 
     public static String getDescription() {
         return description;
@@ -35,7 +35,7 @@ public class HNV1
         return description;
     }
 
-    public HNV1() {
+    public HNV0() {
     }
 
     public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {
@@ -222,7 +222,7 @@ public class HNV1
             bdls.incBfs(graph, bestVertice);
         }
         saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
-        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
+//        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
 
         targetSet.addAll(saux);
         saux.clear();
@@ -384,7 +384,7 @@ public class HNV1
     public static void main(String... args) throws IOException {
         System.out.println("Execution Sample: Livemocha database R=2");
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
-        HNV1 op = new HNV1();
+        HNV0 op = new HNV0();
 
         URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
         URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");

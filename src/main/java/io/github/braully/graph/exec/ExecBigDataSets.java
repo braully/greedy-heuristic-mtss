@@ -2,6 +2,7 @@ package io.github.braully.graph.exec;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.operation.AbstractHeuristic;
+import io.github.braully.graph.operation.HNV0;
 import io.github.braully.graph.operation.TSSCordasco;
 import io.github.braully.graph.operation.HNV1;
 import io.github.braully.graph.operation.HNV2;
@@ -53,10 +54,13 @@ public class ExecBigDataSets {
 
         HNV2 hnv2 = new HNV2();
         HNV1 hnv1 = new HNV1();
+        hnv1.setVerbose(true);
+        HNV0 hnv0 = new HNV0();
+
         TIPDecomp tip = new TIPDecomp();
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            //            tss,
+            tss,
             //            heur1,
             //            heur2, 
             //            heur3, heur4,
@@ -67,7 +71,8 @@ public class ExecBigDataSets {
             //            optm,
             //            optm2,
             tip,
-            hnv1, //            hnv2
+            hnv0, //            hnv1, 
+        //            hnv2
         };
         long totalTime[] = new long[operations.length];
         Integer[] result = new Integer[operations.length];
@@ -85,15 +90,15 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "m",
-            "k",
-            "r"
+            "m", //            "k",
+        //            "r"
         }) {
-            for (int k = 1; k <= 9; k++) {
+            for (int k = 1; k <= 5; k++) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     hnv2.setR(k);
                     hnv1.setR(k);
+                    hnv0.setR(k);
                     tip.setR(k);
                     System.out.println("-------------\n\nR: " + k);
                 } else if (op.equals("m")) {
@@ -103,6 +108,7 @@ public class ExecBigDataSets {
                     hnv2.setPercent(perc);
                     hnv1.setPercent(perc);
                     tip.setPercent(perc);
+                    hnv0.setPercent(perc);
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
@@ -110,6 +116,7 @@ public class ExecBigDataSets {
                     hnv2.setK(k);
                     hnv1.setK(k);
                     tip.setK(k);
+                    hnv0.setK(k);
                     System.out.println("-------------\n\nk: " + k);
                 }
                 for (String s : dataSets) {

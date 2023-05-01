@@ -25,21 +25,25 @@ public class ExecExactRandDataset {
         TIPDecomp tip = new TIPDecomp();
         HNV2 hnv2 = new HNV2();
         HNV1 hnv1 = new HNV1();
+        HNV0 hnv0 = new HNV0();
+
+        hnv1.setVerbose(true);
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            opf,
-            tip,
-            tss,
-            hnv2,
-            hnv1
+            //            opf,
+            //            tip,
+            //            tss,
+            hnv0,
+            hnv1, //            hnv2
         };
         String[] grupo = new String[]{
-            "Optm",
-            "Decomp",
-            "TSS",
+            //            "Optm",
+            //            "Decomp",
+            //            "TSS",
+            //            "HNV",
             "HNV",
             "HNV"
         };
@@ -58,6 +62,7 @@ public class ExecExactRandDataset {
                     hnv1.setR(k);
                     tip.setR(k);
                     hnv2.setR(k);
+                    hnv0.setR(k);
                     System.out.println("-------------\n\nR: " + k);
                 } else if (op.equals("m")) {
                     op = "m";
@@ -66,6 +71,7 @@ public class ExecExactRandDataset {
                     hnv2.setPercent(perc);
                     hnv1.setPercent(perc);
                     tip.setPercent(perc);
+                    hnv0.setPercent(perc);
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
@@ -73,6 +79,7 @@ public class ExecExactRandDataset {
                     tss.setK(k);
                     hnv2.setK(k);
                     hnv1.setK(k);
+                    hnv0.setK(k);
                     tip.setK(k);
                     System.out.println("-------------\n\nk: " + k);
                 }
