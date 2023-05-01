@@ -377,7 +377,7 @@ public class HNV0
 
     Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep1(graph, s, targetSize);
-        s = refineResultStep2(graph, s, targetSize);
+//        s = refineResultStep2(graph, s, targetSize);
         return s;
     }
 
