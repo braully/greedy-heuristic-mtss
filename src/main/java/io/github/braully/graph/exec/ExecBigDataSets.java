@@ -888,7 +888,7 @@ public class ExecBigDataSets {
             "k",
             "r"
         }) {
-            for (int k = 2; k <= 5; k++) {
+            for (int k = 1; k <= 5; k++) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     hnv2.setR(k);
