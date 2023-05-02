@@ -33,6 +33,176 @@ public class ExecBigDataSets {
     public static final Map<String, int[]> resultadoArquivado = new HashMap<>();
 
     static {
+
+        resultadoArquivado.put("TSS-Cordasco-r1-BlogCatalog", new int[]{1, 79415});
+        resultadoArquivado.put("TSS-Cordasco-r1-BlogCatalog2", new int[]{1, 136434});
+        resultadoArquivado.put("TSS-Cordasco-r1-BlogCatalog3", new int[]{1, 137299});
+        resultadoArquivado.put("TSS-Cordasco-r1-BuzzNet", new int[]{1, 278575});
+        resultadoArquivado.put("TSS-Cordasco-r1-Delicious", new int[]{65, 296271});
+        resultadoArquivado.put("TSS-Cordasco-r1-Douban", new int[]{1, 689520});
+        resultadoArquivado.put("TSS-Cordasco-r1-Last.fm", new int[]{55, 890668});
+        resultadoArquivado.put("TSS-Cordasco-r1-Livemocha", new int[]{1, 1056541});
+        resultadoArquivado.put("TSS-Cordasco-r1-ca-AstroPh", new int[]{297, 1065121});
+        resultadoArquivado.put("TSS-Cordasco-r1-ca-CondMat", new int[]{567, 1075946});
+        resultadoArquivado.put("TSS-Cordasco-r1-ca-GrQc", new int[]{379, 1076494});
+        resultadoArquivado.put("TSS-Cordasco-r1-ca-HepPh", new int[]{289, 1080797});
+        resultadoArquivado.put("TSS-Cordasco-r1-ca-HepTh", new int[]{451, 1082918});
+        resultadoArquivado.put("TSS-Cordasco-r2-BlogCatalog", new int[]{73, 1140581});
+        resultadoArquivado.put("TSS-Cordasco-r2-BlogCatalog2", new int[]{2, 1223056});
+        resultadoArquivado.put("TSS-Cordasco-r2-BlogCatalog3", new int[]{2, 1223920});
+        resultadoArquivado.put("TSS-Cordasco-r2-BuzzNet", new int[]{2, 1375164});
+        resultadoArquivado.put("TSS-Cordasco-r2-Delicious", new int[]{650, 1392129});
+        resultadoArquivado.put("TSS-Cordasco-r2-Douban", new int[]{241, 1400198});
+        resultadoArquivado.put("TSS-Cordasco-r2-Last.fm", new int[]{330, 1467438});
+        resultadoArquivado.put("TSS-Cordasco-r2-Livemocha", new int[]{17, 1495413});
+        resultadoArquivado.put("TSS-Cordasco-r2-ca-AstroPh", new int[]{807, 1515578});
+        resultadoArquivado.put("TSS-Cordasco-r2-ca-CondMat", new int[]{1704, 1536091});
+        resultadoArquivado.put("TSS-Cordasco-r2-ca-GrQc", new int[]{810, 1536937});
+        resultadoArquivado.put("TSS-Cordasco-r2-ca-HepPh", new int[]{778, 1547128});
+        resultadoArquivado.put("TSS-Cordasco-r2-ca-HepTh", new int[]{1104, 1550500});
+        resultadoArquivado.put("TSS-Cordasco-r3-BlogCatalog", new int[]{168, 1626270});
+        resultadoArquivado.put("TSS-Cordasco-r3-BlogCatalog2", new int[]{3, 1776008});
+        resultadoArquivado.put("TSS-Cordasco-r3-BlogCatalog3", new int[]{4, 1776895});
+        resultadoArquivado.put("TSS-Cordasco-r3-BuzzNet", new int[]{10, 1821609});
+        resultadoArquivado.put("TSS-Cordasco-r3-Delicious", new int[]{1602, 1841147});
+        resultadoArquivado.put("TSS-Cordasco-r3-Douban", new int[]{640, 1997250});
+        resultadoArquivado.put("TSS-Cordasco-r3-Last.fm", new int[]{1065, 2154272});
+        resultadoArquivado.put("TSS-Cordasco-r3-Livemocha", new int[]{87, 2209958});
+        resultadoArquivado.put("TSS-Cordasco-r3-ca-AstroPh", new int[]{1370, 2234810});
+        resultadoArquivado.put("TSS-Cordasco-r3-ca-CondMat", new int[]{3078, 2262949});
+        resultadoArquivado.put("TSS-Cordasco-r3-ca-GrQc", new int[]{1246, 2263786});
+        resultadoArquivado.put("TSS-Cordasco-r3-ca-HepPh", new int[]{1348, 2274448});
+        resultadoArquivado.put("TSS-Cordasco-r3-ca-HepTh", new int[]{1797, 2278232});
+        resultadoArquivado.put("TSS-Cordasco-r4-BlogCatalog", new int[]{288, 2347136});
+        resultadoArquivado.put("TSS-Cordasco-r4-BlogCatalog2", new int[]{4, 2492761});
+        resultadoArquivado.put("TSS-Cordasco-r4-BlogCatalog3", new int[]{8, 2493791});
+        resultadoArquivado.put("TSS-Cordasco-r4-BuzzNet", new int[]{37, 2562040});
+        resultadoArquivado.put("TSS-Cordasco-r4-Delicious", new int[]{2638, 2583018});
+        resultadoArquivado.put("TSS-Cordasco-r4-Douban", new int[]{1072, 2743493});
+        resultadoArquivado.put("TSS-Cordasco-r4-Last.fm", new int[]{2197, 2971567});
+        resultadoArquivado.put("TSS-Cordasco-r4-Livemocha", new int[]{238, 3034940});
+        resultadoArquivado.put("TSS-Cordasco-r4-ca-AstroPh", new int[]{1904, 3059475});
+        resultadoArquivado.put("TSS-Cordasco-r4-ca-CondMat", new int[]{4474, 3090629});
+        resultadoArquivado.put("TSS-Cordasco-r4-ca-GrQc", new int[]{1556, 3091292});
+        resultadoArquivado.put("TSS-Cordasco-r4-ca-HepPh", new int[]{1854, 3101156});
+        resultadoArquivado.put("TSS-Cordasco-r4-ca-HepTh", new int[]{2364, 3104278});
+        resultadoArquivado.put("TSS-Cordasco-r5-BlogCatalog", new int[]{439, 3159903});
+        resultadoArquivado.put("TSS-Cordasco-r5-BlogCatalog2", new int[]{5, 3288737});
+        resultadoArquivado.put("TSS-Cordasco-r5-BlogCatalog3", new int[]{15, 3289951});
+        resultadoArquivado.put("TSS-Cordasco-r5-BuzzNet", new int[]{78, 3364048});
+        resultadoArquivado.put("TSS-Cordasco-r5-Delicious", new int[]{3506, 3394200});
+        resultadoArquivado.put("TSS-Cordasco-r5-Douban", new int[]{1463, 3576176});
+        resultadoArquivado.put("TSS-Cordasco-r5-Last.fm", new int[]{3658, 3857304});
+        resultadoArquivado.put("TSS-Cordasco-r5-Livemocha", new int[]{482, 3953941});
+        resultadoArquivado.put("TSS-Cordasco-r5-ca-AstroPh", new int[]{2407, 3969314});
+        resultadoArquivado.put("TSS-Cordasco-r5-ca-CondMat", new int[]{5672, 3999053});
+        resultadoArquivado.put("TSS-Cordasco-r5-ca-GrQc", new int[]{1809, 3999662});
+        resultadoArquivado.put("TSS-Cordasco-r5-ca-HepPh", new int[]{2344, 4009832});
+        resultadoArquivado.put("TSS-Cordasco-r5-ca-HepTh", new int[]{2850, 4012774});
+        resultadoArquivado.put("TSS-Cordasco-r6-BlogCatalog", new int[]{603, 4077132});
+        resultadoArquivado.put("TSS-Cordasco-r6-BlogCatalog2", new int[]{10, 4206655});
+        resultadoArquivado.put("TSS-Cordasco-r6-BlogCatalog3", new int[]{23, 4207764});
+        resultadoArquivado.put("TSS-Cordasco-r6-BuzzNet", new int[]{198, 4296343});
+        resultadoArquivado.put("TSS-Cordasco-r6-Delicious", new int[]{4263, 4333239});
+        resultadoArquivado.put("TSS-Cordasco-r6-Douban", new int[]{1941, 4536667});
+        resultadoArquivado.put("TSS-Cordasco-r6-Last.fm", new int[]{5405, 4891118});
+        resultadoArquivado.put("TSS-Cordasco-r6-Livemocha", new int[]{829, 4998858});
+        resultadoArquivado.put("TSS-Cordasco-r6-ca-AstroPh", new int[]{2887, 5016678});
+        resultadoArquivado.put("TSS-Cordasco-r6-ca-CondMat", new int[]{6737, 5045188});
+        resultadoArquivado.put("TSS-Cordasco-r6-ca-GrQc", new int[]{1985, 5045741});
+        resultadoArquivado.put("TSS-Cordasco-r6-ca-HepPh", new int[]{2764, 5055840});
+        resultadoArquivado.put("TSS-Cordasco-r6-ca-HepTh", new int[]{3227, 5057884});
+        resultadoArquivado.put("TSS-Cordasco-r7-BlogCatalog", new int[]{810, 5127170});
+        resultadoArquivado.put("TSS-Cordasco-r7-BlogCatalog2", new int[]{14, 5277279});
+        resultadoArquivado.put("TSS-Cordasco-r7-BlogCatalog3", new int[]{30, 5278494});
+        resultadoArquivado.put("TSS-Cordasco-r7-BuzzNet", new int[]{411, 5407754});
+        resultadoArquivado.put("TSS-Cordasco-r7-Delicious", new int[]{4935, 5446874});
+        resultadoArquivado.put("TSS-Cordasco-r7-Douban", new int[]{2365, 5764842});
+        resultadoArquivado.put("TSS-Cordasco-r7-Last.fm", new int[]{7280, 6157012});
+        resultadoArquivado.put("TSS-Cordasco-r7-Livemocha", new int[]{1272, 6290435});
+        resultadoArquivado.put("TSS-Cordasco-r7-ca-AstroPh", new int[]{3311, 6314778});
+        resultadoArquivado.put("TSS-Cordasco-r7-ca-CondMat", new int[]{7660, 6342906});
+        resultadoArquivado.put("TSS-Cordasco-r7-ca-GrQc", new int[]{2121, 6343402});
+        resultadoArquivado.put("TSS-Cordasco-r7-ca-HepPh", new int[]{3104, 6354860});
+        resultadoArquivado.put("TSS-Cordasco-r7-ca-HepTh", new int[]{3530, 6357435});
+        resultadoArquivado.put("TSS-Cordasco-r8-BlogCatalog", new int[]{999, 6420862});
+        resultadoArquivado.put("TSS-Cordasco-r8-BlogCatalog2", new int[]{20, 6557269});
+        resultadoArquivado.put("TSS-Cordasco-r8-BlogCatalog3", new int[]{45, 6558925});
+        resultadoArquivado.put("TSS-Cordasco-r8-BuzzNet", new int[]{678, 6722429});
+        resultadoArquivado.put("TSS-Cordasco-r8-Delicious", new int[]{5523, 6759022});
+        resultadoArquivado.put("TSS-Cordasco-r8-Douban", new int[]{2834, 7081632});
+        resultadoArquivado.put("TSS-Cordasco-r8-Last.fm", new int[]{9189, 7508652});
+        resultadoArquivado.put("TSS-Cordasco-r8-Livemocha", new int[]{1793, 7680890});
+        resultadoArquivado.put("TSS-Cordasco-r8-ca-AstroPh", new int[]{3716, 7704914});
+        resultadoArquivado.put("TSS-Cordasco-r8-ca-CondMat", new int[]{8430, 7729986});
+        resultadoArquivado.put("TSS-Cordasco-r8-ca-GrQc", new int[]{2229, 7730478});
+        resultadoArquivado.put("TSS-Cordasco-r8-ca-HepPh", new int[]{3437, 7741305});
+        resultadoArquivado.put("TSS-Cordasco-r8-ca-HepTh", new int[]{3778, 7743636});
+        resultadoArquivado.put("TSS-Cordasco-r9-BlogCatalog", new int[]{1197, 7803788});
+        resultadoArquivado.put("TSS-Cordasco-r9-BlogCatalog2", new int[]{28, 7935102});
+        resultadoArquivado.put("TSS-Cordasco-r9-BlogCatalog3", new int[]{68, 7936635});
+        resultadoArquivado.put("TSS-Cordasco-r9-BuzzNet", new int[]{956, 8119012});
+        resultadoArquivado.put("TSS-Cordasco-r9-Delicious", new int[]{6011, 8159957});
+        resultadoArquivado.put("TSS-Cordasco-r9-Douban", new int[]{3230, 8495243});
+        resultadoArquivado.put("TSS-Cordasco-r9-Last.fm", new int[]{11239, 8951931});
+        resultadoArquivado.put("TSS-Cordasco-r9-Livemocha", new int[]{2425, 9145074});
+        resultadoArquivado.put("TSS-Cordasco-r9-ca-AstroPh", new int[]{4112, 9169811});
+        resultadoArquivado.put("TSS-Cordasco-r9-ca-CondMat", new int[]{9067, 9191774});
+        resultadoArquivado.put("TSS-Cordasco-r9-ca-GrQc", new int[]{2312, 9192188});
+        resultadoArquivado.put("TSS-Cordasco-r9-ca-HepPh", new int[]{3675, 9200811});
+        resultadoArquivado.put("TSS-Cordasco-r9-ca-HepTh", new int[]{3970, 9202949});
+        resultadoArquivado.put("TSS-Cordasco-r10-BlogCatalog", new int[]{1421, 9263480});
+        resultadoArquivado.put("TSS-Cordasco-r10-BlogCatalog2", new int[]{37, 9393311});
+        resultadoArquivado.put("TSS-Cordasco-r10-BlogCatalog3", new int[]{82, 9394579});
+        resultadoArquivado.put("TSS-Cordasco-r10-BuzzNet", new int[]{1199, 9543444});
+        resultadoArquivado.put("TSS-Cordasco-r10-Delicious", new int[]{6432, 9583728});
+        resultadoArquivado.put("TSS-Cordasco-r10-Douban", new int[]{3591, 9951753});
+        resultadoArquivado.put("TSS-Cordasco-r10-Last.fm", new int[]{13261, 10414111});
+        resultadoArquivado.put("TSS-Cordasco-r10-Livemocha", new int[]{3097, 10596719});
+        resultadoArquivado.put("TSS-Cordasco-r10-ca-AstroPh", new int[]{4476, 10621879});
+        resultadoArquivado.put("TSS-Cordasco-r10-ca-CondMat", new int[]{9598, 10642258});
+        resultadoArquivado.put("TSS-Cordasco-r10-ca-GrQc", new int[]{2376, 10642652});
+        resultadoArquivado.put("TSS-Cordasco-r10-ca-HepPh", new int[]{3895, 10651092});
+        resultadoArquivado.put("TSS-Cordasco-r10-ca-HepTh", new int[]{4130, 10653049});
+        resultadoArquivado.put("TSS-Cordasco-r2-BlogCatalog", new int[]{73, 43229});
+        resultadoArquivado.put("TSS-Cordasco-r2-BlogCatalog", new int[]{73, 43567});
+        resultadoArquivado.put("TSS-Cordasco-r2-BlogCatalog2", new int[]{2, 200004});
+        resultadoArquivado.put("TSS-Cordasco-r2-BlogCatalog3", new int[]{2, 201241});
+        resultadoArquivado.put("TSS-Cordasco-r2-BuzzNet", new int[]{2, 347545});
+        resultadoArquivado.put("TSS-Cordasco-r2-Delicious", new int[]{650, 379078});
+        resultadoArquivado.put("TSS-Cordasco-r2-Douban", new int[]{241, 412210});
+        resultadoArquivado.put("TSS-Cordasco-r2-Last.fm", new int[]{330, 502092});
+        resultadoArquivado.put("TSS-Cordasco-k1-BlogCatalog2", new int[]{1, 121942});
+        resultadoArquivado.put("TSS-Cordasco-k1-BuzzNet", new int[]{6, 279634});
+        resultadoArquivado.put("TSS-Cordasco-k1-Livemocha", new int[]{336, 458879});
+        resultadoArquivado.put("TSS-Cordasco-k2-BlogCatalog2", new int[]{27638, 482217});
+        resultadoArquivado.put("TSS-Cordasco-k2-BuzzNet", new int[]{7561, 485019});
+        resultadoArquivado.put("TSS-Cordasco-k2-Livemocha", new int[]{7182, 487730});
+        resultadoArquivado.put("TSS-Cordasco-k3-BlogCatalog2", new int[]{40662, 545022});
+        resultadoArquivado.put("TSS-Cordasco-k3-BuzzNet", new int[]{19630, 550552});
+        resultadoArquivado.put("TSS-Cordasco-k3-Livemocha", new int[]{13603, 554108});
+        resultadoArquivado.put("TSS-Cordasco-k4-BlogCatalog2", new int[]{48604, 631997});
+        resultadoArquivado.put("TSS-Cordasco-k4-BuzzNet", new int[]{23647, 636905});
+        resultadoArquivado.put("TSS-Cordasco-k4-Livemocha", new int[]{19345, 640528});
+        resultadoArquivado.put("TSS-Cordasco-k5-BlogCatalog2", new int[]{54171, 736839});
+        resultadoArquivado.put("TSS-Cordasco-k5-BuzzNet", new int[]{27242, 742056});
+        resultadoArquivado.put("TSS-Cordasco-k5-Livemocha", new int[]{24466, 761846});
+        resultadoArquivado.put("TSS-Cordasco-k6-BlogCatalog2", new int[]{58325, 797824});
+        resultadoArquivado.put("TSS-Cordasco-k6-BuzzNet", new int[]{30850, 805473});
+        resultadoArquivado.put("TSS-Cordasco-k6-Livemocha", new int[]{29079, 833801});
+        resultadoArquivado.put("TSS-Cordasco-k7-BlogCatalog2", new int[]{61589, 871786});
+        resultadoArquivado.put("TSS-Cordasco-k7-BuzzNet", new int[]{34503, 886278});
+        resultadoArquivado.put("TSS-Cordasco-k7-Livemocha", new int[]{33179, 924904});
+        resultadoArquivado.put("TSS-Cordasco-k8-BlogCatalog2", new int[]{64126, 1062920});
+        resultadoArquivado.put("TSS-Cordasco-k8-BuzzNet", new int[]{37815, 1073218});
+        resultadoArquivado.put("TSS-Cordasco-k8-Livemocha", new int[]{36928, 1102529});
+        resultadoArquivado.put("TSS-Cordasco-k9-BlogCatalog2", new int[]{66462, 1142551});
+        resultadoArquivado.put("TSS-Cordasco-k9-BuzzNet", new int[]{40725, 1155595});
+        resultadoArquivado.put("TSS-Cordasco-k9-Livemocha", new int[]{40275, 1221780});
+        resultadoArquivado.put("TSS-Cordasco-k10-BlogCatalog2", new int[]{68321, 1383763});
+        resultadoArquivado.put("TSS-Cordasco-k10-BuzzNet", new int[]{43122, 1412166});
+        resultadoArquivado.put("TSS-Cordasco-k10-Livemocha", new int[]{43439, 1473506});
+
         resultadoArquivado.put("TIPDecomp-m1-BlogCatalog", new int[]{109, 77442});
         resultadoArquivado.put("TIPDecomp-m1-BlogCatalog2", new int[]{92, 186160});
         resultadoArquivado.put("TIPDecomp-m1-BlogCatalog3", new int[]{50, 186740});
@@ -694,7 +864,7 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-//            tip,
+            tip,
             hnv0, //            hnv1, 
         //            hnv2
         };
@@ -714,10 +884,11 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "m", //            "k",
-        //            "r"
+            //            "m",
+            "k",
+            "r"
         }) {
-            for (int k = 1; k <= 9; k++) {
+            for (int k = 2; k <= 5; k++) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     hnv2.setR(k);

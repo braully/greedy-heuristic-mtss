@@ -104,6 +104,8 @@ public class HNV0
         degree = new int[maxVertex];
         skip = new int[maxVertex];
         auxb = new int[maxVertex];
+        N = new Set[maxVertex];
+
         for (int i = 0; i < maxVertex; i++) {
             aux[i] = 0;
             skip[i] = -1;
@@ -114,6 +116,8 @@ public class HNV0
         //mandatory vertices
         for (Integer v : vertices) {
             degree[v] = graph.degree(v);
+            N[v] = new LinkedHashSet<>(graph.getNeighborsUnprotected(v));
+
             if (degree[v] <= kr[v] - 1) {
                 countContaminatedVertices = countContaminatedVertices + addVertToS(v, saux, graph, aux);
             }
@@ -164,7 +168,7 @@ public class HNV0
                 //Propagate w contamination
                 while (!mustBeIncluded.isEmpty()) {
                     Integer verti = mustBeIncluded.remove();
-                    Collection<Integer> neighbors = graph.getNeighborsUnprotected(verti);
+                    Collection<Integer> neighbors = N[verti];
                     for (Integer vertn : neighbors) {
                         if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
                             continue;
@@ -245,7 +249,7 @@ public class HNV0
         mustBeIncluded.add(verti);
         while (!mustBeIncluded.isEmpty()) {
             verti = mustBeIncluded.remove();
-            Collection<Integer> neighbors = graph.getNeighborsUnprotected(verti);
+            Collection<Integer> neighbors = N[verti];
             for (Integer vertn : neighbors) {
                 if ((++aux[vertn]) == kr[vertn]) {
                     mustBeIncluded.add(vertn);
@@ -276,7 +280,7 @@ public class HNV0
         mustBeIncluded.add(verti);
         while (!mustBeIncluded.isEmpty()) {
             verti = mustBeIncluded.remove();
-            Collection<Integer> neighbors = graph.getNeighborsUnprotected(verti);
+            Collection<Integer> neighbors = N[verti];
             for (Integer vertn : neighbors) {
                 if ((++aux[vertn]) == kr[vertn]) {
                     mustBeIncluded.add(vertn);
@@ -295,7 +299,7 @@ public class HNV0
         Set<Integer> s = new LinkedHashSet<>(tmp);
 
         for (Integer v : tmp) {
-            Collection<Integer> nvs = graphRead.getNeighborsUnprotected(v);
+            Collection<Integer> nvs = N[v];
             int scont = 0;
             for (Integer nv : nvs) {
                 if (s.contains(nv)) {
@@ -345,7 +349,7 @@ public class HNV0
             while (!mustBeIncluded.isEmpty()) {
                 Integer verti = mustBeIncluded.remove();
                 contadd++;
-                Collection<Integer> neighbors = graphRead.getNeighborsUnprotected(verti);
+                Collection<Integer> neighbors = N[verti];
                 for (Integer vertn : neighbors) {
                     if (aux[vertn] <= kr[vertn] - 1) {
                         aux[vertn] = aux[vertn] + 1;
@@ -386,9 +390,10 @@ public class HNV0
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
         HNV0 op = new HNV0();
 
-        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
-        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
-
+//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
+//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
+        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
+        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
         InputStream streamnode = urinode.toURL().openStream();
         InputStream streamedges = uriedges.toURL().openStream();
 
@@ -396,7 +401,7 @@ public class HNV0
 
         op.setVerbose(true);
 
-        op.setR(7);
+        op.setPercent(0.7);
         UtilProccess.printStartTime();
         Set<Integer> buildOptimizedHullSet = op.buildTargeSet(graph);
         UtilProccess.printEndTime();

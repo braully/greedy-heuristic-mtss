@@ -32,6 +32,7 @@ public abstract class AbstractHeuristic implements IGraphOperation {
     protected boolean verbose;
 
     protected int[] degree = null;
+    protected Set<Integer>[] N = null;
 
     public String getTypeProblem() {
         return type;
