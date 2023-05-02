@@ -884,11 +884,11 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-                        "m",
-//            "k",
-//            "r"
+            //                        "m",
+            "k",
+            "r"
         }) {
-            for (int k = 5; k <= 9; k++) {
+            for (int k = 1; k <= 6; k++) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     hnv2.setR(k);
