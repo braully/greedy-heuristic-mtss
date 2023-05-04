@@ -2,6 +2,7 @@ package io.github.braully.graph.exec;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.operation.AbstractHeuristic;
+import io.github.braully.graph.operation.CCMPanizi;
 import io.github.braully.graph.operation.HNV0;
 import io.github.braully.graph.operation.TSSCordasco;
 import io.github.braully.graph.operation.HNV1;
@@ -29,11 +30,11 @@ import java.util.Set;
  * @author strike
  */
 public class ExecBigDataSets {
-
+    
     public static final Map<String, int[]> resultadoArquivado = new HashMap<>();
-
+    
     static {
-
+        
         resultadoArquivado.put("TSS-Cordasco-r1-BlogCatalog", new int[]{1, 79415});
         resultadoArquivado.put("TSS-Cordasco-r1-BlogCatalog2", new int[]{1, 136434});
         resultadoArquivado.put("TSS-Cordasco-r1-BlogCatalog3", new int[]{1, 137299});
@@ -202,7 +203,7 @@ public class ExecBigDataSets {
         resultadoArquivado.put("TSS-Cordasco-k10-BlogCatalog2", new int[]{68321, 1383763});
         resultadoArquivado.put("TSS-Cordasco-k10-BuzzNet", new int[]{43122, 1412166});
         resultadoArquivado.put("TSS-Cordasco-k10-Livemocha", new int[]{43439, 1473506});
-
+        
         resultadoArquivado.put("TIPDecomp-m1-BlogCatalog", new int[]{109, 77442});
         resultadoArquivado.put("TIPDecomp-m1-BlogCatalog2", new int[]{92, 186160});
         resultadoArquivado.put("TIPDecomp-m1-BlogCatalog3", new int[]{50, 186740});
@@ -823,9 +824,9 @@ public class ExecBigDataSets {
         resultadoArquivado.put("TSS-Cordasco-m7-BlogCatalog2", new int[]{1193, 3759935});
         resultadoArquivado.put("TSS-Cordasco-m7-BlogCatalog3", new int[]{726, 3760627});
         resultadoArquivado.put("TSS-Cordasco-m7-BuzzNet", new int[]{4504, 3848889});
-
+        
     }
-
+    
     public static void main(String... args) throws FileNotFoundException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         String[] dataSets = new String[]{
             "ca-GrQc",
@@ -842,7 +843,7 @@ public class ExecBigDataSets {
             "BuzzNet",
             "Last.fm", //            "YouTube2"
         };
-
+        
         TSSCordasco tss = new TSSCordasco();
 //        GraphTSSGreedy tssg = new GraphTSSGreedy();
 
@@ -850,11 +851,12 @@ public class ExecBigDataSets {
         HNV1 hnv1 = new HNV1();
         hnv1.setVerbose(true);
         HNV0 hnv0 = new HNV0();
-
+        CCMPanizi ccm = new CCMPanizi();
+        
         TIPDecomp tip = new TIPDecomp();
-
+        
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            tss,
+            //            tss,
             //            heur1,
             //            heur2, 
             //            heur3, heur4,
@@ -864,9 +866,10 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-            tip,
+            //            tip,
             hnv0, //            hnv1, 
-        //            hnv2
+            //            hnv2
+            ccm
         };
         long totalTime[] = new long[operations.length];
         Integer[] result = new Integer[operations.length];
@@ -877,16 +880,15 @@ public class ExecBigDataSets {
         for (int i = 0; i < operations.length; i++) {
             contMelhor[i] = contPior[i] = contIgual[i] = 0;
         }
-
+        
         Arrays.sort(dataSets);
-
+        
         String strResultFile = "resultado-" + ExecBigDataSets.class.getSimpleName() + ".txt";
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            //                        "m",
-            "k",
-            "r"
+            "m", //            "k",
+        //            "r"
         }) {
             for (int k = 1; k <= 6; k++) {
                 if (op.equals("r")) {
@@ -894,6 +896,7 @@ public class ExecBigDataSets {
                     hnv2.setR(k);
                     hnv1.setR(k);
                     hnv0.setR(k);
+                    ccm.setR(k);
                     tip.setR(k);
                     System.out.println("-------------\n\nR: " + k);
                 } else if (op.equals("m")) {
@@ -904,6 +907,7 @@ public class ExecBigDataSets {
                     hnv1.setPercent(perc);
                     tip.setPercent(perc);
                     hnv0.setPercent(perc);
+                    ccm.setPercent(perc);
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
@@ -912,14 +916,15 @@ public class ExecBigDataSets {
                     hnv1.setK(k);
                     tip.setK(k);
                     hnv0.setK(k);
+                    ccm.setK(k);
                     System.out.println("-------------\n\nk: " + k);
                 }
                 for (String s : dataSets) {
                     System.out.println("\n-DATASET: " + s);
-
+                    
                     UndirectedSparseGraphTO<Integer, Integer> graphES
                             = null;
-
+                    
                     try {
                         URI urigraph = URI.create("jar:file:data/big/all-big.zip!/" + s + "/" + s + ".txt");
                         InputStream streamgraph = urigraph.toURL().openStream();
@@ -927,7 +932,7 @@ public class ExecBigDataSets {
                     } catch (FileNotFoundException e) {
                         URI urinode = URI.create("jar:file:data/big/all-big.zip!/" + s + "/nodes.csv");
                         URI uriedges = URI.create("jar:file:data/big/all-big.zip!/" + s + "/edges.csv");
-
+                        
                         InputStream streamnode = urinode.toURL().openStream();
                         InputStream streamedges = uriedges.toURL().openStream();
                         graphES = UtilGraph.loadBigDataset(streamnode,
@@ -937,7 +942,7 @@ public class ExecBigDataSets {
                         System.out.println("Fail to Load GRAPH: " + s);
                     }
                     System.out.println("Loaded Graph: " + s + " " + graphES.getVertexCount() + " " + graphES.getEdgeCount());
-
+                    
                     for (int i = 0; i < operations.length; i++) {
                         String arquivadoStr = operations[i].getName() + "-" + op + k + "-" + s;
                         Map<String, Object> doOperation = null;
@@ -955,17 +960,17 @@ public class ExecBigDataSets {
                             System.out.println(" - arquivar: resultadoArquivado.put(\"" + arquivadoStr + "\", new int[]{" + result[i] + ", " + totalTime[i] + "});");
                         }
                         System.out.println(" - Result: " + result[i]);
-
+                        
                         String out = "Big\t" + s + "\t" + graphES.getVertexCount() + "\t"
                                 + graphES.getEdgeCount()
                                 + "\t" + op + "\t" + k + "\t" + " " + "\t" + operations[i].getName()
                                 + "\t" + result[i] + "\t" + totalTime[i] + "\n";
-
+                        
                         System.out.print("xls: " + out);
-
+                        
                         writer.write(out);
                         writer.flush();
-
+                        
                         if (doOperation != null) {
                             boolean checkIfHullSet = operations[i].checkIfHullSet(graphES, ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
                             if (!checkIfHullSet) {
@@ -979,10 +984,10 @@ public class ExecBigDataSets {
                             }
                         } else {
                             delta[i] = result[0] - result[i];
-
+                            
                             long deltaTempo = totalTime[0] - totalTime[i];
                             System.out.print(" - g:" + s + " " + op + " " + k + "  tempo: ");
-
+                            
                             if (deltaTempo >= 0) {
                                 System.out.print(" +FAST " + deltaTempo);
                             } else {

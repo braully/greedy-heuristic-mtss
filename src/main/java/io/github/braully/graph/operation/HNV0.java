@@ -106,9 +106,10 @@ public class HNV0
         auxb = new int[maxVertex];
         N = new Set[maxVertex];
 
-        for (int i = 0; i < maxVertex; i++) {
+        for (Integer i : vertices) {
             aux[i] = 0;
             skip[i] = -1;
+            N[i] = new LinkedHashSet<>(graph.getNeighborsUnprotected(i));
         }
         initKr(graph);
 
@@ -116,7 +117,6 @@ public class HNV0
         //mandatory vertices
         for (Integer v : vertices) {
             degree[v] = graph.degree(v);
-            N[v] = new LinkedHashSet<>(graph.getNeighborsUnprotected(v));
 
             if (degree[v] <= kr[v] - 1) {
                 countContaminatedVertices = countContaminatedVertices + addVertToS(v, saux, graph, aux);
