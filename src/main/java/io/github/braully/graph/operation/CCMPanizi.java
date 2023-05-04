@@ -28,15 +28,15 @@ public class CCMPanizi
     static final String description = "CCM-Panizi";
 
     public static String getDescription() {
+        return description;
+    }
+
+    public String getName() {
         if (poda) {
             return description + "-poda";
         } else {
             return description;
         }
-    }
-
-    public String getName() {
-        return description;
     }
 
     public CCMPanizi() {
