@@ -19,27 +19,28 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CCMPanizi
+public class GenericGreedy
         extends AbstractHeuristic implements IGraphOperation {
 
-    static boolean poda = true;
-
-    static final Logger log = Logger.getLogger(CCMPanizi.class.getSimpleName());
-    static final String description = "CCM-Panizi";
+    static final Logger log = Logger.getLogger(GenericGreedy.class.getSimpleName());
+    static final String description = "Greedy";
 
     public static String getDescription() {
         return description;
     }
 
+    //Configuration
+    boolean refine = true;
+
     public String getName() {
-        if (poda) {
-            return description + "-poda";
-        } else {
-            return description;
+        StringBuilder sb = new StringBuilder(getDescription());
+        if (refine) {
+            sb.append("-refine");
         }
+        return sb.toString();
     }
 
-    public CCMPanizi() {
+    public GenericGreedy() {
     }
 
     public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {
@@ -81,7 +82,8 @@ public class CCMPanizi
     protected int bestVertice = -1;
 
     protected int maxDelta = 0;
-    protected double maxPartial = 0;
+    protected int maxPartial = 0;
+    protected int maxDegree = 0;
 
     public Set<Integer> buildTargeSet(UndirectedSparseGraphTO<Integer, Integer> graph) {
         if (graph == null) {
@@ -118,64 +120,71 @@ public class CCMPanizi
         }
 
         int vertexCount = graph.getVertexCount();
+        int sizeTarget = vertexCount;
 
         bestVertice = -1;
         auxCount = new MapCountOpt(maxVertex);
 
-        while (countContaminatedVertices < vertexCount) {
+        while (countContaminatedVertices < sizeTarget) {
             bestVertice = -1;
             maxDelta = 0;
             maxPartial = 0;
+            maxDegree = 0;
 
-            for (Integer w : vertices) {
-                //Ignore w if is already contamined OR skip review to next step
-                if (aux[w] >= kr[w]) {
-                    continue;
-                }
-                int wDelta = 0;
-                int wPartial = 0;
-
-                //Clear and init w contamined count aux variavles
-                auxCount.clear();
-                auxCount.setVal(w, kr[w]);
-                mustBeIncluded.clear();
-                mustBeIncluded.add(w);
-                //Propagate w contamination
-                while (!mustBeIncluded.isEmpty()) {
-                    Integer verti = mustBeIncluded.remove();
-                    Collection<Integer> neighbors = N[verti];
-                    for (Integer vertn : neighbors) {
-                        if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
-                            continue;
-                        }
-                        Integer inc = auxCount.inc(vertn);
-                        if ((inc + aux[vertn]) == kr[vertn]) {
-                            mustBeIncluded.add(vertn);
-                        }
-                    }
-                    wDelta++;
-                }
-                //Partial contamination
-                for (Integer x : auxCount.keySet()) {
-                    if (auxCount.getCount(x) + aux[x] < kr[x]) {
-                        wPartial++;
-                    }
-                }
-
-                if (bestVertice == -1 || (wDelta > maxDelta
-                        || (wDelta == maxDelta && wPartial > maxPartial))) {
-                    bestVertice = w;
-                    maxDelta = wDelta;
-                    maxPartial = wPartial;
-                }
-
-            }
+            selectBestVertice(vertices, aux);
             countContaminatedVertices = countContaminatedVertices + addVertToS(bestVertice, targetSet, graph, aux);
         }
-        if (poda) {
+        if (refine) {
             targetSet = refineResultStep1(graph, targetSet, countContaminatedVertices);
         }
         return targetSet;
+    }
+
+    public void selectBestVertice(List<Integer> vertices, int[] aux) {
+        for (Integer w : vertices) {
+            //Ignore w if is already contamined OR skip review to next step
+            if (aux[w] >= kr[w]) {
+                continue;
+            }
+            int wDelta = 0;
+            int wPartial = 0;
+            int wDegree = this.degree[w];
+
+            //Clear and init w contamined count aux variavles
+            auxCount.clear();
+            auxCount.setVal(w, kr[w]);
+            mustBeIncluded.clear();
+            mustBeIncluded.add(w);
+            //Propagate w contamination
+            while (!mustBeIncluded.isEmpty()) {
+                Integer verti = mustBeIncluded.remove();
+                Collection<Integer> neighbors = N[verti];
+                for (Integer vertn : neighbors) {
+                    if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
+                        continue;
+                    }
+                    Integer inc = auxCount.inc(vertn);
+                    if ((inc + aux[vertn]) == kr[vertn]) {
+                        mustBeIncluded.add(vertn);
+                    }
+                }
+                wDelta++;
+            }
+            //Partial contamination
+            for (Integer x : auxCount.keySet()) {
+                if (auxCount.getCount(x) + aux[x] < kr[x]) {
+                    wPartial++;
+                }
+            }
+
+            if (bestVertice == -1 || (wDelta > maxDelta
+                    || (wDelta == maxDelta && wPartial > maxPartial))) {
+                bestVertice = w;
+                maxDelta = wDelta;
+                maxPartial = wPartial;
+            }
+
+        }
     }
 
     public int addVertToAux(Integer verti,
@@ -333,7 +342,7 @@ public class CCMPanizi
     public static void main(String... args) throws IOException {
         System.out.println("Execution Sample: Livemocha database R=2");
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
-        CCMPanizi op = new CCMPanizi();
+        GenericGreedy op = new GenericGreedy();
 
 //        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
 //        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
