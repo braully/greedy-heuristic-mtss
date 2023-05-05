@@ -15,7 +15,7 @@ public class GreedyCordasco
         extends GenericGreedy implements IGraphOperation {
 
     static final Logger log = Logger.getLogger(GreedyCordasco.class.getSimpleName());
-    static final String description = "Greedy-Delta";
+    static final String description = "Greedy-Cordasco";
 
     public String getDescription() {
         return description;
