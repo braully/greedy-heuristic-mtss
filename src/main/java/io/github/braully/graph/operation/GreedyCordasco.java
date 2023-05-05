@@ -1,14 +1,11 @@
 package io.github.braully.graph.operation;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
-import io.github.braully.graph.util.MapCountOpt;
 import io.github.braully.graph.util.UtilGraph;
 import io.github.braully.graph.util.UtilProccess;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +17,7 @@ public class GreedyCordasco
     static final Logger log = Logger.getLogger(GreedyCordasco.class.getSimpleName());
     static final String description = "Greedy-Delta";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 

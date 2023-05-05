@@ -16,7 +16,7 @@ public class GreedyDegree
     static final Logger log = Logger.getLogger(GreedyDegree.class.getSimpleName());
     static final String description = "Greedy-Degree";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 

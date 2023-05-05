@@ -17,7 +17,7 @@ public class GreedyDeltaTss
     static final Logger log = Logger.getLogger(GreedyDeltaTss.class.getSimpleName());
     static final String description = "Greedy-Delta";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 

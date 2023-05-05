@@ -25,7 +25,7 @@ public class GenericGreedy
     static final Logger log = Logger.getLogger(GenericGreedy.class.getSimpleName());
     static final String description = "Greedy";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 
