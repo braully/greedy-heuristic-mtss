@@ -897,10 +897,9 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-//            "m",
-            "k",
-            "r"
-        }) {
+            //            "m",
+            "r",
+            "k",}) {
             for (int k = 6; k >= 1; k--) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
