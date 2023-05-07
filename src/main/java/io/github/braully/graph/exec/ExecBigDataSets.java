@@ -987,7 +987,7 @@ public class ExecBigDataSets {
                             delta[i] = result[0] - result[i];
 
                             long deltaTempo = totalTime[0] - totalTime[i];
-                            System.out.print(" - g:" + s + " " + op + " " + k + "  tempo: ");
+                            System.out.print(operations[i].getName() + " - g:" + s + " " + op + " " + k + "  tempo: ");
 
                             if (deltaTempo >= 0) {
                                 System.out.print(" +FAST " + deltaTempo);
