@@ -392,8 +392,12 @@ public class HNV0
 
 //        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
 //        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
-        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
-        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
+//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
+//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
+        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Last.fm/nodes.csv");
+        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Last.fm/edges.csv");
+//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/nodes.csv");
+//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/edges.csv");
         InputStream streamnode = urinode.toURL().openStream();
         InputStream streamedges = uriedges.toURL().openStream();
 
@@ -401,7 +405,7 @@ public class HNV0
 
         op.setVerbose(true);
 
-        op.setPercent(0.7);
+        op.setPercent(0.5);
         UtilProccess.printStartTime();
         Set<Integer> buildOptimizedHullSet = op.buildTargeSet(graph);
         UtilProccess.printEndTime();

@@ -862,7 +862,8 @@ public class ExecBigDataSets {
         GreedyDegree gd = new GreedyDegree();
         GreedyDeltaTss gdt = new GreedyDeltaTss();
 
-        AbstractHeuristic[] operations = new AbstractHeuristic[]{ //            tss,
+        AbstractHeuristic[] operations = new AbstractHeuristic[]{
+            tss,
             //            heur1,
             //            heur2, 
             //            heur3, heur4,
@@ -875,8 +876,8 @@ public class ExecBigDataSets {
             //            tip,
             //            hnv0, //            hnv1, 
             //            hnv2
-            //            ccm
-            gc, gd, gdt
+            hnv0, gd
+//            ccm, gc, gd, gdt
         };
         long totalTime[] = new long[operations.length];
         Integer[] result = new Integer[operations.length];
@@ -884,7 +885,9 @@ public class ExecBigDataSets {
         int[] contMelhor = new int[operations.length];
         int[] contPior = new int[operations.length];
         int[] contIgual = new int[operations.length];
-        for (int i = 0; i < operations.length; i++) {
+        for (int i = 0;
+                i < operations.length;
+                i++) {
             contMelhor[i] = contPior[i] = contIgual[i] = 0;
         }
 
@@ -894,8 +897,9 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "m",
-            "k", //                    "r"
+//            "m",
+            "k",
+            "r"
         }) {
             for (int k = 6; k >= 1; k--) {
                 if (op.equals("r")) {
@@ -1009,10 +1013,16 @@ public class ExecBigDataSets {
                 }
             }
         }
+
         writer.flush();
+
         writer.close();
-        System.out.println("RESUME ");
-        for (int i = 1; i < operations.length; i++) {
+
+        System.out.println(
+                "RESUME ");
+        for (int i = 1;
+                i < operations.length;
+                i++) {
             System.out.println("Operation: " + operations[i].getName());
             System.out.println("Best: " + contMelhor[i]);
             System.out.println("Worst: " + contPior[i]);
