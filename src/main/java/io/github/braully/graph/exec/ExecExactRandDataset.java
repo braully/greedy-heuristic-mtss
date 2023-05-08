@@ -36,23 +36,24 @@ public class ExecExactRandDataset {
         GreedyDegree gd = new GreedyDegree();
         GreedyDeltaTss gdt = new GreedyDeltaTss();
         GreedyBonusDist gdit = new GreedyBonusDist();
-
+        GreedyDifTotal gdft = new GreedyDifTotal();
+        GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
         hnv1.setVerbose(true);
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-                        opf,
+            //            opf,
             //            tip,
-//            tss,
-//            hnv0,
-//            gd, gdt, gdit,
-//            //            hnv1,
-//            //            hnv1,
-//            //            hnv2
-//            //            ccm, 
-//            hnva
+            tss,
+            hnv0,
+            gdft, gdxd //            gd, gdt, gdit,
+        //            hnv1,
+        //            hnv1,
+        //            hnv2
+        //            ccm, 
+        //            hnva
         };
         String[] grupo = new String[]{
             "Optm",
@@ -68,7 +69,6 @@ public class ExecExactRandDataset {
         int[] contMelhorGlobal = new int[operations.length];
         int[] contPiorGlobal = new int[operations.length];
         int[] contIgualGlobal = new int[operations.length];
-        ;
         int[] contMelhor = new int[operations.length];
         int[] contPior = new int[operations.length];
         int[] contIgual = new int[operations.length];
@@ -86,7 +86,7 @@ public class ExecExactRandDataset {
             "m"
         });
         for (int k = 1;
-                k <= 5; k++) {
+                k <= 6; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {

@@ -1,6 +1,7 @@
 package io.github.braully.graph.operation;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
+import io.github.braully.graph.util.UtilBFS;
 import io.github.braully.graph.util.MapCountOpt;
 import io.github.braully.graph.util.UtilGraph;
 import io.github.braully.graph.util.UtilProccess;
@@ -10,6 +11,7 @@ import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -19,28 +21,21 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GenericGreedy
+public class GreedyDeltaXDifTotal
         extends AbstractHeuristic implements IGraphOperation {
 
-    static final Logger log = Logger.getLogger(GenericGreedy.class.getSimpleName());
-    static final String description = "Greedy";
+    static final Logger log = Logger.getLogger(GreedyDeltaXDifTotal.class.getSimpleName());
+    static final String description = "GreedyDeltaXDifTotal";
 
-    public String getDescription() {
+    public static String getDescription() {
         return description;
     }
 
-    //Configuration
-    boolean refine = true;
-
     public String getName() {
-        StringBuilder sb = new StringBuilder(getDescription());
-        if (refine) {
-            sb.append("-refine");
-        }
-        return sb.toString();
+        return description;
     }
 
-    public GenericGreedy() {
+    public GreedyDeltaXDifTotal() {
     }
 
     public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {
@@ -75,33 +70,43 @@ public class GenericGreedy
         return response;
     }
 
+    int[] skip = null;
     int[] auxb = null;
     //
+    protected UtilBFS bdls;
+
     protected Queue<Integer> mustBeIncluded = new ArrayDeque<>();
     protected MapCountOpt auxCount;
     protected int bestVertice = -1;
 
+    protected double maxDifTotal = 0;
     protected int maxDelta = 0;
-    protected int maxPartial = 0;
-    protected int maxDegree = 0;
-    protected int maxRanking = 0;
-    protected int[] skip = null;
+    protected double maxBonusPartial = 0;
+    protected int maxRank = 0;
+
+    //has uncontaminated vertices on the current component
+    protected boolean hasVerticesOnCC = false;
 
     public Set<Integer> buildTargeSet(UndirectedSparseGraphTO<Integer, Integer> graph) {
         if (graph == null) {
             return null;
         }
         List<Integer> vertices = new ArrayList<>((List<Integer>) graph.getVertices());
-
+        //Sort vertice on reverse order of degree
+        vertices.sort(Comparator
+                .comparingInt((Integer v) -> -graph.degree(v))
+        );
+        //
         Set<Integer> targetSet = new LinkedHashSet<>();
+        Set<Integer> saux = new LinkedHashSet<>();
 
         Integer maxVertex = (Integer) graph.maxVertex() + 1;
 
         int[] aux = new int[maxVertex];
         degree = new int[maxVertex];
+        skip = new int[maxVertex];
         auxb = new int[maxVertex];
         N = new Set[maxVertex];
-        skip = new int[maxVertex];
 
         for (Integer i : vertices) {
             aux[i] = 0;
@@ -116,7 +121,7 @@ public class GenericGreedy
             degree[v] = graph.degree(v);
 
             if (degree[v] <= kr[v] - 1) {
-                countContaminatedVertices = countContaminatedVertices + addVertToS(v, targetSet, graph, aux);
+                countContaminatedVertices = countContaminatedVertices + addVertToS(v, saux, graph, aux);
             }
             if (kr[v] == 0) {
                 countContaminatedVertices = countContaminatedVertices + addVertToAux(v, graph, aux);
@@ -124,71 +129,92 @@ public class GenericGreedy
         }
 
         int vertexCount = graph.getVertexCount();
-        int sizeTarget = vertexCount;
+        int offset = 0;
+
+        //BFS for find vertices in current component
+        bdls = UtilBFS.newBfsUtilSimple(maxVertex);
+        bdls.labelDistances(graph, saux);
 
         bestVertice = -1;
         auxCount = new MapCountOpt(maxVertex);
 
-        while (countContaminatedVertices < sizeTarget) {
+        while (countContaminatedVertices < vertexCount) {
+            if (bestVertice != -1) {
+                bdls.incBfs(graph, bestVertice);
+            }
             bestVertice = -1;
+            maxDifTotal = 0;
             maxDelta = 0;
-            maxPartial = 0;
-            maxDegree = 0;
+            maxBonusPartial = 0;
 
-            selectBestVertice(vertices, aux);
-            countContaminatedVertices = countContaminatedVertices + addVertToS(bestVertice, targetSet, graph, aux);
-        }
-        if (refine) {
-            targetSet = refineResultStep1(graph, targetSet, countContaminatedVertices);
-        }
-        return targetSet;
-    }
+            for (Integer w : vertices) {
+                //Ignore w if is already contamined OR skip review to next step
+                if (aux[w] >= kr[w] || skip[w] >= countContaminatedVertices) {
+                    continue;
+                }
+                // Ignore w if not acessible in current component of G
+                int distanceForSaux = bdls.getDistanceSafe(graph, w);
+                if (distanceForSaux == -1 && (countContaminatedVertices > 0 && !hasVerticesOnCC)) {
+                    continue;
+                }
 
-    public void selectBestVertice(List<Integer> vertices, int[] aux) {
-        for (Integer w : vertices) {
-            //Ignore w if is already contamined OR skip review to next step
-            if (aux[w] >= kr[w]) {
+                int wDelta = 0;
+                double wPartialBonus = 0;
+                int wDifDelta = 0;
+
+                //Clear and init w contamined count aux variavles
+                auxCount.clear();
+                auxCount.setVal(w, kr[w]);
+                mustBeIncluded.clear();
+                mustBeIncluded.add(w);
+                //Propagate w contamination
+                while (!mustBeIncluded.isEmpty()) {
+                    Integer verti = mustBeIncluded.remove();
+                    Collection<Integer> neighbors = N[verti];
+                    for (Integer vertn : neighbors) {
+                        if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
+                            continue;
+                        }
+                        Integer inc = auxCount.inc(vertn);
+                        if ((inc + aux[vertn]) == kr[vertn]) {
+                            mustBeIncluded.add(vertn);
+                            skip[vertn] = countContaminatedVertices;
+                        }
+                    }
+                    int currentDifficultyContamination = (kr[verti] - aux[verti]);
+                    wDifDelta += currentDifficultyContamination;
+                    wDelta++;
+                }
+                int wRank = wDelta * wDifDelta;
+                if (bestVertice == -1 || wRank > maxRank) {
+                    bestVertice = w;
+                    maxDelta = wDelta;
+                    maxDifTotal = wDifDelta;
+                    maxRank = wRank;
+                }
+            }
+            //Ended the current component of G
+            if (bestVertice == -1) {
+                hasVerticesOnCC = true;
+                saux = refineResult(graph, saux, countContaminatedVertices - offset);
+
+                offset = countContaminatedVertices;
+                targetSet.addAll(saux);
+                saux.clear();
+                bdls.clearBfs();
                 continue;
             }
-            int wDelta = 0;
-            int wPartial = 0;
-            int wDegree = this.degree[w];
-
-            //Clear and init w contamined count aux variavles
-            auxCount.clear();
-            auxCount.setVal(w, kr[w]);
-            mustBeIncluded.clear();
-            mustBeIncluded.add(w);
-            //Propagate w contamination
-            while (!mustBeIncluded.isEmpty()) {
-                Integer verti = mustBeIncluded.remove();
-                Collection<Integer> neighbors = N[verti];
-                for (Integer vertn : neighbors) {
-                    if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
-                        continue;
-                    }
-                    Integer inc = auxCount.inc(vertn);
-                    if ((inc + aux[vertn]) == kr[vertn]) {
-                        mustBeIncluded.add(vertn);
-                    }
-                }
-                wDelta++;
-            }
-            //Partial contamination
-            for (Integer x : auxCount.keySet()) {
-                if (auxCount.getCount(x) + aux[x] < kr[x]) {
-                    wPartial++;
-                }
-            }
-
-            if (bestVertice == -1 || (wDelta > maxDelta
-                    || (wDelta == maxDelta && wPartial > maxPartial))) {
-                bestVertice = w;
-                maxDelta = wDelta;
-                maxPartial = wPartial;
-            }
-
+            hasVerticesOnCC = false;
+            //Add vert to S
+            countContaminatedVertices = countContaminatedVertices + addVertToS(bestVertice, saux, graph, aux);
+            bdls.incBfs(graph, bestVertice);
         }
+        saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
+//        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
+
+        targetSet.addAll(saux);
+        saux.clear();
+        return targetSet;
     }
 
     public int addVertToAux(Integer verti,
@@ -346,12 +372,16 @@ public class GenericGreedy
     public static void main(String... args) throws IOException {
         System.out.println("Execution Sample: Livemocha database R=2");
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
-        GenericGreedy op = new GenericGreedy();
+        GreedyDeltaXDifTotal op = new GreedyDeltaXDifTotal();
 
 //        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
 //        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
-        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
-        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
+//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
+//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
+        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Last.fm/nodes.csv");
+        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Last.fm/edges.csv");
+//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/nodes.csv");
+//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/edges.csv");
         InputStream streamnode = urinode.toURL().openStream();
         InputStream streamedges = uriedges.toURL().openStream();
 
@@ -359,7 +389,7 @@ public class GenericGreedy
 
         op.setVerbose(true);
 
-        op.setPercent(0.7);
+        op.setPercent(0.5);
         UtilProccess.printStartTime();
         Set<Integer> buildOptimizedHullSet = op.buildTargeSet(graph);
         UtilProccess.printEndTime();

@@ -163,51 +163,76 @@ public class HNVA
                 int wPartialBonus = 0;
                 int wDifDelta = 0;
 
+//                if (kr[w] - aux[w] > 1) {
+//                    wDelta = 1;
+//                    wBonus = kr[w] - aux[w];
+//                    wDifDelta += (kr[w] - aux[w]);
+//                    if (bestVertice == -1 || wDifDelta >= maxDifTotal) {
+//                        for (Integer x : N[w]) {
+//                            if (aux[x] < kr[x]) {
+//                                int dx = degree[x];
+//                                double bonus = dx - kr[x];
+//                                wPartialBonus += bonus;
+//                            }
+//                        }
+//                    }
+//                } else {
+                //Clear and init w contamined count aux variavles
+                auxCount.clear();
+                auxCount.setVal(w, kr[w]);
+                mustBeIncluded.clear();
+                mustBeIncluded.add(w);
+                //Propagate w contamination
+                while (!mustBeIncluded.isEmpty()) {
+                    Integer verti = mustBeIncluded.remove();
+                    Collection<Integer> neighbors = N[verti];
+                    for (Integer vertn : neighbors) {
+                        if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
+                            continue;
+                        }
+                        Integer inc = auxCount.inc(vertn);
+                        if ((inc + aux[vertn]) == kr[vertn]) {
+                            mustBeIncluded.add(vertn);
+                            skip[vertn] = countContaminatedVertices;
+                        }
+                    }
+                    double currentDifficultyContamination = (kr[verti] - aux[verti]);
+                    wDifDelta += currentDifficultyContamination;
+                    wDelta++;
+                    wBonus += (kr[verti] - aux[verti]);
+                }
+                //Partial contamination
+                for (Integer x : auxCount.keySet()) {
+                    if (auxCount.getCount(x) + aux[x] < kr[x]) {
+                        int dx = degree[x];
+                        double bonus = dx - kr[x];
+                        wPartialBonus += bonus;
+                    }
+                }
+//                }
+
                 if (kr[w] - aux[w] > 1) {
-                    wDelta = 1;
-                    wBonus = kr[w] - aux[w];
-                    wDifDelta += (kr[w] - aux[w]);
+                    int wbonus = kr[w] - aux[w];
+                    int wDeltal = 1;
+                    int wDifDeltal = (kr[w] - aux[w]);
+                    int wPartialBonusl = 0;
                     if (bestVertice == -1 || wDifDelta >= maxDifTotal) {
                         for (Integer x : N[w]) {
                             if (aux[x] < kr[x]) {
                                 int dx = degree[x];
                                 double bonus = dx - kr[x];
-                                wPartialBonus += bonus;
+                                wPartialBonusl += bonus;
                             }
                         }
                     }
-                } else {
-                    //Clear and init w contamined count aux variavles
-                    auxCount.clear();
-                    auxCount.setVal(w, kr[w]);
-                    mustBeIncluded.clear();
-                    mustBeIncluded.add(w);
-                    //Propagate w contamination
-                    while (!mustBeIncluded.isEmpty()) {
-                        Integer verti = mustBeIncluded.remove();
-                        Collection<Integer> neighbors = N[verti];
-                        for (Integer vertn : neighbors) {
-                            if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
-                                continue;
-                            }
-                            Integer inc = auxCount.inc(vertn);
-                            if ((inc + aux[vertn]) == kr[vertn]) {
-                                mustBeIncluded.add(vertn);
-                                skip[vertn] = countContaminatedVertices;
-                            }
-                        }
-                        double currentDifficultyContamination = (kr[verti] - aux[verti]);
-                        wDifDelta += currentDifficultyContamination;
-                        wDelta++;
-                        wBonus += (kr[verti] - aux[verti]);
-                    }
-                    //Partial contamination
-                    for (Integer x : auxCount.keySet()) {
-                        if (auxCount.getCount(x) + aux[x] < kr[x]) {
-                            int dx = degree[x];
-                            double bonus = dx - kr[x];
-                            wPartialBonus += bonus;
-                        }
+                    if (wPartialBonusl != wPartialBonus
+                            && wDeltal != wDelta && wDifDelta != wDifDeltal) {
+                        System.out.println(" - Diference " + w + ": " + wbonus);
+                        System.out.println("   - " + wPartialBonusl + "/" + wPartialBonus);
+                        System.out.println("   - " + wDeltal + "/" + wDelta);
+                        System.out.println("   - " + wDifDelta + "/" + wDifDeltal);
+                        System.out.println("fail");
+
                     }
                 }
 
