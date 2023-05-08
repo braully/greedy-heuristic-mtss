@@ -84,6 +84,7 @@ public class GenericGreedy
     protected int maxDelta = 0;
     protected int maxPartial = 0;
     protected int maxDegree = 0;
+    protected int maxRanking = 0;
 
     public Set<Integer> buildTargeSet(UndirectedSparseGraphTO<Integer, Integer> graph) {
         if (graph == null) {

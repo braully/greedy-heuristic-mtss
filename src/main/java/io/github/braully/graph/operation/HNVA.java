@@ -21,11 +21,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class HNV1
+public class HNVA
         extends AbstractHeuristic implements IGraphOperation {
 
-    static final Logger log = Logger.getLogger(HNV1.class.getSimpleName());
-    static final String description = "HNV1";
+    static final Logger log = Logger.getLogger(HNVA.class.getSimpleName());
+    static final String description = "HNVA";
 
     public static String getDescription() {
         return description;
@@ -35,7 +35,7 @@ public class HNV1
         return description;
     }
 
-    public HNV1() {
+    public HNVA() {
     }
 
     public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {
@@ -81,6 +81,7 @@ public class HNV1
 
     protected double maxDifTotal = 0;
     protected int maxDelta = 0;
+    protected int maxBonus = 0;
     protected double maxBonusPartial = 0;
     //has uncontaminated vertices on the current component
     protected boolean hasVerticesOnCC = false;
@@ -109,7 +110,6 @@ public class HNV1
         for (Integer i : vertices) {
             aux[i] = 0;
             skip[i] = -1;
-            degree[i] = graph.degree(i);
             N[i] = new LinkedHashSet<>(graph.getNeighborsUnprotected(i));
         }
         initKr(graph);
@@ -117,6 +117,8 @@ public class HNV1
         int countContaminatedVertices = 0;
         //mandatory vertices
         for (Integer v : vertices) {
+            degree[v] = graph.degree(v);
+
             if (degree[v] <= kr[v] - 1) {
                 countContaminatedVertices = countContaminatedVertices + addVertToS(v, saux, graph, aux);
             }
@@ -142,6 +144,7 @@ public class HNV1
             bestVertice = -1;
             maxDifTotal = 0;
             maxDelta = 0;
+            maxBonus = 0;
             maxBonusPartial = 0;
 
             for (Integer w : vertices) {
@@ -156,38 +159,55 @@ public class HNV1
                 }
 
                 int wDelta = 0;
-                double wPartialBonus = 0;
-                double wDifDelta = 0;
+                int wBonus = 0;
+                int wPartialBonus = 0;
+                int wDifDelta = 0;
 
-                //Clear and init w contamined count aux variavles
-                auxCount.clear();
-                auxCount.setVal(w, kr[w]);
-                mustBeIncluded.clear();
-                mustBeIncluded.add(w);
-                //Propagate w contamination
-                while (!mustBeIncluded.isEmpty()) {
-                    Integer verti = mustBeIncluded.remove();
-                    Collection<Integer> neighbors = graph.getNeighborsUnprotected(verti);
-                    for (Integer vertn : neighbors) {
-                        if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
-                            continue;
-                        }
-                        Integer inc = auxCount.inc(vertn);
-                        if ((inc + aux[vertn]) == kr[vertn]) {
-                            mustBeIncluded.add(vertn);
-                            skip[vertn] = countContaminatedVertices;
+                if (kr[w] - aux[w] > 1) {
+                    wDelta = 1;
+                    wBonus = kr[w] - aux[w];
+                    wDifDelta += (kr[w] - aux[w]);
+                    if (bestVertice == -1 || wDifDelta >= maxDifTotal) {
+                        for (Integer x : N[w]) {
+                            if (aux[x] < kr[x]) {
+                                int dx = degree[x];
+                                double bonus = dx - kr[x];
+                                wPartialBonus += bonus;
+                            }
                         }
                     }
-                    double currentDifficultyContamination = (kr[verti] - aux[verti]);
-                    wDifDelta += currentDifficultyContamination;
-                    wDelta++;
-                }
-                //Partial contamination
-                for (Integer x : auxCount.keySet()) {
-                    if (auxCount.getCount(x) + aux[x] < kr[x]) {
-                        int dx = degree[x];
-                        double bonus = dx - kr[x];
-                        wPartialBonus += bonus;
+                } else {
+                    //Clear and init w contamined count aux variavles
+                    auxCount.clear();
+                    auxCount.setVal(w, kr[w]);
+                    mustBeIncluded.clear();
+                    mustBeIncluded.add(w);
+                    //Propagate w contamination
+                    while (!mustBeIncluded.isEmpty()) {
+                        Integer verti = mustBeIncluded.remove();
+                        Collection<Integer> neighbors = N[verti];
+                        for (Integer vertn : neighbors) {
+                            if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
+                                continue;
+                            }
+                            Integer inc = auxCount.inc(vertn);
+                            if ((inc + aux[vertn]) == kr[vertn]) {
+                                mustBeIncluded.add(vertn);
+                                skip[vertn] = countContaminatedVertices;
+                            }
+                        }
+                        double currentDifficultyContamination = (kr[verti] - aux[verti]);
+                        wDifDelta += currentDifficultyContamination;
+                        wDelta++;
+                        wBonus += (kr[verti] - aux[verti]);
+                    }
+                    //Partial contamination
+                    for (Integer x : auxCount.keySet()) {
+                        if (auxCount.getCount(x) + aux[x] < kr[x]) {
+                            int dx = degree[x];
+                            double bonus = dx - kr[x];
+                            wPartialBonus += bonus;
+                        }
                     }
                 }
 
@@ -225,7 +245,7 @@ public class HNV1
             bdls.incBfs(graph, bestVertice);
         }
         saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
-        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
+//        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
 
         targetSet.addAll(saux);
         saux.clear();
@@ -248,7 +268,7 @@ public class HNV1
         mustBeIncluded.add(verti);
         while (!mustBeIncluded.isEmpty()) {
             verti = mustBeIncluded.remove();
-            Collection<Integer> neighbors = graph.getNeighborsUnprotected(verti);
+            Collection<Integer> neighbors = N[verti];
             for (Integer vertn : neighbors) {
                 if ((++aux[vertn]) == kr[vertn]) {
                     mustBeIncluded.add(vertn);
@@ -279,7 +299,7 @@ public class HNV1
         mustBeIncluded.add(verti);
         while (!mustBeIncluded.isEmpty()) {
             verti = mustBeIncluded.remove();
-            Collection<Integer> neighbors = graph.getNeighborsUnprotected(verti);
+            Collection<Integer> neighbors = N[verti];
             for (Integer vertn : neighbors) {
                 if ((++aux[vertn]) == kr[vertn]) {
                     mustBeIncluded.add(vertn);
@@ -298,7 +318,7 @@ public class HNV1
         Set<Integer> s = new LinkedHashSet<>(tmp);
 
         for (Integer v : tmp) {
-            Collection<Integer> nvs = graphRead.getNeighborsUnprotected(v);
+            Collection<Integer> nvs = N[v];
             int scont = 0;
             for (Integer nv : nvs) {
                 if (s.contains(nv)) {
@@ -348,7 +368,7 @@ public class HNV1
             while (!mustBeIncluded.isEmpty()) {
                 Integer verti = mustBeIncluded.remove();
                 contadd++;
-                Collection<Integer> neighbors = graphRead.getNeighborsUnprotected(verti);
+                Collection<Integer> neighbors = N[verti];
                 for (Integer vertn : neighbors) {
                     if (aux[vertn] <= kr[vertn] - 1) {
                         aux[vertn] = aux[vertn] + 1;
@@ -380,18 +400,23 @@ public class HNV1
 
     Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep1(graph, s, targetSize);
-        s = refineResultStep2(graph, s, targetSize);
+//        s = refineResultStep2(graph, s, targetSize);
         return s;
     }
 
     public static void main(String... args) throws IOException {
         System.out.println("Execution Sample: Livemocha database R=2");
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
-        HNV1 op = new HNV1();
+        HNVA op = new HNVA();
 
-        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
-        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
-
+//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
+//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
+//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
+//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
+        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Last.fm/nodes.csv");
+        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Last.fm/edges.csv");
+//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/nodes.csv");
+//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/edges.csv");
         InputStream streamnode = urinode.toURL().openStream();
         InputStream streamedges = uriedges.toURL().openStream();
 
@@ -399,7 +424,7 @@ public class HNV1
 
         op.setVerbose(true);
 
-        op.setR(7);
+        op.setPercent(0.5);
         UtilProccess.printStartTime();
         Set<Integer> buildOptimizedHullSet = op.buildTargeSet(graph);
         UtilProccess.printEndTime();

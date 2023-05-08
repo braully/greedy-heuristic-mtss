@@ -23,7 +23,7 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
  * @author Braully Rocha da Silva
  */
 public class TSSBruteForceOptm
-        extends HNV2 implements IGraphOperation {
+        extends HNVEx implements IGraphOperation {
 
     static final String description = "TSS-BF-Optm";
 

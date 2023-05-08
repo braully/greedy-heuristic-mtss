@@ -10,7 +10,9 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,10 +27,15 @@ public class ExecExactRandDataset {
         TSSBruteForceOptm opf = new TSSBruteForceOptm();
         TSSCordasco tss = new TSSCordasco();
         TIPDecomp tip = new TIPDecomp();
+        HNVA hnva = new HNVA();
         HNV2 hnv2 = new HNV2();
         HNV1 hnv1 = new HNV1();
         HNV0 hnv0 = new HNV0();
         CCMPanizi ccm = new CCMPanizi();
+        GreedyCordasco gc = new GreedyCordasco();
+        GreedyDegree gd = new GreedyDegree();
+        GreedyDeltaTss gdt = new GreedyDeltaTss();
+        GreedyBonusDist gdit = new GreedyBonusDist();
 
         hnv1.setVerbose(true);
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
@@ -36,70 +43,68 @@ public class ExecExactRandDataset {
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            //            opf,
+//            opf,
             //            tip,
-            //            tss,
-            hnv0,
+            tss,
+            hnv0, 
+            gd, gdt, gdit, 
+//            hnv1,
             //            hnv1,
             //            hnv2
-            ccm
+//            ccm, 
+            hnva
         };
         String[] grupo = new String[]{
-            //            "Optm",
-            //            "Decomp",
-            //            "TSS",
-            //            "HNV",
+            "Optm",
+            "Decomp",
+            "TSS",
             "HNV",
-//            "HNV",
+            "HNV",
+            "HNV",
             "CCM"
         };
         Map<String, Boolean> piorou = new HashMap<>();
         Integer[] delta = new Integer[operations.length];
-        int contMelhorGlobal = 0, contPiorGlobal = 0, contIgualGlobal = 0;
+        int[] contMelhorGlobal = new int[operations.length];
+        int[] contPiorGlobal = new int[operations.length];
+        int[] contIgualGlobal = new int[operations.length];
+        ;
         int[] contMelhor = new int[operations.length];
         int[] contPior = new int[operations.length];
         int[] contIgual = new int[operations.length];
-        for (int i = 0; i < operations.length; i++) {
-            contMelhor[i] = contPior[i] = contIgual[i] = 0;
+        for (int i = 0;
+                i < operations.length;
+                i++) {
+            contMelhorGlobal[i] = contPiorGlobal[i] = contIgualGlobal[i] = contMelhor[i] = contPior[i] = contIgual[i] = 0;
         }
 
         Integer[] result = new Integer[operations.length];
         long totalTime[] = new long[operations.length];
-
-        for (int k = 1; k <= 9; k++) {
-            for (String op : new String[]{
-                "k",
-                "r",
-                "m"
-            }) {
+        List<String> ops = Arrays.asList(new String[]{
+            //            "k",
+            //            "r",
+            "m"
+        });
+        for (int k = 1;
+                k <= 5; k++) {
+            for (String op : ops) {
                 if (op.equals("r")) {
-                    tss.setR(k);
-                    opf.setR(k);
-                    hnv1.setR(k);
-                    tip.setR(k);
-                    hnv2.setR(k);
-                    hnv0.setR(k);
-                    ccm.setR(k);
+                    for (AbstractHeuristic ab : operations) {
+                        ab.setR(k);
+                    }
                     System.out.println("-------------\n\nR: " + k);
                 } else if (op.equals("m")) {
                     op = "m";
-                    double perc = ((float) k) / 10.0;
-                    tss.setPercent(perc);
-                    hnv2.setPercent(perc);
-                    hnv1.setPercent(perc);
-                    tip.setPercent(perc);
-                    hnv0.setPercent(perc);
-                    ccm.setPercent(perc);
+                    double perc = ((double) k) / 10.0;
+                    for (AbstractHeuristic ab : operations) {
+                        ab.setPercent(perc);
+                    }
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
-                    opf.setK(k);
-                    tss.setK(k);
-                    hnv2.setK(k);
-                    hnv1.setK(k);
-                    hnv0.setK(k);
-                    tip.setK(k);
-                    ccm.setK(k);
+                    for (AbstractHeuristic ab : operations) {
+                        ab.setK(k);
+                    }
                     System.out.println("-------------\n\nk: " + k);
                 }
 
@@ -128,7 +133,10 @@ public class ExecExactRandDataset {
 
                         String out = "Rand\t" + gname + "\t" + graph.getVertexCount() + "\t"
                                 + graph.getEdgeCount()
-                                + "\t" + op + "\t" + k + "\t" + grupo[i] + "\t" + operations[i].getName()
+                                + "\t" + op + "\t" + k + "\t"
+                                //                                + grupo[i]
+                                + "grupo"
+                                + "\t" + operations[i].getName()
                                 + "\t" + result[i] + "\t" + totalTime[i] + "\n";
 
 //                        System.out.print("xls: " + out);
@@ -147,16 +155,16 @@ public class ExecExactRandDataset {
                         }
                         if (delta[i] == 0) {
                             contIgual[i]++;
-                            contIgualGlobal++;
+                            contIgualGlobal[i]++;
                         } else if (delta[i] > 0) {
                             contMelhor[i]++;
-                            contMelhorGlobal++;
+                            contMelhorGlobal[i]++;
                             if (k == 2) {
                                 piorou.put(id, true);
                             }
                         } else {
                             contPior[i]++;
-                            contPiorGlobal++;
+                            contPiorGlobal[i]++;
                             Boolean get1 = piorou.get(id);
                             if (get1 != null && get1) {
 //                                    System.out.println("grafo piorou: " + id + " em k: " + k);
@@ -172,7 +180,7 @@ public class ExecExactRandDataset {
                 System.out.println("Resumo parcial: " + k);
                 for (int i = 1; i < operations.length; i++) {
                     int total = contMelhor[i] + contPior[i] + contIgual[i];
-
+                    System.out.println("==========");
                     System.out.println("Operacao: " + operations[i].getName());
                     System.out.println("Melhor: " + contMelhor[i]);
                     System.out.println("Pior: " + contPior[i]);
@@ -192,24 +200,37 @@ public class ExecExactRandDataset {
 
         }
 
-        System.out.println("\n\nResumo Global");
-        for (int i = 1; i < operations.length; i++) {
+        System.out.println(
+                "\n\nResumo Global");
+        System.out.println("OPs:" + ops);
+        for (int i = 1;
+                i < operations.length;
+                i++) {
+            System.out.println("***************");
             System.out.println("Operacao: " + operations[i].getName());
-            System.out.println("Melhor: " + contMelhorGlobal);
-            System.out.println("Pior: " + contPiorGlobal);
-            System.out.println("Igual: " + contIgualGlobal);
+            if (contMelhorGlobal[i] > contPiorGlobal[i]) {
+                System.out.println("GOOD " + operations[0].getName());
+            } else {
+                System.out.println("WORST " + operations[0].getName());
+            }
+
+            System.out.println("Melhor: " + contMelhorGlobal[i]);
+            System.out.println("Pior: " + contPiorGlobal[i]);
+            System.out.println("Igual: " + contIgualGlobal[i]);
 
             System.out.println("------------");
-            int total = contMelhorGlobal + contPiorGlobal + contIgualGlobal;
+            int total = contMelhorGlobal[i] + contPiorGlobal[i] + contIgualGlobal[i];
             if (total > 0) {
-                System.out.println("Melhor: " + (contMelhorGlobal * 100 / total) + "pct");
-                System.out.println("Igual: " + ((total - (contMelhorGlobal + contPiorGlobal))
+                System.out.println("Melhor: " + (contMelhorGlobal[i] * 100 / total) + "pct");
+                System.out.println("Igual: " + ((total - (contMelhorGlobal[i] + contPiorGlobal[i]))
                         * 100 / total) + "pct"
                 );
-                System.out.println("Pior: " + (contPiorGlobal * 100 / total) + "pct");
+                System.out.println("Pior: " + (contPiorGlobal[i] * 100 / total) + "pct");
             }
         }
-        for (int i = 0; i < operations.length; i++) {
+        for (int i = 0;
+                i < operations.length;
+                i++) {
             System.out.println(operations[i].getName());
             System.out.print("time: ");
             printTimeFormated(totalTime[i]);

@@ -3,6 +3,7 @@ package io.github.braully.graph.exec;
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.operation.AbstractHeuristic;
 import io.github.braully.graph.operation.CCMPanizi;
+import io.github.braully.graph.operation.GreedyBonusDist;
 import io.github.braully.graph.operation.GreedyCordasco;
 import io.github.braully.graph.operation.GreedyDegree;
 import io.github.braully.graph.operation.GreedyDeltaTss;
@@ -10,6 +11,7 @@ import io.github.braully.graph.operation.HNV0;
 import io.github.braully.graph.operation.TSSCordasco;
 import io.github.braully.graph.operation.HNV1;
 import io.github.braully.graph.operation.HNV2;
+import io.github.braully.graph.operation.HNVA;
 import io.github.braully.graph.operation.IGraphOperation;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
 import io.github.braully.graph.operation.TIPDecomp;
@@ -849,7 +851,7 @@ public class ExecBigDataSets {
 
         TSSCordasco tss = new TSSCordasco();
 //        GraphTSSGreedy tssg = new GraphTSSGreedy();
-
+        HNVA hnva = new HNVA();
         HNV2 hnv2 = new HNV2();
         HNV1 hnv1 = new HNV1();
         hnv1.setVerbose(true);
@@ -861,7 +863,7 @@ public class ExecBigDataSets {
         GreedyCordasco gc = new GreedyCordasco();
         GreedyDegree gd = new GreedyDegree();
         GreedyDeltaTss gdt = new GreedyDeltaTss();
-
+        GreedyBonusDist gdit = new GreedyBonusDist();
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
             tss,
             //            heur1,
@@ -873,10 +875,11 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-            tip,
+//            tip,
             //            hnv0, //            hnv1, 
             //            hnv2
-            hnv0, gd
+//            hnv0, gd, gdit, 
+            hnva
 //            ccm, gc, gd, gdt
         };
         long totalTime[] = new long[operations.length];
