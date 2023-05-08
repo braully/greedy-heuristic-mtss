@@ -7,6 +7,8 @@ import io.github.braully.graph.operation.GreedyBonusDist;
 import io.github.braully.graph.operation.GreedyCordasco;
 import io.github.braully.graph.operation.GreedyDegree;
 import io.github.braully.graph.operation.GreedyDeltaTss;
+import io.github.braully.graph.operation.GreedyDeltaXDifTotal;
+import io.github.braully.graph.operation.GreedyDifTotal;
 import io.github.braully.graph.operation.HNV0;
 import io.github.braully.graph.operation.TSSCordasco;
 import io.github.braully.graph.operation.HNV1;
@@ -864,6 +866,9 @@ public class ExecBigDataSets {
         GreedyDegree gd = new GreedyDegree();
         GreedyDeltaTss gdt = new GreedyDeltaTss();
         GreedyBonusDist gdit = new GreedyBonusDist();
+        GreedyDifTotal gdft = new GreedyDifTotal();
+        GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
+
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
             tss,
             //            heur1,
@@ -875,12 +880,13 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-//            tip,
+            tip,
             //            hnv0, //            hnv1, 
             //            hnv2
-//            hnv0, gd, gdit, 
-            hnva
-//            ccm, gc, gd, gdt
+            //            hnv0, gd, gdit, 
+            //            hnva
+            //            ccm, gc, gd, gdt
+            gdft
         };
         long totalTime[] = new long[operations.length];
         Integer[] result = new Integer[operations.length];
@@ -900,8 +906,8 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            //            "m",
-            "r",
+            "m",
+            //            "r",
             "k",}) {
             for (int k = 6; k >= 1; k--) {
                 if (op.equals("r")) {
