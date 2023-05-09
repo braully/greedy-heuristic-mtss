@@ -882,7 +882,7 @@ public class ExecBigDataSets {
             //            optm,
             //            optm2,
             //            tip,
-//            hnv0, //            hnv1, 
+            //            hnv0, //            hnv1, 
             //            hnv2
             //            hnv0, gd, gdit, 
             //            hnva
@@ -907,10 +907,10 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "m",
-            //            "r",
-            "k",}) {
-            for (int k = 1; k <= 6; k++) {
+            "m", //            "r",
+        //            "k",
+        }) {
+            for (int k = 7; k <= 9; k++) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
                         ab.setR(k);

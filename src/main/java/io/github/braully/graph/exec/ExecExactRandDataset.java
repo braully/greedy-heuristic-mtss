@@ -83,8 +83,8 @@ public class ExecExactRandDataset {
         long totalTime[] = new long[operations.length];
         List<String> ops = Arrays.asList(new String[]{
             "k",
-            "r",
-            "m"
+//            "r",
+//            "m"
         });
         for (int k = 1;
                 k <= 6; k++) {
