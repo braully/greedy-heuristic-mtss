@@ -910,7 +910,7 @@ public class ExecBigDataSets {
             "m",
             //            "r",
             "k",}) {
-            for (int k = 2; k <= 6; k++) {
+            for (int k = 1; k <= 6; k++) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
                         ab.setR(k);
