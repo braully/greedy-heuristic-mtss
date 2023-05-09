@@ -157,9 +157,14 @@ public class UtilBFS {
         revisitVertex(graph, newroowt);
     }
 
+    public boolean isEmpty(UndirectedSparseGraphTO graph, Integer newroowt) {
+        return bfs[newroowt] == null;
+    }
+
     public void clearBfs() {
         for (int i = 0; i < bfs.length; i++) {
             bfs[i] = null;
         }
     }
+
 }

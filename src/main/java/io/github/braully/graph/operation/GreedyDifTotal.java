@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +77,7 @@ public class GreedyDifTotal
     protected UtilBFS bdls;
 
     protected Queue<Integer> mustBeIncluded = new ArrayDeque<>();
+    protected Set<Integer> touched = new HashSet<>();
     protected MapCountOpt auxCount;
     protected int bestVertice = -1;
 
@@ -109,6 +111,7 @@ public class GreedyDifTotal
         for (Integer i : vertices) {
             aux[i] = 0;
             skip[i] = -1;
+            auxb[i] = -1;
             N[i] = new LinkedHashSet<>(graph.getNeighborsUnprotected(i));
         }
         initKr(graph);
@@ -135,9 +138,9 @@ public class GreedyDifTotal
 
         bestVertice = -1;
         auxCount = new MapCountOpt(maxVertex);
-
+        boolean lastDelta = true;
         while (countContaminatedVertices < vertexCount) {
-            if (bestVertice != -1) {
+            if (bestVertice != -1 && bdls.isEmpty(graph, bestVertice)) {
                 bdls.incBfs(graph, bestVertice);
             }
             bestVertice = -1;
@@ -157,36 +160,46 @@ public class GreedyDifTotal
                 }
 
                 int wDelta = 0;
-                double wPartialBonus = 0;
-                double wDifDelta = 0;
+                int wPartialBonus = 0;
+                int wDifDelta = 0;
 
-                //Clear and init w contamined count aux variavles
-                auxCount.clear();
-                auxCount.setVal(w, kr[w]);
-                mustBeIncluded.clear();
-                mustBeIncluded.add(w);
-                //Propagate w contamination
-                while (!mustBeIncluded.isEmpty()) {
-                    Integer verti = mustBeIncluded.remove();
-                    Collection<Integer> neighbors = N[verti];
-                    for (Integer vertn : neighbors) {
-                        if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
-                            continue;
+                //Cache
+                if (!lastDelta && auxb[w] > 0) {
+                    wDifDelta = auxb[w];
+                } else {
+                    //Clear and init w contamined count aux variavles
+                    auxCount.clear();
+                    auxCount.setVal(w, kr[w]);
+                    mustBeIncluded.clear();
+                    mustBeIncluded.add(w);
+                    //Propagate w contamination
+                    while (!mustBeIncluded.isEmpty()) {
+                        Integer verti = mustBeIncluded.remove();
+                        Collection<Integer> neighbors = N[verti];
+                        for (Integer vertn : neighbors) {
+                            if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
+                                continue;
+                            }
+//                        wPartialBonus++;
+                            Integer inc = auxCount.inc(vertn);
+                            if ((inc + aux[vertn]) == kr[vertn]) {
+                                mustBeIncluded.add(vertn);
+                                skip[vertn] = countContaminatedVertices;
+                            }
                         }
-                        Integer inc = auxCount.inc(vertn);
-                        if ((inc + aux[vertn]) == kr[vertn]) {
-                            mustBeIncluded.add(vertn);
-                            skip[vertn] = countContaminatedVertices;
-                        }
+                        double currentDifficultyContamination = (kr[verti] - aux[verti]);
+                        wDifDelta += currentDifficultyContamination;
+                        wDelta++;
                     }
-                    double currentDifficultyContamination = (kr[verti] - aux[verti]);
-                    wDifDelta += currentDifficultyContamination;
-                    wDelta++;
+                    auxb[w] = wDifDelta;
                 }
 
-                if (bestVertice == -1 || wDifDelta > maxDifTotal) {
+                if (bestVertice == -1
+                        || wDifDelta > maxDifTotal //                        || (wDelta == maxDifTotal && wPartialBonus > maxBonusPartial)
+                        ) {
                     bestVertice = w;
                     maxDelta = wDelta;
+                    maxBonusPartial = wPartialBonus;
                     maxDifTotal = wDifDelta;
                 }
             }
@@ -203,8 +216,14 @@ public class GreedyDifTotal
             }
             hasVerticesOnCC = false;
             //Add vert to S
-            countContaminatedVertices = countContaminatedVertices + addVertToS(bestVertice, saux, graph, aux);
-            bdls.incBfs(graph, bestVertice);
+            int added = addVertToS(bestVertice, saux, graph, aux);
+            if (added > 1) {
+                lastDelta = true;
+            } else {
+                lastDelta = false;
+            }
+            countContaminatedVertices = countContaminatedVertices + added;
+//            bdls.incBfs(graph, bestVertice);
         }
         saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
 //        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
@@ -259,17 +278,28 @@ public class GreedyDifTotal
         }
         mustBeIncluded.clear();
         mustBeIncluded.add(verti);
+        touched.clear();
         while (!mustBeIncluded.isEmpty()) {
             verti = mustBeIncluded.remove();
             Collection<Integer> neighbors = N[verti];
             for (Integer vertn : neighbors) {
                 if ((++aux[vertn]) == kr[vertn]) {
                     mustBeIncluded.add(vertn);
+                } else if (aux[vertn] < kr[vertn]) {
+                    touched.add(vertn);
                 }
             }
             countIncluded++;
         }
 
+        if (countIncluded == 1) {
+            //Recalc v from touched
+            for (Integer vx : touched) {
+                for (Integer vnn : N[vx]) {
+                    auxb[vnn] = -1;
+                }
+            }
+        }
         return countIncluded;
     }
 

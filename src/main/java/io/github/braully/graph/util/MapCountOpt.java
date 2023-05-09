@@ -45,8 +45,9 @@ public class MapCountOpt extends ArrayList<Integer> {
     }
 
     public void clearArrayAux() {
-        for (Integer v : this) {
-            inc[v] = 0;
+        for (int i = 0; i < this.size(); i++) {
+            inc[super.get(i)] = 0;
+
         }
     }
 

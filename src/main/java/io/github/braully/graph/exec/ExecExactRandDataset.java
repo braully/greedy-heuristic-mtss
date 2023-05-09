@@ -48,12 +48,13 @@ public class ExecExactRandDataset {
             //            tip,
             tss,
             hnv0,
-            gdft, gdxd //            gd, gdt, gdit,
-        //            hnv1,
-        //            hnv1,
-        //            hnv2
-        //            ccm, 
-        //            hnva
+            gdft, //            gd, gdt, gdit,
+            //            hnv1,
+            //            hnv1,
+            //            hnv2
+            ccm,
+            //            hnva
+            gdxd
         };
         String[] grupo = new String[]{
             "Optm",
@@ -86,7 +87,7 @@ public class ExecExactRandDataset {
             "m"
         });
         for (int k = 1;
-                k <= 6; k++) {
+                k <= 9; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {

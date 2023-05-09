@@ -389,7 +389,7 @@ public class GreedyDeltaXDifTotal
 
         op.setVerbose(true);
 
-        op.setPercent(0.5);
+        op.setPercent(0.1);
         UtilProccess.printStartTime();
         Set<Integer> buildOptimizedHullSet = op.buildTargeSet(graph);
         UtilProccess.printEndTime();

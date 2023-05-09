@@ -832,6 +832,7 @@ public class ExecBigDataSets {
         resultadoArquivado.put("TSS-Cordasco-m7-BlogCatalog3", new int[]{726, 3760627});
         resultadoArquivado.put("TSS-Cordasco-m7-BuzzNet", new int[]{4504, 3848889});
 
+        ///
     }
 
     public static void main(String... args) throws FileNotFoundException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -880,8 +881,8 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-            tip,
-            //            hnv0, //            hnv1, 
+            //            tip,
+            hnv0, //            hnv1, 
             //            hnv2
             //            hnv0, gd, gdit, 
             //            hnva
@@ -909,7 +910,7 @@ public class ExecBigDataSets {
             "m",
             //            "r",
             "k",}) {
-            for (int k = 6; k >= 1; k--) {
+            for (int k = 2; k <= 6; k++) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
                         ab.setR(k);
