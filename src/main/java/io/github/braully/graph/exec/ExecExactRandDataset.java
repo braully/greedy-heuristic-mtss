@@ -87,7 +87,7 @@ public class ExecExactRandDataset {
             "m"
         });
         for (int k = 1;
-                k <= 9; k++) {
+                k <= 6; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
