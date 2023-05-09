@@ -109,5 +109,17 @@ public class UtilProccess {
         System.out.printf("%s\n", time);
     }
 
+    public static void printArray(int[] arr) {
+        int len = arr.length;
+        System.out.print("[");
+        for (int i = 0; i < len; i++) {
+            System.out.print(arr[i]);
+            if (i < len - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println("]");
+    }
+
 //    public static InputStream openFile()
 }

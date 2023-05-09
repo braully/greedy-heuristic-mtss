@@ -59,26 +59,50 @@ public abstract class AbstractHeuristic implements IGraphOperation {
         this.randomTreshold = null;
     }
 
-    public void initKr(UndirectedSparseGraphTO graph) {
+    public void setKr(int[] kr) {
+        this.kr = kr;
+    }
+
+    public int[] getKr() {
+        return kr;
+    }
+
+    public void setRandomKr(UndirectedSparseGraphTO<Integer, Integer> graph) {
         int vertexCount = (Integer) graph.maxVertex() + 1;
         kr = new int[vertexCount];
         for (int i = 0; i < vertexCount; i++) {
             int degree = graph.degree(i);
-            if (rTreshold != null) {
-                kr[i] = Math.min(rTreshold, graph.degree(i));
-            } else if (kTreshold != null) {
-                kr[i] = kTreshold;
-            } else if (percentTreshold != null) {
-                //                kr[i] = roundUp(degree, majority);
-                double ki = Math.ceil(percentTreshold * degree);
-                int kii = (int) Math.ceil(ki);
-                kr[i] = kii;
-            } else if (randomTreshold != null) {
-                if (degree > 0) {
-                    int random = random(degree);
-                    kr[i] = random;
-                } else {
-                    kr[i] = degree;
+            if (degree > 0) {
+                int random = random(degree);
+                kr[i] = random;
+            } else {
+                kr[i] = degree;
+            }
+        }
+    }
+
+    public void initKr(UndirectedSparseGraphTO graph) {
+        if (rTreshold != null || kTreshold != null || percentTreshold != null) {
+            int vertexCount = (Integer) graph.maxVertex() + 1;
+            kr = new int[vertexCount];
+            for (int i = 0; i < vertexCount; i++) {
+                int degree = graph.degree(i);
+                if (rTreshold != null) {
+                    kr[i] = Math.min(rTreshold, graph.degree(i));
+                } else if (kTreshold != null) {
+                    kr[i] = kTreshold;
+                } else if (percentTreshold != null) {
+                    //                kr[i] = roundUp(degree, majority);
+                    double ki = Math.ceil(percentTreshold * degree);
+                    int kii = (int) Math.ceil(ki);
+                    kr[i] = kii;
+                } else if (randomTreshold != null) {
+                    if (degree > 0) {
+                        int random = random(degree);
+                        kr[i] = random;
+                    } else {
+                        kr[i] = degree;
+                    }
                 }
             }
         }
@@ -86,7 +110,7 @@ public abstract class AbstractHeuristic implements IGraphOperation {
 
     public static int random(int num) {
         //Probability ignored, for future use, , Integer probability
-        return randomUtil.nextInt(num);
+        return randomUtil.nextInt(num + 1);
     }
 
     public static int roundUp(int num, int divisor) {

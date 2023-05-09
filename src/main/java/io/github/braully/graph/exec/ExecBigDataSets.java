@@ -835,22 +835,31 @@ public class ExecBigDataSets {
         ///
     }
 
+    static String[] dataSets = new String[]{
+        "ca-GrQc",
+        "ca-HepTh",
+        "ca-CondMat",
+        "ca-HepPh",
+        "ca-AstroPh",
+        "Douban",
+        "Delicious",
+        "BlogCatalog3",
+        "BlogCatalog2",
+        "Livemocha",
+        "BlogCatalog",
+        "BuzzNet",
+        "Last.fm", //            "YouTube2"
+    };
+    static AbstractHeuristic[] operations = null;
+
+    static long totalTime[];
+    static Integer[] result;
+    static Integer[] delta;
+    static int[] contMelhor;
+    static int[] contPior;
+    static int[] contIgual;
+
     public static void main(String... args) throws FileNotFoundException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-        String[] dataSets = new String[]{
-            "ca-GrQc",
-            "ca-HepTh",
-            "ca-CondMat",
-            "ca-HepPh",
-            "ca-AstroPh",
-            "Douban",
-            "Delicious",
-            "BlogCatalog3",
-            "BlogCatalog2",
-            "Livemocha",
-            "BlogCatalog",
-            "BuzzNet",
-            "Last.fm", //            "YouTube2"
-        };
 
         TSSCordasco tss = new TSSCordasco();
 //        GraphTSSGreedy tssg = new GraphTSSGreedy();
@@ -870,7 +879,7 @@ public class ExecBigDataSets {
         GreedyDifTotal gdft = new GreedyDifTotal();
         GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
 
-        AbstractHeuristic[] operations = new AbstractHeuristic[]{
+        operations = new AbstractHeuristic[]{
             tss,
             //            heur1,
             //            heur2, 
@@ -881,7 +890,7 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-            //            tip,
+            tip,
             //            hnv0, //            hnv1, 
             //            hnv2
             //            hnv0, gd, gdit, 
@@ -889,12 +898,12 @@ public class ExecBigDataSets {
             //            ccm, gc, gd, gdt
             gdft
         };
-        long totalTime[] = new long[operations.length];
-        Integer[] result = new Integer[operations.length];
-        Integer[] delta = new Integer[operations.length];
-        int[] contMelhor = new int[operations.length];
-        int[] contPior = new int[operations.length];
-        int[] contIgual = new int[operations.length];
+        totalTime = new long[operations.length];
+        result = new Integer[operations.length];
+        delta = new Integer[operations.length];
+        contMelhor = new int[operations.length];
+        contPior = new int[operations.length];
+        contIgual = new int[operations.length];
         for (int i = 0;
                 i < operations.length;
                 i++) {
@@ -907,118 +916,39 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "m", //            "r",
-        //            "k",
+            //            "m",
+            //            "r",
+            //            "k",
+            "random"
         }) {
-            for (int k = 7; k <= 9; k++) {
-                if (op.equals("r")) {
-                    for (AbstractHeuristic ab : operations) {
-                        ab.setR(k);
-                    }
-                    System.out.println("-------------\n\nR: " + k);
-                } else if (op.equals("m")) {
-                    op = "m";
-                    double perc = ((float) k) / 10.0;
-                    for (AbstractHeuristic ab : operations) {
-                        ab.setPercent(perc);
-                    }
-                    System.out.println("-------------\n\nm: " + k);
-                } else {
-                    op = "k";
-                    for (AbstractHeuristic ab : operations) {
-                        ab.setK(k);
-                    }
-                    System.out.println("-------------\n\nk: " + k);
+            if (op.equals("random")) {
+                for (AbstractHeuristic ab : operations) {
+                    ab.setR(null);
                 }
-                for (String s : dataSets) {
-                    System.out.println("\n-DATASET: " + s);
+                execOperations(op, 0, writer);
 
-                    UndirectedSparseGraphTO<Integer, Integer> graphES
-                            = null;
-
-                    try {
-                        URI urigraph = URI.create("jar:file:data/big/all-big.zip!/" + s + "/" + s + ".txt");
-                        InputStream streamgraph = urigraph.toURL().openStream();
-                        graphES = UtilGraph.loadBigDataset(streamgraph);
-                    } catch (FileNotFoundException e) {
-                        URI urinode = URI.create("jar:file:data/big/all-big.zip!/" + s + "/nodes.csv");
-                        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/" + s + "/edges.csv");
-
-                        InputStream streamnode = urinode.toURL().openStream();
-                        InputStream streamedges = uriedges.toURL().openStream();
-                        graphES = UtilGraph.loadBigDataset(streamnode,
-                                streamedges);
-                    }
-                    if (graphES == null) {
-                        System.out.println("Fail to Load GRAPH: " + s);
-                    }
-                    System.out.println("Loaded Graph: " + s + " " + graphES.getVertexCount() + " " + graphES.getEdgeCount());
-
-                    for (int i = 0; i < operations.length; i++) {
-                        String arquivadoStr = operations[i].getName() + "-" + op + k + "-" + s;
-                        Map<String, Object> doOperation = null;
-                        System.out.println("*************");
-                        System.out.print(" - EXEC: " + operations[i].getName() + "-" + op + ": " + k + " g:" + s + " " + graphES.getVertexCount() + " ");
-                        int[] get = resultadoArquivado.get(arquivadoStr);
-                        if (get != null) {
-                            result[i] = get[0];
-                            totalTime[i] = get[1];
-                        } else {
-                            UtilProccess.printStartTime();
-                            doOperation = operations[i].doOperation(graphES);
-                            result[i] = (Integer) doOperation.get(IGraphOperation.DEFAULT_PARAM_NAME_RESULT);
-                            totalTime[i] += UtilProccess.printEndTime();
-                            System.out.println(" - arquivar: resultadoArquivado.put(\"" + arquivadoStr + "\", new int[]{" + result[i] + ", " + totalTime[i] + "});");
+            } else {
+                for (int k = 7; k <= 9; k++) {
+                    if (op.equals("r")) {
+                        for (AbstractHeuristic ab : operations) {
+                            ab.setR(k);
                         }
-                        System.out.println(" - Result: " + result[i]);
-
-                        String out = "Big\t" + s + "\t" + graphES.getVertexCount() + "\t"
-                                + graphES.getEdgeCount()
-                                + "\t" + op + "\t" + k + "\t" + " " + "\t" + operations[i].getName()
-                                + "\t" + result[i] + "\t" + totalTime[i] + "\n";
-
-                        System.out.print("xls: " + out);
-
-                        writer.write(out);
-                        writer.flush();
-
-                        if (doOperation != null) {
-                            boolean checkIfHullSet = operations[i].checkIfHullSet(graphES, ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
-                            if (!checkIfHullSet) {
-                                System.out.println("ALERT: ----- THE RESULT IS NOT A HULL SET");
-//                            throw new IllegalStateException("IS NOT HULL SET");
-                            }
+                        System.out.println("-------------\n\nR: " + k);
+                    } else if (op.equals("m")) {
+                        op = "m";
+                        double perc = ((float) k) / 10.0;
+                        for (AbstractHeuristic ab : operations) {
+                            ab.setPercent(perc);
                         }
-                        if (i == 0) {
-                            if (get == null) {
-                                delta[i] = 0;
-                            }
-                        } else {
-                            delta[i] = result[0] - result[i];
-
-                            long deltaTempo = totalTime[0] - totalTime[i];
-                            System.out.print(operations[i].getName() + " - g:" + s + " " + op + " " + k + "  tempo: ");
-
-                            if (deltaTempo >= 0) {
-                                System.out.print(" +FAST " + deltaTempo);
-                            } else {
-                                System.out.print(" +SLOW " + deltaTempo);
-                            }
-                            System.out.print(" - Delta: " + delta[i] + " ");
-                            if (delta[i] == 0) {
-                                System.out.print(" = same");
-                                contIgual[i]++;
-                            } else if (delta[i] > 0) {
-                                System.out.print(" +GOOD ");
-                                contMelhor[i]++;
-                            } else {
-                                System.out.print(" -BAD");
-                                contPior[i]++;
-                            }
-                            System.out.println(delta[i]);
+                        System.out.println("-------------\n\nm: " + k);
+                    } else {
+                        op = "k";
+                        for (AbstractHeuristic ab : operations) {
+                            ab.setK(k);
                         }
-                        System.out.println();
+                        System.out.println("-------------\n\nk: " + k);
                     }
+                    execOperations(op, k, writer);
                 }
             }
         }
@@ -1036,6 +966,108 @@ public class ExecBigDataSets {
             System.out.println("Best: " + contMelhor[i]);
             System.out.println("Worst: " + contPior[i]);
             System.out.println("Equal: " + contIgual[i]);
+        }
+    }
+
+    static void execOperations(String op, int k, BufferedWriter writer) throws FileNotFoundException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        for (String s : dataSets) {
+            System.out.println("\n-DATASET: " + s);
+
+            UndirectedSparseGraphTO<Integer, Integer> graphES
+                    = null;
+
+            try {
+                URI urigraph = URI.create("jar:file:data/big/all-big.zip!/" + s + "/" + s + ".txt");
+                InputStream streamgraph = urigraph.toURL().openStream();
+                graphES = UtilGraph.loadBigDataset(streamgraph);
+            } catch (FileNotFoundException e) {
+                URI urinode = URI.create("jar:file:data/big/all-big.zip!/" + s + "/nodes.csv");
+                URI uriedges = URI.create("jar:file:data/big/all-big.zip!/" + s + "/edges.csv");
+
+                InputStream streamnode = urinode.toURL().openStream();
+                InputStream streamedges = uriedges.toURL().openStream();
+                graphES = UtilGraph.loadBigDataset(streamnode,
+                        streamedges);
+            }
+            if (graphES == null) {
+                System.out.println("Fail to Load GRAPH: " + s);
+            }
+            System.out.println("Loaded Graph: " + s + " " + graphES.getVertexCount() + " " + graphES.getEdgeCount());
+            if (op.equals("random")) {
+                System.out.println("Random operation for graph " + s);
+                operations[0].setRandomKr(graphES);
+                System.out.print("kr: ");
+                UtilProccess.printArray(operations[0].getKr());
+                for (int i = 1; i < operations.length; i++) {
+                    operations[i].setKr(operations[0].getKr());
+                }
+            }
+            for (int i = 0; i < operations.length; i++) {
+
+                String arquivadoStr = operations[i].getName() + "-" + op + k + "-" + s;
+                Map<String, Object> doOperation = null;
+                System.out.println("*************");
+                System.out.print(" - EXEC: " + operations[i].getName() + "-" + op + ": " + k + " g:" + s + " " + graphES.getVertexCount() + " ");
+                int[] get = resultadoArquivado.get(arquivadoStr);
+                if (get != null) {
+                    result[i] = get[0];
+                    totalTime[i] = get[1];
+                } else {
+                    UtilProccess.printStartTime();
+                    doOperation = operations[i].doOperation(graphES);
+                    result[i] = (Integer) doOperation.get(IGraphOperation.DEFAULT_PARAM_NAME_RESULT);
+                    totalTime[i] += UtilProccess.printEndTime();
+                    System.out.println(" - arquivar: resultadoArquivado.put(\"" + arquivadoStr + "\", new int[]{" + result[i] + ", " + totalTime[i] + "});");
+                }
+                System.out.println(" - Result: " + result[i]);
+
+                String out = "Big\t" + s + "\t" + graphES.getVertexCount() + "\t"
+                        + graphES.getEdgeCount()
+                        + "\t" + op + "\t" + k + "\t" + " " + "\t" + operations[i].getName()
+                        + "\t" + result[i] + "\t" + totalTime[i] + "\n";
+
+                System.out.print("xls: " + out);
+
+                writer.write(out);
+                writer.flush();
+
+                if (doOperation != null) {
+                    boolean checkIfHullSet = operations[0].checkIfHullSet(graphES, ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
+                    if (!checkIfHullSet) {
+                        System.out.println("ALERT: ----- THE RESULT IS NOT A HULL SET");
+//                            throw new IllegalStateException("IS NOT HULL SET");
+                    }
+                }
+                if (i == 0) {
+                    if (get == null) {
+                        delta[i] = 0;
+                    }
+                } else {
+                    delta[i] = result[0] - result[i];
+
+                    long deltaTempo = totalTime[0] - totalTime[i];
+                    System.out.print(operations[i].getName() + " - g:" + s + " " + op + " " + k + "  tempo: ");
+
+                    if (deltaTempo >= 0) {
+                        System.out.print(" +FAST " + deltaTempo);
+                    } else {
+                        System.out.print(" +SLOW " + deltaTempo);
+                    }
+                    System.out.print(" - Delta: " + delta[i] + " ");
+                    if (delta[i] == 0) {
+                        System.out.print(" = same");
+                        contIgual[i]++;
+                    } else if (delta[i] > 0) {
+                        System.out.print(" +GOOD ");
+                        contMelhor[i]++;
+                    } else {
+                        System.out.print(" -BAD");
+                        contPior[i]++;
+                    }
+                    System.out.println(delta[i]);
+                }
+                System.out.println();
+            }
         }
     }
 }
