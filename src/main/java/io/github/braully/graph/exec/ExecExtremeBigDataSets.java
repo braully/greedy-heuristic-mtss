@@ -1,7 +1,14 @@
 package io.github.braully.graph.exec;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
+import static io.github.braully.graph.exec.ExecBigDataSets.operations;
 import io.github.braully.graph.operation.AbstractHeuristic;
+import io.github.braully.graph.operation.GreedyBonusDist;
+import io.github.braully.graph.operation.GreedyCordasco;
+import io.github.braully.graph.operation.GreedyDegree;
+import io.github.braully.graph.operation.GreedyDeltaTss;
+import io.github.braully.graph.operation.GreedyDeltaXDifTotal;
+import io.github.braully.graph.operation.GreedyDifTotal;
 import io.github.braully.graph.operation.HNV0;
 import io.github.braully.graph.operation.TSSCordasco;
 import io.github.braully.graph.operation.HNV1;
@@ -35,8 +42,8 @@ public class ExecExtremeBigDataSets {
 
     public static void main(String... args) throws FileNotFoundException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         String[] dataSets = new String[]{
-            "Twitter",
-            "YouTube2"
+            "YouTube2",
+            "Digg", "email-Enron", "email-Eu", "Flickr", "Flixster", "Foursquare", "Hyves", "LiveJournal", "wiki-Talk", "YouTube", //        "Twitter",
         };
 
         TSSCordasco tss = new TSSCordasco();
@@ -46,10 +53,16 @@ public class ExecExtremeBigDataSets {
         HNV1 hnv1 = new HNV1();
 //        hnv1.setVerbose(true);
         HNV0 hnv0 = new HNV0();
-
         TIPDecomp tip = new TIPDecomp();
 
-        AbstractHeuristic[] operations = new AbstractHeuristic[]{
+        GreedyCordasco gc = new GreedyCordasco();
+        GreedyDegree gd = new GreedyDegree();
+        GreedyDeltaTss gdt = new GreedyDeltaTss();
+        GreedyBonusDist gdit = new GreedyBonusDist();
+        GreedyDifTotal gdft = new GreedyDifTotal();
+        GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
+
+        operations = new AbstractHeuristic[]{
             tss,
             //            heur1,
             //            heur2, 
@@ -61,8 +74,12 @@ public class ExecExtremeBigDataSets {
             //            optm,
             //            optm2,
             tip,
-            hnv0, //            hnv1, 
-        //            hnv2
+            //            hnv0, //            hnv1, 
+            //            hnv2
+            //            hnv0, gd, gdit, 
+            //            hnva
+            //            ccm, gc, gd, gdt
+            gdft
         };
         long totalTime[] = new long[operations.length];
         Integer[] result = new Integer[operations.length];
@@ -83,30 +100,24 @@ public class ExecExtremeBigDataSets {
             "m", //            "k",
         //            "r"
         }) {
-            for (int k = 1; k <= 9; k++) {
+            for (int k = 5; k <= 5; k++) {
                 if (op.equals("r")) {
-                    tss.setR(k);
-                    hnv2.setR(k);
-                    hnv1.setR(k);
-                    hnv0.setR(k);
-                    tip.setR(k);
+                    for (AbstractHeuristic ab : operations) {
+                        ab.setR(k);
+                    }
                     System.out.println("-------------\n\nR: " + k);
                 } else if (op.equals("m")) {
                     op = "m";
                     double perc = ((float) k) / 10.0;
-                    tss.setPercent(perc);
-                    hnv2.setPercent(perc);
-                    hnv1.setPercent(perc);
-                    tip.setPercent(perc);
-                    hnv0.setPercent(perc);
+                    for (AbstractHeuristic ab : operations) {
+                        ab.setPercent(perc);
+                    }
                     System.out.println("-------------\n\nm: " + k);
                 } else {
                     op = "k";
-                    tss.setK(k);
-                    hnv2.setK(k);
-                    hnv1.setK(k);
-                    tip.setK(k);
-                    hnv0.setK(k);
+                    for (AbstractHeuristic ab : operations) {
+                        ab.setK(k);
+                    }
                     System.out.println("-------------\n\nk: " + k);
                 }
                 for (String s : dataSets) {
@@ -119,13 +130,15 @@ public class ExecExtremeBigDataSets {
                         graphES = UtilGraph.loadBigDataset(new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/nodes.csv"),
                                 new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/edges.csv"));
                     } catch (FileNotFoundException e) {
-                        graphES = UtilGraph.loadBigDataset(new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + ".txt"));
+                        try {
+                            graphES = UtilGraph.loadBigDataset(new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + ".txt"));
+                        } catch (FileNotFoundException ex) {
+
+                        }
                     }
                     if (graphES == null) {
                         System.out.println("Fail to Load GRAPH: " + s);
-                    }
-                    if (graphES == null) {
-                        System.out.println("Fail to Load GRAPH: " + s);
+                        continue;
                     }
                     System.out.println("Loaded Graph: " + s + " " + graphES.getVertexCount() + " " + graphES.getEdgeCount());
 

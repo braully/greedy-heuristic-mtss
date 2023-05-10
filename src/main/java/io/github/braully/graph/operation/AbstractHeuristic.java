@@ -110,7 +110,7 @@ public abstract class AbstractHeuristic implements IGraphOperation {
 
     public static int random(int num) {
         //Probability ignored, for future use, , Integer probability
-        return randomUtil.nextInt(num + 1);
+        return randomUtil.nextInt(num);
     }
 
     public static int roundUp(int num, int divisor) {
