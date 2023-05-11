@@ -84,7 +84,7 @@ public class ExecExactRandDataset {
         List<String> ops = Arrays.asList(new String[]{
             "k",
 //            "r",
-//            "m"
+            "m"
         });
         for (int k = 1;
                 k <= 6; k++) {

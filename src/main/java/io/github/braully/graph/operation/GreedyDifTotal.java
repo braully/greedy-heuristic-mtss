@@ -162,9 +162,12 @@ public class GreedyDifTotal
                 int wDelta = 0;
                 int wPartialBonus = 0;
                 int wDifDelta = 0;
+                int wDifPartial = 0;
+                int wPartial = 0;
 
                 //Cache
                 if (!lastDelta && auxb[w] > 0) {
+//                if (auxb[w] > 0) {
                     wDifDelta = auxb[w];
                 } else {
                     //Clear and init w contamined count aux variavles
@@ -180,15 +183,18 @@ public class GreedyDifTotal
                             if ((aux[vertn] + auxCount.getCount(vertn)) >= kr[vertn]) {
                                 continue;
                             }
-//                        wPartialBonus++;
                             Integer inc = auxCount.inc(vertn);
                             if ((inc + aux[vertn]) == kr[vertn]) {
                                 mustBeIncluded.add(vertn);
                                 skip[vertn] = countContaminatedVertices;
+                            } else {
+//                                if (inc == 1) {
+//                                    wPartial++;
+//                                    wDifPartial += (kr[vertn] - aux[vertn]);
+//                                }
                             }
                         }
-                        double currentDifficultyContamination = (kr[verti] - aux[verti]);
-                        wDifDelta += currentDifficultyContamination;
+                        wDifDelta += (kr[verti] - aux[verti]);
                         wDelta++;
                     }
                     auxb[w] = wDifDelta;
@@ -285,6 +291,7 @@ public class GreedyDifTotal
             for (Integer vertn : neighbors) {
                 if ((++aux[vertn]) == kr[vertn]) {
                     mustBeIncluded.add(vertn);
+//                    touched.add(vertn);
                 } else if (aux[vertn] < kr[vertn]) {
                     touched.add(vertn);
                 }
@@ -292,14 +299,15 @@ public class GreedyDifTotal
             countIncluded++;
         }
 
-        if (countIncluded == 1) {
-            //Recalc v from touched
-            for (Integer vx : touched) {
-                for (Integer vnn : N[vx]) {
-                    auxb[vnn] = -1;
-                }
+//        if (countIncluded == 1) {
+        //Recalc v from touched
+        for (Integer vx : touched) {
+            auxb[vx] = -1;
+            for (Integer vnn : N[vx]) {
+                auxb[vnn] = -1;
             }
         }
+//        }
         return countIncluded;
     }
 

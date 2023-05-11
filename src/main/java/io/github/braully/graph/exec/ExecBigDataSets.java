@@ -917,10 +917,9 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            //            "m",
-            //            "r",
-            //            "k",
-            "random"
+            "m", //            "r",
+        //            "k",
+        //            "random"
         }) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
@@ -929,7 +928,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 7; k <= 9; k++) {
+                for (int k = 1; k <= 7; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);

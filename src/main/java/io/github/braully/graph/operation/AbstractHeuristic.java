@@ -92,9 +92,11 @@ public abstract class AbstractHeuristic implements IGraphOperation {
                 } else if (kTreshold != null) {
                     kr[i] = kTreshold;
                 } else if (percentTreshold != null) {
-                    //                kr[i] = roundUp(degree, majority);
+                    //                kr[i] = roundUp(degree, majority
+//                    double ddgree = degree;
+//                    double ki = percentTreshold * ddgree;
                     double ki = Math.ceil(percentTreshold * degree);
-                    int kii = (int) Math.ceil(ki);
+                    int kii = (int) ki;
                     kr[i] = kii;
                 } else if (randomTreshold != null) {
                     if (degree > 0) {

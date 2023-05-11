@@ -3,6 +3,7 @@ package io.github.braully.graph.operation;
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.util.UtilGraph;
 import io.github.braully.graph.util.UtilProccess;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class TIPDecomp extends AbstractHeuristic implements IGraphOperation {
         int n = (Integer) graph.maxVertex() + 1;
         int[] delta = new int[n];
         int[] k = new int[n];
-        Integer[] dist = new Integer[n];
+        float[] dist = new float[n];
 
         Set<Integer>[] N = new Set[n];
 
@@ -60,25 +61,21 @@ public class TIPDecomp extends AbstractHeuristic implements IGraphOperation {
 
         while (flag) {
             Integer v = null;
-            Integer minDist = null;
+            float minDist = Float.POSITIVE_INFINITY;
             for (var vi : S) {
-                if (dist[vi] != null && dist[vi] >= 0) {
-                    if (minDist == null || dist[vi] < minDist) {
-                        v = vi;
-                        minDist = dist[vi];
-                    }
+                if (dist[vi] >= 0 && dist[vi] < minDist) {
+                    v = vi;
+                    minDist = dist[vi];
                 }
             }
-            if (minDist == null) {
+            if (minDist == Float.POSITIVE_INFINITY) {
                 flag = false;
             } else {
                 for (Integer u : N[v]) {
-                    if (dist[u] != null) {
-                        if (dist[u] > 0) {
-                            dist[u]--;
-                        } else {
-                            dist[u] = null;
-                        }
+                    if (dist[u] > 0) {
+                        dist[u]--;
+                    } else {
+                        dist[u] = Float.POSITIVE_INFINITY;
                     }
                 }
                 S.remove(v);
@@ -99,12 +96,12 @@ public class TIPDecomp extends AbstractHeuristic implements IGraphOperation {
         TIPDecomp optss = new TIPDecomp();
 
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
-        graph = UtilGraph.loadGraphES("0-2,1-4,2-3,2-4,");
-//        graph = UtilGraph.loadBigDataset(
-//                new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/BlogCatalog3/nodes.csv"),
-//                new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/BlogCatalog3/edges.csv"));
-//        System.out.println(graph.toResumedString());
-        optss.setR(1);
+//        graph = UtilGraph.loadGraphES("0-2,1-4,2-3,2-4,");
+        graph = UtilGraph.loadBigDataset(
+                new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/Foursquare/nodes.csv"),
+                new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/Foursquare/edges.csv"));
+        System.out.println(graph.toResumedString());
+        optss.setPercent(0.5);
         UtilProccess.printStartTime();
         Set<Integer> buildOptimizedHullSet = optss.tipDecomp(graph);
         System.out.println("buildOptimizedHullSet: " + buildOptimizedHullSet.size());
