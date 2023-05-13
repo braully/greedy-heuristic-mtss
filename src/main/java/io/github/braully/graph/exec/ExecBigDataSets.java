@@ -831,6 +831,13 @@ public class ExecBigDataSets {
         resultadoArquivado.put("TSS-Cordasco-m7-BlogCatalog2", new int[]{1193, 3759935});
         resultadoArquivado.put("TSS-Cordasco-m7-BlogCatalog3", new int[]{726, 3760627});
         resultadoArquivado.put("TSS-Cordasco-m7-BuzzNet", new int[]{4504, 3848889});
+        resultadoArquivado.put("TSS-Cordasco-m1-YouTube2", new int[]{1480, 3831156});
+        resultadoArquivado.put("TIPDecomp-m1-YouTube2", new int[]{2579, 12442973});
+        resultadoArquivado.put("GreedyDifTotal-m1-YouTube2", new int[]{1476, 141603});
+        resultadoArquivado.put("TSS-Cordasco-m2-YouTube2", new int[]{5560, 17642164});
+        resultadoArquivado.put("TIPDecomp-m2-YouTube2", new int[]{7406, 26222933});
+        resultadoArquivado.put("GreedyDifTotal-m2-YouTube2", new int[]{3760, 253677});
+        resultadoArquivado.put("TSS-Cordasco-m3-YouTube2", new int[]{15621, 30982938});
 
         ///
     }
@@ -928,7 +935,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 1; k <= 7; k++) {
+                for (int k = 7; k <= 3; k--) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);
@@ -1017,7 +1024,7 @@ public class ExecBigDataSets {
                     doOperation = operations[i].doOperation(graphES);
                     result[i] = (Integer) doOperation.get(IGraphOperation.DEFAULT_PARAM_NAME_RESULT);
                     totalTime[i] += UtilProccess.printEndTime();
-                    System.out.println(" - arquivar: resultadoArquivado.put(\"" + arquivadoStr + "\", new int[]{" + result[i] + ", " + totalTime[i] + "});");
+                    System.out.println(" resultadoArquivado.put(\"" + arquivadoStr + "\", new int[]{" + result[i] + ", " + totalTime[i] + "});");
                 }
                 System.out.println(" - Result: " + result[i]);
 
