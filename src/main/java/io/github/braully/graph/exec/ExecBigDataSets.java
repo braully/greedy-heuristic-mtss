@@ -935,7 +935,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 7; k <= 3; k--) {
+                for (int k = 7; k >= 3; k--) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);

@@ -1,0 +1,66 @@
+-------------
+
+m: 1
+
+-DATASET: YouTube2
+Loaded Graph: YouTube2 1138499 2990443
+*************
+ - EXEC: TSS-Cordasco-m: 1 g:YouTube2 1138499 Delta time: 01:03:51.156
+ - arquivar: resultadoArquivado.put("TSS-Cordasco-m1-YouTube2", new int[]{1480, 3831156});
+ - Result: 1480
+xls: Big	YouTube2	1138499	2990443	m	1	 	TSS-Cordasco	1480	3831156
+
+*************
+ - EXEC: TIPDecomp-m: 1 g:YouTube2 1138499 Delta time: 03:27:22.973
+ - arquivar: resultadoArquivado.put("TIPDecomp-m1-YouTube2", new int[]{2579, 12442973});
+ - Result: 2579
+xls: Big	YouTube2	1138499	2990443	m	1	 	TIPDecomp	2579	12442973
+TIPDecomp - g:YouTube2 m 1  tempo:  +SLOW -8611817 - Delta: -1099  -BAD-1099
+
+*************
+ - EXEC: GreedyDifTotal-m: 1 g:YouTube2 1138499 Delta time: 00:02:21.603
+ - arquivar: resultadoArquivado.put("GreedyDifTotal-m1-YouTube2", new int[]{1476, 141603});
+ - Result: 1476
+xls: Big	YouTube2	1138499	2990443	m	1	 	GreedyDifTotal	1476	141603
+GreedyDifTotal - g:YouTube2 m 1  tempo:  +FAST 3689553 - Delta: 4  +GOOD 4
+
+-------------
+
+m: 2
+
+-DATASET: YouTube2
+Loaded Graph: YouTube2 1138499 2990443
+*************
+ - EXEC: TSS-Cordasco-m: 2 g:YouTube2 1138499 Delta time: 03:50:11.8
+ - arquivar: resultadoArquivado.put("TSS-Cordasco-m2-YouTube2", new int[]{5560, 17642164});
+ - Result: 5560
+xls: Big	YouTube2	1138499	2990443	m	2	 	TSS-Cordasco	5560	17642164
+
+*************
+ - EXEC: TIPDecomp-m: 2 g:YouTube2 1138499 Delta time: 03:49:39.960
+ - arquivar: resultadoArquivado.put("TIPDecomp-m2-YouTube2", new int[]{7406, 26222933});
+ - Result: 7406
+xls: Big	YouTube2	1138499	2990443	m	2	 	TIPDecomp	7406	26222933
+TIPDecomp - g:YouTube2 m 2  tempo:  +SLOW -8580769 - Delta: -1846  -BAD-1846
+
+*************
+ - EXEC: GreedyDifTotal-m: 2 g:YouTube2 1138499 Delta time: 00:01:52.74
+ - arquivar: resultadoArquivado.put("GreedyDifTotal-m2-YouTube2", new int[]{3760, 253677});
+ - Result: 3760
+xls: Big	YouTube2	1138499	2990443	m	2	 	GreedyDifTotal	3760	253677
+GreedyDifTotal - g:YouTube2 m 2  tempo:  +FAST 17388487 - Delta: 1800  +GOOD 1800
+
+-------------
+
+m: 3
+
+-DATASET: YouTube2
+Loaded Graph: YouTube2 1138499 2990443
+*************
+ - EXEC: TSS-Cordasco-m: 3 g:YouTube2 1138499 Delta time: 03:42:20.774
+ - arquivar: resultadoArquivado.put("TSS-Cordasco-m3-YouTube2", new int[]{15621, 30982938});
+ - Result: 15621
+xls: Big	YouTube2	1138499	2990443	m	3	 	TSS-Cordasco	15621	30982938
+
+*************
+ - EXEC: TIPDecomp-m: 3 g:YouTube2 1138499 
