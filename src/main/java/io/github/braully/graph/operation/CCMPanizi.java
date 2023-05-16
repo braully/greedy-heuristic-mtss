@@ -75,6 +75,7 @@ public class CCMPanizi
     }
 
     int[] auxb = null;
+    int[] skip = null;
     //
     protected Queue<Integer> mustBeIncluded = new ArrayDeque<>();
     protected MapCountOpt auxCount;
@@ -97,9 +98,10 @@ public class CCMPanizi
         degree = new int[maxVertex];
         auxb = new int[maxVertex];
         N = new Set[maxVertex];
-
+        int[] skip = new int[maxVertex];
         for (Integer i : vertices) {
             aux[i] = 0;
+            skip[i] = -1;
             N[i] = new LinkedHashSet<>(graph.getNeighborsUnprotected(i));
         }
         initKr(graph);
@@ -129,7 +131,7 @@ public class CCMPanizi
 
             for (Integer w : vertices) {
                 //Ignore w if is already contamined OR skip review to next step
-                if (aux[w] >= kr[w]) {
+                if (aux[w] >= kr[w] || skip[w] >= countContaminatedVertices) {
                     continue;
                 }
                 int wDelta = 0;
@@ -151,6 +153,7 @@ public class CCMPanizi
                         Integer inc = auxCount.inc(vertn);
                         if ((inc + aux[vertn]) == kr[vertn]) {
                             mustBeIncluded.add(vertn);
+                            skip[vertn] = countContaminatedVertices;
                         }
                     }
                     wDelta++;
