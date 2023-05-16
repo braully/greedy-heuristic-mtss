@@ -230,8 +230,7 @@ public class GreedyDistAndDifDelta
             countContaminatedVertices = countContaminatedVertices + added;
 //            bdls.incBfs(graph, bestVertice);
         }
-        saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
-        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
+        saux = refineResult(graph, saux, countContaminatedVertices - offset);
 
         targetSet.addAll(saux);
         saux.clear();
@@ -399,7 +398,7 @@ public class GreedyDistAndDifDelta
 
     Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep1(graph, s, targetSize);
-//        s = refineResultStep2(graph, s, targetSize);
+        s = refineResultStep2(graph, s, targetSize);
         return s;
     }
 

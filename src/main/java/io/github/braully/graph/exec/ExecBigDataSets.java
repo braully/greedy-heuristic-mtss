@@ -906,9 +906,9 @@ public class ExecBigDataSets {
             //            hnv0, gd, gdit, 
             //            hnva
 //            ccm, 
-            gd,
+//            gd,
             //                        gc,  gdt
-            gdft, 
+//            gdft, 
             gdd
         };
         totalTime = new long[operations.length];

@@ -38,6 +38,8 @@ public class ExecExactRandDataset {
         GreedyBonusDist gdit = new GreedyBonusDist();
         GreedyDifTotal gdft = new GreedyDifTotal();
         GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
+        GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
+
         hnv1.setVerbose(true);
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
@@ -52,7 +54,8 @@ public class ExecExactRandDataset {
             //            hnv1,
             //            hnv1,
             //            hnv2
-            ccm,
+            gdd,
+//            ccm,
             //            hnva
             gdxd
         };
@@ -83,8 +86,8 @@ public class ExecExactRandDataset {
         long totalTime[] = new long[operations.length];
         List<String> ops = Arrays.asList(new String[]{
             "k",
-//            "r",
-            "m"
+//                        "r",
+//            "m"
         });
         for (int k = 1;
                 k <= 6; k++) {
