@@ -905,10 +905,10 @@ public class ExecBigDataSets {
             //            hnv2
             //            hnv0, gd, gdit, 
             //            hnva
-//            ccm, 
-//            gd,
+            //            ccm, 
+            //            gd,
             //                        gc,  gdt
-//            gdft, 
+            //            gdft, 
             gdd
         };
         totalTime = new long[operations.length];
@@ -960,18 +960,17 @@ public class ExecBigDataSets {
                         System.out.println("-------------\n\nk: " + k);
                     }
                     execOperations(op, k, writer);
+                    System.out.println(
+                            " Partial ");
+                    for (int i = 1;
+                            i < operations.length;
+                            i++) {
+                        System.out.println(" -Operation: " + operations[i].getName());
+                        System.out.println("   * Best: " + contMelhor[i]);
+                        System.out.println("   * Worst: " + contPior[i]);
+                        System.out.println("   * Equal: " + contIgual[i]);
+                    }
                 }
-            }
-
-            System.out.println(
-                    " Partial ");
-            for (int i = 1;
-                    i < operations.length;
-                    i++) {
-                System.out.println(" -Operation: " + operations[i].getName());
-                System.out.println("   * Best: " + contMelhor[i]);
-                System.out.println("   * Worst: " + contPior[i]);
-                System.out.println("   * Equal: " + contIgual[i]);
             }
         }
 
