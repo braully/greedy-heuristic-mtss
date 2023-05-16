@@ -26,7 +26,7 @@ public class GreedyDistAndDifDelta
         extends AbstractHeuristic implements IGraphOperation {
 
     static final Logger log = Logger.getLogger(GreedyDistAndDifDelta.class.getSimpleName());
-    static final String description = "GreedyDistDifTotal";
+    static final String description = "GreedyDistDifTotal-refine2";
 
     public static String getDescription() {
         return description;
@@ -231,7 +231,7 @@ public class GreedyDistAndDifDelta
 //            bdls.incBfs(graph, bestVertice);
         }
         saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
-//        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
+        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
 
         targetSet.addAll(saux);
         saux.clear();
