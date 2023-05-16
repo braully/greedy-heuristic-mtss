@@ -900,7 +900,7 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-            tip,
+            //            tip,
             //            hnv0, //            hnv1, 
             //            hnv2
             //            hnv0, gd, gdit, 
@@ -937,7 +937,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 1; k <= 10; k++) {
+                for (int k = 1; k <= 7; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);
