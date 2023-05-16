@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class UtilDatabase {
 
-    static String resultFile = "/home/strike/Documentos/doutorado/artigo-p3-hull-heuristica/db-resultado-heuristica/resultado-big-todos.csv";
+    static String resultFile = "/home/strike/Nuvem/Documentos/doutorado/artigo-p3-hull-heuristica/db-resultado-heuristica/resultado-big-todos.csv";
 
     public static int[] getResultCache(String key) {
         int[] result = null;
