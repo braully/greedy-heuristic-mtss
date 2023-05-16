@@ -900,16 +900,17 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-            //            tip,
+            tip,
             //            hnv0, //            hnv1, 
             //            hnv2
             //            hnv0, gd, gdit, 
             //            hnva
-            //            ccm, 
-            //            gd,
-            //                        gc,  gdt
-            //            gdft, 
-            gdd
+            ccm,
+            gd,
+            gdt
+        //                        gc,  gdt
+        //            gdft, 
+//            gdd
         };
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
