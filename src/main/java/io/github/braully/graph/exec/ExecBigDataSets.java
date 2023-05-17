@@ -883,11 +883,15 @@ public class ExecBigDataSets {
 
         GreedyCordasco gc = new GreedyCordasco();
         GreedyDegree gd = new GreedyDegree();
+        gd.setRefine2(true);
         GreedyDeltaTss gdt = new GreedyDeltaTss();
+        gdt.setRefine2(true);
         GreedyBonusDist gdit = new GreedyBonusDist();
         GreedyDifTotal gdft = new GreedyDifTotal();
+        gdft.setRefine2(true);
         GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
         GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
+        gdd.setRefine2(true);
 
         operations = new AbstractHeuristic[]{
             tss,
@@ -906,7 +910,7 @@ public class ExecBigDataSets {
             //            hnv0, gd, gdit, 
             //            hnva
             ccm,
-            gd,
+//            gd,
             gdt
         //                        gc,  gdt
         //            gdft, 
@@ -1029,7 +1033,7 @@ public class ExecBigDataSets {
                 String arquivadoStr = operations[i].getName() + "-" + op + k + "-" + s;
                 Map<String, Object> doOperation = null;
                 System.out.println("*************");
-                System.out.print(" - EXEC: " + operations[i].getName() + "-" + op + ": " + k + " g:" + s + " " + graphES.getVertexCount() + " ");
+                System.out.print(" - EXEC: " + arquivadoStr + " g:" + s + " " + graphES.getVertexCount() + " ");
                 int[] get = resultadoArquivado.get(arquivadoStr);
                 if (get == null) {
                     get = UtilDatabase.getResultCache(arquivadoStr);

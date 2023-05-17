@@ -33,7 +33,7 @@ public class UtilDatabase {
                         Integer.parseInt(split[8]),
                         Integer.parseInt(split[9])
                     };
-//                    System.out.println("Find in cache");
+                    System.out.println(" * cache");
                     break;
                 }
             }

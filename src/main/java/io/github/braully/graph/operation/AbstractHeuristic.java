@@ -119,16 +119,24 @@ public abstract class AbstractHeuristic implements IGraphOperation {
 
     public abstract String getDescription();
 
-    protected boolean refine = true;
+    protected boolean refine = false;
     protected boolean refine2 = false;
+
+    public void setRefine(boolean refine) {
+        this.refine = refine;
+    }
+
+    public void setRefine2(boolean refine2) {
+        this.refine2 = refine2;
+    }
 
     public String getName() {
         StringBuilder sb = new StringBuilder(getDescription());
         if (refine) {
-            sb.append("-r1");
+            sb.append("-rf1");
         }
         if (refine2) {
-            sb.append("-r2");
+            sb.append("-rf2");
         }
         return sb.toString();
     }
