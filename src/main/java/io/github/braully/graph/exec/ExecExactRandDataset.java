@@ -6,6 +6,7 @@ import static io.github.braully.graph.exec.ExecBigDataSets.operations;
 import static io.github.braully.graph.exec.ExecBigDataSets.result;
 import static io.github.braully.graph.exec.ExecBigDataSets.totalTime;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
+import io.github.braully.graph.util.MapCountOpt;
 import io.github.braully.graph.util.UtilDatabase;
 import io.github.braully.graph.util.UtilGraph;
 import io.github.braully.graph.util.UtilProccess;
@@ -27,6 +28,8 @@ import java.util.Set;
  */
 public class ExecExactRandDataset {
 
+    private static int OFFSET = 100;
+
     public static void main(String[] args) throws FileNotFoundException, IOException {
         TSSBruteForceOptm opf = new TSSBruteForceOptm();
         TSSCordasco tss = new TSSCordasco();
@@ -44,6 +47,11 @@ public class ExecExactRandDataset {
         GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
         GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
 
+        ccm.setRefine(true);
+        ccm.setRefine2(true);
+        gd.setRefine(true);
+        gd.setRefine2(true);
+
         hnv1.setVerbose(true);
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
@@ -51,15 +59,17 @@ public class ExecExactRandDataset {
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
             opf,
-//            tip,
-//            tss,
-//            //            hnv0,
-//            //            gdft, //            gd, gdt, gdit,
-//            //            hnv1,
-//            //            hnv1,
-//            //            hnv2
-//            ccm,
-//            gdd, //            hnva
+            tip,
+            tss,
+            //            hnv0,
+            //            gdft, 
+            gd,
+            //gdt, gdit,
+            //            hnv1,
+            //            hnv1,
+            //            hnv2
+            ccm,
+            gdd, //            hnva
         //            gdxd
         };
         String[] grupo = new String[]{
@@ -79,6 +89,10 @@ public class ExecExactRandDataset {
         int[] contMelhor = new int[operations.length];
         int[] contPior = new int[operations.length];
         int[] contIgual = new int[operations.length];
+        int maxDelta = 0;
+
+        MapCountOpt mapCount = new MapCountOpt((operations.length + 1) * OFFSET * 10);
+
         for (int i = 0;
                 i < operations.length;
                 i++) {
@@ -92,7 +106,7 @@ public class ExecExactRandDataset {
         //            "m"
         });
         for (int k = 1;
-                k <= 7; k++) {
+                k <= 4; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
@@ -165,6 +179,7 @@ public class ExecExactRandDataset {
                             delta[i] = 0;
                         } else {
                             delta[i] = result[0] - result[i];
+
                         }
                         if (delta[i] == 0) {
                             contIgual[i]++;
@@ -176,6 +191,11 @@ public class ExecExactRandDataset {
                                 piorou.put(id, true);
                             }
                         } else {
+                            int absde = Math.abs(delta[i]);
+                            mapCount.inc(i * OFFSET + absde);
+                            if (absde > maxDelta) {
+                                maxDelta = absde;
+                            }
                             contPior[i]++;
                             contPiorGlobal[i]++;
                             Boolean get1 = piorou.get(id);
@@ -232,6 +252,13 @@ public class ExecExactRandDataset {
             System.out.println("Igual: " + contIgualGlobal[i]);
 
             System.out.println("------------");
+            for (int x = 1; x <= maxDelta; x++) {
+                Integer cont = mapCount.getCount(i * OFFSET + x);
+                if (cont > 0) {
+                    System.out.println("Delta: " + x + " cont: " + cont);
+                }
+            }
+            System.out.println("------------");
             int total = contMelhorGlobal[i] + contPiorGlobal[i] + contIgualGlobal[i];
             if (total > 0) {
                 System.out.println("Melhor: " + (contMelhorGlobal[i] * 100 / total) + "pct");
@@ -240,6 +267,7 @@ public class ExecExactRandDataset {
                 );
                 System.out.println("Pior: " + (contPiorGlobal[i] * 100 / total) + "pct");
             }
+
         }
         for (int i = 0;
                 i < operations.length;

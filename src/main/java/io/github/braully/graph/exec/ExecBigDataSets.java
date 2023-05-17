@@ -891,7 +891,13 @@ public class ExecBigDataSets {
         gdft.setRefine2(true);
         GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
         GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
+        gdd.setRefine(true);
         gdd.setRefine2(true);
+
+        ccm.setRefine(true);
+        ccm.setRefine2(true);
+        gd.setRefine(true);
+        gd.setRefine2(true);
 
         operations = new AbstractHeuristic[]{
             tss,
@@ -910,8 +916,8 @@ public class ExecBigDataSets {
             //            hnv0, gd, gdit, 
             //            hnva
             ccm,
-//            gd,
-            gdt
+            gd,
+//            gdt
         //                        gc,  gdt
         //            gdft, 
 //            gdd
