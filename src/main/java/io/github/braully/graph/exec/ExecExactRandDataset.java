@@ -2,7 +2,11 @@ package io.github.braully.graph.exec;
 
 import io.github.braully.graph.operation.*;
 import io.github.braully.graph.UndirectedSparseGraphTO;
+import static io.github.braully.graph.exec.ExecBigDataSets.operations;
+import static io.github.braully.graph.exec.ExecBigDataSets.result;
+import static io.github.braully.graph.exec.ExecBigDataSets.totalTime;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
+import io.github.braully.graph.util.UtilDatabase;
 import io.github.braully.graph.util.UtilGraph;
 import io.github.braully.graph.util.UtilProccess;
 import static io.github.braully.graph.util.UtilProccess.printTimeFormated;
@@ -46,18 +50,17 @@ public class ExecExactRandDataset {
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            //            opf,
-            //            tip,
+            opf,
+            tip,
             tss,
-            hnv0,
-            gdft, //            gd, gdt, gdit,
+            //            hnv0,
+            //            gdft, //            gd, gdt, gdit,
             //            hnv1,
             //            hnv1,
             //            hnv2
-            gdd,
-//            ccm,
-            //            hnva
-            gdxd
+            ccm,
+            gdd, //            hnva
+        //            gdxd
         };
         String[] grupo = new String[]{
             "Optm",
@@ -85,12 +88,11 @@ public class ExecExactRandDataset {
         Integer[] result = new Integer[operations.length];
         long totalTime[] = new long[operations.length];
         List<String> ops = Arrays.asList(new String[]{
-            "k",
-//                        "r",
-//            "m"
+            "k", //                        "r",
+        //            "m"
         });
         for (int k = 1;
-                k <= 6; k++) {
+                k <= 7; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
@@ -129,11 +131,18 @@ public class ExecExactRandDataset {
 
                     for (int i = 0; i < operations.length; i++) {
                         Map<String, Object> doOperation = null;
-                        UtilProccess.startTime();
-                        doOperation = operations[i].doOperation(graph);
-                        totalTime[i] += UtilProccess.endTime();
 
-                        result[i] = (Integer) doOperation.get(IGraphOperation.DEFAULT_PARAM_NAME_RESULT);
+                        String arquivadoStr = operations[i].getName() + "-" + op + k + "-" + gname;
+                        int[] get = UtilDatabase.getResultCache(arquivadoStr);
+                        if (get != null) {
+                            result[i] = get[0];
+                            totalTime[i] = get[1];
+                        } else {
+                            UtilProccess.startTime();
+                            doOperation = operations[i].doOperation(graph);
+                            totalTime[i] += UtilProccess.endTime();
+                            result[i] = (Integer) doOperation.get(IGraphOperation.DEFAULT_PARAM_NAME_RESULT);
+                        }
 
                         String out = "Rand\t" + gname + "\t" + graph.getVertexCount() + "\t"
                                 + graph.getEdgeCount()
