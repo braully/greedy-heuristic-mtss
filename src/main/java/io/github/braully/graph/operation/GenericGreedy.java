@@ -30,16 +30,6 @@ public class GenericGreedy
     }
 
     //Configuration
-    boolean refine = true;
-
-    public String getName() {
-        StringBuilder sb = new StringBuilder(getDescription());
-        if (refine) {
-            sb.append("-refine");
-        }
-        return sb.toString();
-    }
-
     public GenericGreedy() {
     }
 
@@ -86,6 +76,7 @@ public class GenericGreedy
     protected int maxDegree = 0;
     protected int maxRanking = 0;
     protected int[] skip = null;
+    protected int countContaminatedVertices = 0;
 
     public Set<Integer> buildTargeSet(UndirectedSparseGraphTO<Integer, Integer> graph) {
         if (graph == null) {
@@ -110,7 +101,7 @@ public class GenericGreedy
         }
         initKr(graph);
 
-        int countContaminatedVertices = 0;
+        countContaminatedVertices = 0;
         //mandatory vertices
         for (Integer v : vertices) {
             degree[v] = graph.degree(v);
@@ -334,12 +325,6 @@ public class GenericGreedy
                 System.out.println(tmp.size() + "/" + s.size() + " removido " + delt + " vertices");
             }
         }
-        return s;
-    }
-
-    Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
-        s = refineResultStep1(graph, s, targetSize);
-//        s = refineResultStep2(graph, s, targetSize);
         return s;
     }
 

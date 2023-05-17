@@ -28,7 +28,7 @@ public class GraphHNVTmp
     static final Logger log = Logger.getLogger(GraphHNVTmp.class.getSimpleName());
     static final String description = "HHnV2-Tmp";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -568,7 +568,7 @@ public class GraphHNVTmp
         );
     }
 
-    Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
+    public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep2(graph, s, targetSize);
         s = refineResultStep3(graph, s, targetSize);
         return s;

@@ -17,8 +17,12 @@ import java.util.Set;
  */
 public class TIPDecomp extends AbstractHeuristic implements IGraphOperation {
 
-    static final String type = "P3-Convexity";
     static final String description = "TIPDecomp";
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
 
     @Override
     public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {

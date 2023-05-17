@@ -27,7 +27,7 @@ public class HNV0
     static final Logger log = Logger.getLogger(HNV0.class.getSimpleName());
     static final String description = "HNV0";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -379,7 +379,7 @@ public class HNV0
         return s;
     }
 
-    Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
+    public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep1(graph, s, targetSize);
 //        s = refineResultStep2(graph, s, targetSize);
         return s;

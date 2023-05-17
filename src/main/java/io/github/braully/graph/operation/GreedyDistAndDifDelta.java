@@ -8,7 +8,6 @@ import io.github.braully.graph.util.UtilProccess;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -17,7 +16,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +26,7 @@ public class GreedyDistAndDifDelta
     static final Logger log = Logger.getLogger(GreedyDistAndDifDelta.class.getSimpleName());
     static final String description = "GreedyDistDifTotal-refine2";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -72,11 +70,9 @@ public class GreedyDistAndDifDelta
     }
 
     int[] skip = null;
-    int[] auxb = null;
     //
     protected UtilBFS bdls;
 
-    protected Queue<Integer> mustBeIncluded = new ArrayDeque<>();
     protected Set<Integer> touched = new HashSet<>();
     protected MapCountOpt auxCount;
     protected int bestVertice = -1;
@@ -310,97 +306,6 @@ public class GreedyDistAndDifDelta
     }
 
     protected int[] scount = null;
-
-    public Set<Integer> refineResultStep1(UndirectedSparseGraphTO<Integer, Integer> graphRead,
-            Set<Integer> tmp, int tamanhoAlvo) {
-        Set<Integer> s = new LinkedHashSet<>(tmp);
-
-        for (Integer v : tmp) {
-            Collection<Integer> nvs = N[v];
-            int scont = 0;
-            for (Integer nv : nvs) {
-                if (s.contains(nv)) {
-                    scont++;
-                }
-            }
-            if (scont >= kr[v]) {
-                s.remove(v);
-            }
-        }
-        return s;
-    }
-
-    public Set<Integer> refineResultStep2(UndirectedSparseGraphTO<Integer, Integer> graphRead,
-            Set<Integer> tmp, int tamanhoAlvo) {
-        Set<Integer> s = tmp;
-
-        if (s.size() <= 1) {
-            return s;
-        }
-
-        if (verbose) {
-            System.out.println("tentando reduzir: " + s.size());
-//            System.out.println("s: " + s);
-        }
-        int cont = 0;
-        for (Integer v : tmp) {
-            cont++;
-            if (graphRead.degree(v) < kr[v]) {
-                continue;
-            }
-            Set<Integer> t = new LinkedHashSet<>(s);
-            t.remove(v);
-
-            int contadd = 0;
-            int[] aux = auxb;
-
-            for (int i = 0; i < aux.length; i++) {
-                aux[i] = 0;
-            }
-
-            mustBeIncluded.clear();
-            for (Integer iv : t) {
-                mustBeIncluded.add(iv);
-                aux[iv] = kr[iv];
-            }
-            while (!mustBeIncluded.isEmpty()) {
-                Integer verti = mustBeIncluded.remove();
-                contadd++;
-                Collection<Integer> neighbors = N[verti];
-                for (Integer vertn : neighbors) {
-                    if (aux[vertn] <= kr[vertn] - 1) {
-                        aux[vertn] = aux[vertn] + 1;
-                        if (aux[vertn] == kr[vertn]) {
-                            mustBeIncluded.add(vertn);
-                        }
-                    }
-                }
-                aux[verti] += kr[verti];
-            }
-
-            if (contadd >= tamanhoAlvo) {
-                if (verbose) {
-                    System.out.println(" - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
-                            + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
-
-                }
-                s = t;
-            }
-        }
-        if (verbose) {
-            int delt = tmp.size() - s.size();
-            if (delt > 0) {
-                System.out.println(tmp.size() + "/" + s.size() + " removido " + delt + " vertices");
-            }
-        }
-        return s;
-    }
-
-    Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
-        s = refineResultStep1(graph, s, targetSize);
-        s = refineResultStep2(graph, s, targetSize);
-        return s;
-    }
 
     public static void main(String... args) throws IOException {
         System.out.println("Execution Sample: Livemocha database R=2");

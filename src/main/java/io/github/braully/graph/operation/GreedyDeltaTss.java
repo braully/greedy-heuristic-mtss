@@ -29,6 +29,9 @@ public class GreedyDeltaTss
             if (aux[w] >= kr[w]) {
                 continue;
             }
+            if (aux[w] >= countContaminatedVertices) {
+                continue;
+            }
             int wDelta = 0;
 
             //Clear and init w contamined count aux variavles
@@ -47,6 +50,7 @@ public class GreedyDeltaTss
                     Integer inc = auxCount.inc(vertn);
                     if ((inc + aux[vertn]) == kr[vertn]) {
                         mustBeIncluded.add(vertn);
+                        skip[vertn] = countContaminatedVertices;
                     }
                 }
                 wDelta++;

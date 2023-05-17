@@ -1,11 +1,13 @@
 package io.github.braully.graph.operation;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
+import static io.github.braully.graph.operation.GenericGreedy.description;
 import static java.lang.Math.abs;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
@@ -33,6 +35,11 @@ public abstract class AbstractHeuristic implements IGraphOperation {
 
     protected int[] degree = null;
     protected Set<Integer>[] N = null;
+
+    protected Queue<Integer> mustBeIncluded = new ArrayDeque<>();
+    protected int[] auxb = null;
+
+    protected int[] skip = null;
 
     public String getTypeProblem() {
         return type;
@@ -108,6 +115,113 @@ public abstract class AbstractHeuristic implements IGraphOperation {
                 }
             }
         }
+    }
+
+    public abstract String getDescription();
+
+    protected boolean refine = true;
+    protected boolean refine2 = false;
+
+    public String getName() {
+        StringBuilder sb = new StringBuilder(getDescription());
+        if (refine) {
+            sb.append("-r1");
+        }
+        if (refine2) {
+            sb.append("-r2");
+        }
+        return sb.toString();
+    }
+
+    public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
+        s = refineResultStep1(graph, s, targetSize);
+        s = refineResultStep2(graph, s, targetSize);
+        return s;
+    }
+
+    public Set<Integer> refineResultStep1(UndirectedSparseGraphTO<Integer, Integer> graphRead,
+            Set<Integer> tmp, int tamanhoAlvo) {
+        Set<Integer> s = new LinkedHashSet<>(tmp);
+
+        for (Integer v : tmp) {
+            Collection<Integer> nvs = N[v];
+            int scont = 0;
+            for (Integer nv : nvs) {
+                if (s.contains(nv)) {
+                    scont++;
+                }
+            }
+            if (scont >= kr[v]) {
+                s.remove(v);
+            }
+        }
+        return s;
+    }
+
+    public Set<Integer> refineResultStep2(UndirectedSparseGraphTO<Integer, Integer> graphRead,
+            Set<Integer> tmp, int tamanhoAlvo) {
+        Set<Integer> s = tmp;
+
+        if (s.size() <= 1) {
+            return s;
+        }
+
+        if (verbose) {
+            System.out.println("tentando reduzir: " + s.size());
+//            System.out.println("s: " + s);
+        }
+        int cont = 0;
+        for (Integer v : tmp) {
+            cont++;
+            if (graphRead.degree(v) < kr[v]) {
+                continue;
+            }
+            Set<Integer> t = new LinkedHashSet<>(s);
+            t.remove(v);
+
+            int contadd = 0;
+            int[] aux = auxb;
+
+            for (int i = 0; i < aux.length; i++) {
+                aux[i] = 0;
+            }
+
+            mustBeIncluded.clear();
+            for (Integer iv : t) {
+                mustBeIncluded.add(iv);
+                aux[iv] = kr[iv];
+            }
+            while (!mustBeIncluded.isEmpty()) {
+                Integer verti = mustBeIncluded.remove();
+                contadd++;
+                Collection<Integer> neighbors = N[verti];
+                for (Integer vertn : neighbors) {
+                    if (aux[vertn] <= kr[vertn] - 1) {
+                        aux[vertn] = aux[vertn] + 1;
+                        if (aux[vertn] == kr[vertn]) {
+                            mustBeIncluded.add(vertn);
+                        }
+                    }
+                }
+                aux[verti] += kr[verti];
+            }
+
+            if (contadd >= tamanhoAlvo) {
+                if (verbose) {
+                    System.out.println(" - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
+                            + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
+
+                }
+                s = t;
+            }
+        }
+        if (verbose) {
+            int delt = tmp.size() - s.size();
+            if (delt > 0) {
+                System.out.println(tmp.size() + "/" + s.size() + " removido " + delt + " vertices");
+            }
+        }
+        return s;
     }
 
     public static int random(int num) {

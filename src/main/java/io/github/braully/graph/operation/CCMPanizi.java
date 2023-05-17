@@ -22,21 +22,11 @@ import java.util.logging.Logger;
 public class CCMPanizi
         extends AbstractHeuristic implements IGraphOperation {
 
-    static boolean poda = true;
-
     static final Logger log = Logger.getLogger(CCMPanizi.class.getSimpleName());
     static final String description = "CCM-Panizi";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
-    }
-
-    public String getName() {
-        if (poda) {
-            return description + "-poda";
-        } else {
-            return description;
-        }
     }
 
     public CCMPanizi() {
@@ -74,8 +64,6 @@ public class CCMPanizi
         return response;
     }
 
-    int[] auxb = null;
-    int[] skip = null;
     //
     protected Queue<Integer> mustBeIncluded = new ArrayDeque<>();
     protected MapCountOpt auxCount;
@@ -175,7 +163,10 @@ public class CCMPanizi
             }
             countContaminatedVertices = countContaminatedVertices + addVertToS(bestVertice, targetSet, graph, aux);
         }
-        if (poda) {
+        if (this.refine) {
+            targetSet = refineResultStep1(graph, targetSet, countContaminatedVertices);
+        }
+        if (this.refine2) {
             targetSet = refineResultStep1(graph, targetSet, countContaminatedVertices);
         }
         return targetSet;
@@ -327,7 +318,8 @@ public class CCMPanizi
         return s;
     }
 
-    Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
+    @Override
+    public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep1(graph, s, targetSize);
 //        s = refineResultStep2(graph, s, targetSize);
         return s;

@@ -28,7 +28,7 @@ public class GreedyDifTotal
     static final Logger log = Logger.getLogger(GreedyDifTotal.class.getSimpleName());
     static final String description = "GreedyDifTotal";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -71,8 +71,6 @@ public class GreedyDifTotal
         return response;
     }
 
-    int[] skip = null;
-    int[] auxb = null;
     //
     protected UtilBFS bdls;
 
@@ -398,7 +396,7 @@ public class GreedyDifTotal
         return s;
     }
 
-    Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
+    public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep1(graph, s, targetSize);
 //        s = refineResultStep2(graph, s, targetSize);
         return s;

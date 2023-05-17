@@ -1,0 +1,575 @@
+-------------
+
+k: 8
+
+-DATASET: BlogCatalog
+Loaded Graph: BlogCatalog 88784 2093195
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:BlogCatalog 88784  - Result: 51331
+xls: Big	BlogCatalog	88784	2093195	k	8	 	TSS-Cordasco	51331	1517732
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:BlogCatalog 88784 Delta time: 00:00:07.809
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-BlogCatalog", new int[]{51331, 7809});
+ - Result: 51331
+xls: Big	BlogCatalog	88784	2093195	k	8	 	GreedyDistDifTotal-refine2	51331	7809
+GreedyDistDifTotal-refine2 - g:BlogCatalog k 8  tempo:  +FAST 1509923 - Delta: 0  = same0
+
+
+-DATASET: BlogCatalog2
+Loaded Graph: BlogCatalog2 97884 1668647
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:BlogCatalog2 97884  - Result: 64126
+xls: Big	BlogCatalog2	97884	1668647	k	8	 	TSS-Cordasco	64126	1594548
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:BlogCatalog2 97884 Delta time: 00:00:02.178
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-BlogCatalog2", new int[]{64126, 9987});
+ - Result: 64126
+xls: Big	BlogCatalog2	97884	1668647	k	8	 	GreedyDistDifTotal-refine2	64126	9987
+GreedyDistDifTotal-refine2 - g:BlogCatalog2 k 8  tempo:  +FAST 1584561 - Delta: 0  = same0
+
+
+-DATASET: BlogCatalog3
+Loaded Graph: BlogCatalog3 10312 333983
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:BlogCatalog3 10312  - Result: 2376
+xls: Big	BlogCatalog3	10312	333983	k	8	 	TSS-Cordasco	2376	1594798
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:BlogCatalog3 10312 Delta time: 00:00:00.258
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-BlogCatalog3", new int[]{2376, 10245});
+ - Result: 2376
+xls: Big	BlogCatalog3	10312	333983	k	8	 	GreedyDistDifTotal-refine2	2376	10245
+GreedyDistDifTotal-refine2 - g:BlogCatalog3 k 8  tempo:  +FAST 1584553 - Delta: 0  = same0
+
+
+-DATASET: BuzzNet
+Loaded Graph: BuzzNet 101168 2763066
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:BuzzNet 101168  - Result: 37815
+xls: Big	BuzzNet	101168	2763066	k	8	 	TSS-Cordasco	37815	1599905
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:BuzzNet 101168 Delta time: 00:00:30.185
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-BuzzNet", new int[]{37816, 40430});
+ - Result: 37816
+xls: Big	BuzzNet	101168	2763066	k	8	 	GreedyDistDifTotal-refine2	37816	40430
+GreedyDistDifTotal-refine2 - g:BuzzNet k 8  tempo:  +FAST 1559475 - Delta: -1  -BAD-1
+
+
+-DATASET: Delicious
+Loaded Graph: Delicious 103144 145049
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:Delicious 103144  - Result: 95758
+xls: Big	Delicious	103144	145049	k	8	 	TSS-Cordasco	95758	1776928
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:Delicious 103144 Delta time: 00:00:07.381
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-Delicious", new int[]{95757, 47811});
+ - Result: 95757
+xls: Big	Delicious	103144	145049	k	8	 	GreedyDistDifTotal-refine2	95757	47811
+GreedyDistDifTotal-refine2 - g:Delicious k 8  tempo:  +FAST 1729117 - Delta: 1  +GOOD 1
+
+
+-DATASET: Douban
+Loaded Graph: Douban 154907 327094
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:Douban 154907  - Result: 143514
+xls: Big	Douban	154907	327094	k	8	 	TSS-Cordasco	143514	2256158
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:Douban 154907 Delta time: 00:00:06.829
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-Douban", new int[]{143514, 54640});
+ - Result: 143514
+xls: Big	Douban	154907	327094	k	8	 	GreedyDistDifTotal-refine2	143514	54640
+GreedyDistDifTotal-refine2 - g:Douban k 8  tempo:  +FAST 2201518 - Delta: 0  = same0
+
+
+-DATASET: Last.fm
+Loaded Graph: Last.fm 108493 1043029
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:Last.fm 108493  - Result: 50262
+xls: Big	Last.fm	108493	1043029	k	8	 	TSS-Cordasco	50262	2318897
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:Last.fm 108493 Delta time: 00:01:01.406
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-Last.fm", new int[]{50263, 116046});
+ - Result: 50263
+xls: Big	Last.fm	108493	1043029	k	8	 	GreedyDistDifTotal-refine2	50263	116046
+GreedyDistDifTotal-refine2 - g:Last.fm k 8  tempo:  +FAST 2202851 - Delta: -1  -BAD-1
+
+
+-DATASET: Livemocha
+Loaded Graph: Livemocha 104438 2193083
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:Livemocha 104438  - Result: 36928
+xls: Big	Livemocha	104438	2193083	k	8	 	TSS-Cordasco	36928	2324170
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:Livemocha 104438 Delta time: 00:00:24.513
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-Livemocha", new int[]{36928, 140559});
+ - Result: 36928
+xls: Big	Livemocha	104438	2193083	k	8	 	GreedyDistDifTotal-refine2	36928	140559
+GreedyDistDifTotal-refine2 - g:Livemocha k 8  tempo:  +FAST 2183611 - Delta: 0  = same0
+
+
+-DATASET: ca-AstroPh
+Loaded Graph: ca-AstroPh 18772 198050
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:ca-AstroPh 18772  - Result: 8701
+xls: Big	ca-AstroPh	18772	198050	k	8	 	TSS-Cordasco	8701	2324739
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:ca-AstroPh 18772 Delta time: 00:00:09.864
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-ca-AstroPh", new int[]{8700, 150423});
+ - Result: 8700
+xls: Big	ca-AstroPh	18772	198050	k	8	 	GreedyDistDifTotal-refine2	8700	150423
+GreedyDistDifTotal-refine2 - g:ca-AstroPh k 8  tempo:  +FAST 2174316 - Delta: 1  +GOOD 1
+
+
+-DATASET: ca-CondMat
+Loaded Graph: ca-CondMat 23133 93439
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:ca-CondMat 23133  - Result: 16193
+xls: Big	ca-CondMat	23133	93439	k	8	 	TSS-Cordasco	16193	2326099
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:ca-CondMat 23133 Delta time: 00:00:15.719
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-ca-CondMat", new int[]{16192, 166142});
+ - Result: 16192
+xls: Big	ca-CondMat	23133	93439	k	8	 	GreedyDistDifTotal-refine2	16192	166142
+GreedyDistDifTotal-refine2 - g:ca-CondMat k 8  tempo:  +FAST 2159957 - Delta: 1  +GOOD 1
+
+
+-DATASET: ca-GrQc
+Loaded Graph: ca-GrQc 5242 14484
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:ca-GrQc 5242  - Result: 4375
+xls: Big	ca-GrQc	5242	14484	k	8	 	TSS-Cordasco	4375	2326193
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:ca-GrQc 5242 Delta time: 00:00:02.5
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-ca-GrQc", new int[]{4376, 168147});
+ - Result: 4376
+xls: Big	ca-GrQc	5242	14484	k	8	 	GreedyDistDifTotal-refine2	4376	168147
+GreedyDistDifTotal-refine2 - g:ca-GrQc k 8  tempo:  +FAST 2158046 - Delta: -1  -BAD-1
+
+
+-DATASET: ca-HepPh
+Loaded Graph: ca-HepPh 12008 118489
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:ca-HepPh 12008  - Result: 7594
+xls: Big	ca-HepPh	12008	118489	k	8	 	TSS-Cordasco	7594	2326549
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:ca-HepPh 12008 Delta time: 00:00:05.235
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-ca-HepPh", new int[]{7593, 173382});
+ - Result: 7593
+xls: Big	ca-HepPh	12008	118489	k	8	 	GreedyDistDifTotal-refine2	7593	173382
+GreedyDistDifTotal-refine2 - g:ca-HepPh k 8  tempo:  +FAST 2153167 - Delta: 1  +GOOD 1
+
+
+-DATASET: ca-HepTh
+Loaded Graph: ca-HepTh 9877 25973
+*************
+ - EXEC: TSS-Cordasco-k: 8 g:ca-HepTh 9877  - Result: 8000
+xls: Big	ca-HepTh	9877	25973	k	8	 	TSS-Cordasco	8000	2326867
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 8 g:ca-HepTh 9877 Delta time: 00:00:03.449
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k8-ca-HepTh", new int[]{8000, 176831});
+ - Result: 8000
+xls: Big	ca-HepTh	9877	25973	k	8	 	GreedyDistDifTotal-refine2	8000	176831
+GreedyDistDifTotal-refine2 - g:ca-HepTh k 8  tempo:  +FAST 2150036 - Delta: 0  = same0
+
+ Partial 
+ -Operation: GreedyDistDifTotal-refine2
+   * Best: 4
+   * Worst: 3
+   * Equal: 6
+-------------
+
+k: 9
+
+-DATASET: BlogCatalog
+Loaded Graph: BlogCatalog 88784 2093195
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:BlogCatalog 88784  - Result: 53353
+xls: Big	BlogCatalog	88784	2093195	k	9	 	TSS-Cordasco	53353	673170
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:BlogCatalog 88784 Delta time: 00:00:06.468
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-BlogCatalog", new int[]{53353, 183299});
+ - Result: 53353
+xls: Big	BlogCatalog	88784	2093195	k	9	 	GreedyDistDifTotal-refine2	53353	183299
+GreedyDistDifTotal-refine2 - g:BlogCatalog k 9  tempo:  +FAST 489871 - Delta: 0  = same0
+
+
+-DATASET: BlogCatalog2
+Loaded Graph: BlogCatalog2 97884 1668647
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:BlogCatalog2 97884  - Result: 66462
+xls: Big	BlogCatalog2	97884	1668647	k	9	 	TSS-Cordasco	66462	785858
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:BlogCatalog2 97884 Delta time: 00:00:01.825
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-BlogCatalog2", new int[]{66462, 185124});
+ - Result: 66462
+xls: Big	BlogCatalog2	97884	1668647	k	9	 	GreedyDistDifTotal-refine2	66462	185124
+GreedyDistDifTotal-refine2 - g:BlogCatalog2 k 9  tempo:  +FAST 600734 - Delta: 0  = same0
+
+
+-DATASET: BlogCatalog3
+Loaded Graph: BlogCatalog3 10312 333983
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:BlogCatalog3 10312  - Result: 2701
+xls: Big	BlogCatalog3	10312	333983	k	9	 	TSS-Cordasco	2701	786160
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:BlogCatalog3 10312 Delta time: 00:00:00.451
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-BlogCatalog3", new int[]{2701, 185575});
+ - Result: 2701
+xls: Big	BlogCatalog3	10312	333983	k	9	 	GreedyDistDifTotal-refine2	2701	185575
+GreedyDistDifTotal-refine2 - g:BlogCatalog3 k 9  tempo:  +FAST 600585 - Delta: 0  = same0
+
+
+-DATASET: BuzzNet
+Loaded Graph: BuzzNet 101168 2763066
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:BuzzNet 101168  - Result: 40725
+xls: Big	BuzzNet	101168	2763066	k	9	 	TSS-Cordasco	40725	792187
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:BuzzNet 101168 Delta time: 00:00:19.523
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-BuzzNet", new int[]{40725, 205098});
+ - Result: 40725
+xls: Big	BuzzNet	101168	2763066	k	9	 	GreedyDistDifTotal-refine2	40725	205098
+GreedyDistDifTotal-refine2 - g:BuzzNet k 9  tempo:  +FAST 587089 - Delta: 0  = same0
+
+
+-DATASET: Delicious
+Loaded Graph: Delicious 103144 145049
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:Delicious 103144  - Result: 96609
+xls: Big	Delicious	103144	145049	k	9	 	TSS-Cordasco	96609	933115
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:Delicious 103144 Delta time: 00:00:09.528
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-Delicious", new int[]{96609, 214626});
+ - Result: 96609
+xls: Big	Delicious	103144	145049	k	9	 	GreedyDistDifTotal-refine2	96609	214626
+GreedyDistDifTotal-refine2 - g:Delicious k 9  tempo:  +FAST 718489 - Delta: 0  = same0
+
+
+-DATASET: Douban
+Loaded Graph: Douban 154907 327094
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:Douban 154907  - Result: 144334
+xls: Big	Douban	154907	327094	k	9	 	TSS-Cordasco	144334	1420779
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:Douban 154907 Delta time: 00:00:08.571
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-Douban", new int[]{144334, 223197});
+ - Result: 144334
+xls: Big	Douban	154907	327094	k	9	 	GreedyDistDifTotal-refine2	144334	223197
+GreedyDistDifTotal-refine2 - g:Douban k 9  tempo:  +FAST 1197582 - Delta: 0  = same0
+
+
+-DATASET: Last.fm
+Loaded Graph: Last.fm 108493 1043029
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:Last.fm 108493  - Result: 54292
+xls: Big	Last.fm	108493	1043029	k	9	 	TSS-Cordasco	54292	1495705
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:Last.fm 108493 Delta time: 00:00:59.739
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-Last.fm", new int[]{54291, 282936});
+ - Result: 54291
+xls: Big	Last.fm	108493	1043029	k	9	 	GreedyDistDifTotal-refine2	54291	282936
+GreedyDistDifTotal-refine2 - g:Last.fm k 9  tempo:  +FAST 1212769 - Delta: 1  +GOOD 1
+
+
+-DATASET: Livemocha
+Loaded Graph: Livemocha 104438 2193083
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:Livemocha 104438  - Result: 40275
+xls: Big	Livemocha	104438	2193083	k	9	 	TSS-Cordasco	40275	1505783
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:Livemocha 104438 Delta time: 00:00:20.387
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-Livemocha", new int[]{40275, 303323});
+ - Result: 40275
+xls: Big	Livemocha	104438	2193083	k	9	 	GreedyDistDifTotal-refine2	40275	303323
+GreedyDistDifTotal-refine2 - g:Livemocha k 9  tempo:  +FAST 1202460 - Delta: 0  = same0
+
+
+-DATASET: ca-AstroPh
+Loaded Graph: ca-AstroPh 18772 198050
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:ca-AstroPh 18772  - Result: 9296
+xls: Big	ca-AstroPh	18772	198050	k	9	 	TSS-Cordasco	9296	1506206
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:ca-AstroPh 18772 Delta time: 00:00:10.801
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-ca-AstroPh", new int[]{9294, 314124});
+ - Result: 9294
+xls: Big	ca-AstroPh	18772	198050	k	9	 	GreedyDistDifTotal-refine2	9294	314124
+GreedyDistDifTotal-refine2 - g:ca-AstroPh k 9  tempo:  +FAST 1192082 - Delta: 2  +GOOD 2
+
+
+-DATASET: ca-CondMat
+Loaded Graph: ca-CondMat 23133 93439
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:ca-CondMat 23133  - Result: 17079
+xls: Big	ca-CondMat	23133	93439	k	9	 	TSS-Cordasco	17079	1507651
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:ca-CondMat 23133 Delta time: 00:00:13.756
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-ca-CondMat", new int[]{17080, 327880});
+ - Result: 17080
+xls: Big	ca-CondMat	23133	93439	k	9	 	GreedyDistDifTotal-refine2	17080	327880
+GreedyDistDifTotal-refine2 - g:ca-CondMat k 9  tempo:  +FAST 1179771 - Delta: -1  -BAD-1
+
+
+-DATASET: ca-GrQc
+Loaded Graph: ca-GrQc 5242 14484
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:ca-GrQc 5242  - Result: 4505
+xls: Big	ca-GrQc	5242	14484	k	9	 	TSS-Cordasco	4505	1507752
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:ca-GrQc 5242 Delta time: 00:00:01.912
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-ca-GrQc", new int[]{4504, 329792});
+ - Result: 4504
+xls: Big	ca-GrQc	5242	14484	k	9	 	GreedyDistDifTotal-refine2	4504	329792
+GreedyDistDifTotal-refine2 - g:ca-GrQc k 9  tempo:  +FAST 1177960 - Delta: 1  +GOOD 1
+
+
+-DATASET: ca-HepPh
+Loaded Graph: ca-HepPh 12008 118489
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:ca-HepPh 12008  - Result: 7953
+xls: Big	ca-HepPh	12008	118489	k	9	 	TSS-Cordasco	7953	1508140
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:ca-HepPh 12008 Delta time: 00:00:05.179
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-ca-HepPh", new int[]{7953, 334971});
+ - Result: 7953
+xls: Big	ca-HepPh	12008	118489	k	9	 	GreedyDistDifTotal-refine2	7953	334971
+GreedyDistDifTotal-refine2 - g:ca-HepPh k 9  tempo:  +FAST 1173169 - Delta: 0  = same0
+
+
+-DATASET: ca-HepTh
+Loaded Graph: ca-HepTh 9877 25973
+*************
+ - EXEC: TSS-Cordasco-k: 9 g:ca-HepTh 9877  - Result: 8277
+xls: Big	ca-HepTh	9877	25973	k	9	 	TSS-Cordasco	8277	1508491
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 9 g:ca-HepTh 9877 Delta time: 00:00:03.448
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k9-ca-HepTh", new int[]{8278, 338419});
+ - Result: 8278
+xls: Big	ca-HepTh	9877	25973	k	9	 	GreedyDistDifTotal-refine2	8278	338419
+GreedyDistDifTotal-refine2 - g:ca-HepTh k 9  tempo:  +FAST 1170072 - Delta: -1  -BAD-1
+
+ Partial 
+ -Operation: GreedyDistDifTotal-refine2
+   * Best: 7
+   * Worst: 5
+   * Equal: 14
+-------------
+
+k: 10
+
+-DATASET: BlogCatalog
+Loaded Graph: BlogCatalog 88784 2093195
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:BlogCatalog 88784  - Result: 55086
+xls: Big	BlogCatalog	88784	2093195	k	10	 	TSS-Cordasco	55086	83304
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:BlogCatalog 88784 Delta time: 00:00:06.527
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-BlogCatalog", new int[]{55087, 344946});
+ - Result: 55087
+xls: Big	BlogCatalog	88784	2093195	k	10	 	GreedyDistDifTotal-refine2	55087	344946
+GreedyDistDifTotal-refine2 - g:BlogCatalog k 10  tempo:  +SLOW -261642 - Delta: -1  -BAD-1
+
+
+-DATASET: BlogCatalog2
+Loaded Graph: BlogCatalog2 97884 1668647
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:BlogCatalog2 97884  - Result: 68321
+xls: Big	BlogCatalog2	97884	1668647	k	10	 	TSS-Cordasco	68321	108751
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:BlogCatalog2 97884 Delta time: 00:00:01.587
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-BlogCatalog2", new int[]{68321, 346533});
+ - Result: 68321
+xls: Big	BlogCatalog2	97884	1668647	k	10	 	GreedyDistDifTotal-refine2	68321	346533
+GreedyDistDifTotal-refine2 - g:BlogCatalog2 k 10  tempo:  +SLOW -237782 - Delta: 0  = same0
+
+
+-DATASET: BlogCatalog3
+Loaded Graph: BlogCatalog3 10312 333983
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:BlogCatalog3 10312  - Result: 3008
+xls: Big	BlogCatalog3	10312	333983	k	10	 	TSS-Cordasco	3008	109030
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:BlogCatalog3 10312 Delta time: 00:00:00.436
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-BlogCatalog3", new int[]{3008, 346969});
+ - Result: 3008
+xls: Big	BlogCatalog3	10312	333983	k	10	 	GreedyDistDifTotal-refine2	3008	346969
+GreedyDistDifTotal-refine2 - g:BlogCatalog3 k 10  tempo:  +SLOW -237939 - Delta: 0  = same0
+
+
+-DATASET: BuzzNet
+Loaded Graph: BuzzNet 101168 2763066
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:BuzzNet 101168  - Result: 43122
+xls: Big	BuzzNet	101168	2763066	k	10	 	TSS-Cordasco	43122	115677
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:BuzzNet 101168 Delta time: 00:00:14.540
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-BuzzNet", new int[]{43123, 361509});
+ - Result: 43123
+xls: Big	BuzzNet	101168	2763066	k	10	 	GreedyDistDifTotal-refine2	43123	361509
+GreedyDistDifTotal-refine2 - g:BuzzNet k 10  tempo:  +SLOW -245832 - Delta: -1  -BAD-1
+
+
+-DATASET: Delicious
+Loaded Graph: Delicious 103144 145049
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:Delicious 103144  - Result: 97297
+xls: Big	Delicious	103144	145049	k	10	 	TSS-Cordasco	97297	287564
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:Delicious 103144 Delta time: 00:00:08.199
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-Delicious", new int[]{97297, 369708});
+ - Result: 97297
+xls: Big	Delicious	103144	145049	k	10	 	GreedyDistDifTotal-refine2	97297	369708
+GreedyDistDifTotal-refine2 - g:Delicious k 10  tempo:  +SLOW -82144 - Delta: 0  = same0
+
+
+-DATASET: Douban
+Loaded Graph: Douban 154907 327094
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:Douban 154907  - Result: 144961
+xls: Big	Douban	154907	327094	k	10	 	TSS-Cordasco	144961	511612
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:Douban 154907 Delta time: 00:00:08.953
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-Douban", new int[]{144961, 378661});
+ - Result: 144961
+xls: Big	Douban	154907	327094	k	10	 	GreedyDistDifTotal-refine2	144961	378661
+GreedyDistDifTotal-refine2 - g:Douban k 10  tempo:  +FAST 132951 - Delta: 0  = same0
+
+
+-DATASET: Last.fm
+Loaded Graph: Last.fm 108493 1043029
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:Last.fm 108493  - Result: 57850
+xls: Big	Last.fm	108493	1043029	k	10	 	TSS-Cordasco	57850	599526
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:Last.fm 108493 Delta time: 00:01:10.557
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-Last.fm", new int[]{57851, 449218});
+ - Result: 57851
+xls: Big	Last.fm	108493	1043029	k	10	 	GreedyDistDifTotal-refine2	57851	449218
+GreedyDistDifTotal-refine2 - g:Last.fm k 10  tempo:  +FAST 150308 - Delta: -1  -BAD-1
+
+
+-DATASET: Livemocha
+Loaded Graph: Livemocha 104438 2193083
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:Livemocha 104438  - Result: 43439
+xls: Big	Livemocha	104438	2193083	k	10	 	TSS-Cordasco	43439	605921
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:Livemocha 104438 Delta time: 00:00:18.223
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-Livemocha", new int[]{43439, 467441});
+ - Result: 43439
+xls: Big	Livemocha	104438	2193083	k	10	 	GreedyDistDifTotal-refine2	43439	467441
+GreedyDistDifTotal-refine2 - g:Livemocha k 10  tempo:  +FAST 138480 - Delta: 0  = same0
+
+
+-DATASET: ca-AstroPh
+Loaded Graph: ca-AstroPh 18772 198050
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:ca-AstroPh 18772  - Result: 9817
+xls: Big	ca-AstroPh	18772	198050	k	10	 	TSS-Cordasco	9817	606578
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:ca-AstroPh 18772 Delta time: 00:00:11.159
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-ca-AstroPh", new int[]{9817, 478600});
+ - Result: 9817
+xls: Big	ca-AstroPh	18772	198050	k	10	 	GreedyDistDifTotal-refine2	9817	478600
+GreedyDistDifTotal-refine2 - g:ca-AstroPh k 10  tempo:  +FAST 127978 - Delta: 0  = same0
+
+
+-DATASET: ca-CondMat
+Loaded Graph: ca-CondMat 23133 93439
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:ca-CondMat 23133  - Result: 17820
+xls: Big	ca-CondMat	23133	93439	k	10	 	TSS-Cordasco	17820	608242
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:ca-CondMat 23133 Delta time: 00:00:12.589
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-ca-CondMat", new int[]{17821, 491189});
+ - Result: 17821
+xls: Big	ca-CondMat	23133	93439	k	10	 	GreedyDistDifTotal-refine2	17821	491189
+GreedyDistDifTotal-refine2 - g:ca-CondMat k 10  tempo:  +FAST 117053 - Delta: -1  -BAD-1
+
+
+-DATASET: ca-GrQc
+Loaded Graph: ca-GrQc 5242 14484
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:ca-GrQc 5242  - Result: 4596
+xls: Big	ca-GrQc	5242	14484	k	10	 	TSS-Cordasco	4596	608350
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:ca-GrQc 5242 Delta time: 00:00:01.926
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-ca-GrQc", new int[]{4595, 493115});
+ - Result: 4595
+xls: Big	ca-GrQc	5242	14484	k	10	 	GreedyDistDifTotal-refine2	4595	493115
+GreedyDistDifTotal-refine2 - g:ca-GrQc k 10  tempo:  +FAST 115235 - Delta: 1  +GOOD 1
+
+
+-DATASET: ca-HepPh
+Loaded Graph: ca-HepPh 12008 118489
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:ca-HepPh 12008  - Result: 8243
+xls: Big	ca-HepPh	12008	118489	k	10	 	TSS-Cordasco	8243	608773
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:ca-HepPh 12008 Delta time: 00:00:05.472
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-ca-HepPh", new int[]{8244, 498587});
+ - Result: 8244
+xls: Big	ca-HepPh	12008	118489	k	10	 	GreedyDistDifTotal-refine2	8244	498587
+GreedyDistDifTotal-refine2 - g:ca-HepPh k 10  tempo:  +FAST 110186 - Delta: -1  -BAD-1
+
+
+-DATASET: ca-HepTh
+Loaded Graph: ca-HepTh 9877 25973
+*************
+ - EXEC: TSS-Cordasco-k: 10 g:ca-HepTh 9877  - Result: 8528
+xls: Big	ca-HepTh	9877	25973	k	10	 	TSS-Cordasco	8528	609132
+
+*************
+ - EXEC: GreedyDistDifTotal-refine2-k: 10 g:ca-HepTh 9877 Delta time: 00:00:03.643
+ resultadoArquivado.put("GreedyDistDifTotal-refine2-k10-ca-HepTh", new int[]{8531, 502230});
+ - Result: 8531
+xls: Big	ca-HepTh	9877	25973	k	10	 	GreedyDistDifTotal-refine2	8531	502230
+GreedyDistDifTotal-refine2 - g:ca-HepTh k 10  tempo:  +FAST 106902 - Delta: -3  -BAD-3
+
+ Partial 
+ -Operation: GreedyDistDifTotal-refine2
+   * Best: 8
+   * Worst: 11
+   * Equal: 20
+RESUME  GERAL
+ - Operation: GreedyDistDifTotal-refine2
+   * Best: 8
+   * Worst: 11
+   * Equal: 20

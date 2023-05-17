@@ -27,7 +27,7 @@ public class GreedyDeltaXDifTotal
     static final Logger log = Logger.getLogger(GreedyDeltaXDifTotal.class.getSimpleName());
     static final String description = "GreedyDeltaXDifTotal";
 
-    public static String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -363,7 +363,7 @@ public class GreedyDeltaXDifTotal
         return s;
     }
 
-    Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
+    public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep1(graph, s, targetSize);
 //        s = refineResultStep2(graph, s, targetSize);
         return s;

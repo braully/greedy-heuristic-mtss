@@ -28,7 +28,8 @@ public class TSSCordasco extends AbstractHeuristic implements IGraphOperation {
     public static final Logger log = Logger.getLogger(TSSCordasco.class.getSimpleName());
     public static final String description = "TSS-Cordasco";
 
-    public String getName() {
+    @Override
+    public String getDescription() {
         return description;
     }
 
