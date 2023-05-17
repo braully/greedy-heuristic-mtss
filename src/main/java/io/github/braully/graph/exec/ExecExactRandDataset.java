@@ -51,15 +51,15 @@ public class ExecExactRandDataset {
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
             opf,
-            tip,
-            tss,
-            //            hnv0,
-            //            gdft, //            gd, gdt, gdit,
-            //            hnv1,
-            //            hnv1,
-            //            hnv2
-            ccm,
-            gdd, //            hnva
+//            tip,
+//            tss,
+//            //            hnv0,
+//            //            gdft, //            gd, gdt, gdit,
+//            //            hnv1,
+//            //            hnv1,
+//            //            hnv2
+//            ccm,
+//            gdd, //            hnva
         //            gdxd
         };
         String[] grupo = new String[]{
