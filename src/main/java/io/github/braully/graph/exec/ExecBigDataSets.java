@@ -857,7 +857,8 @@ public class ExecBigDataSets {
         "Livemocha",
         "BlogCatalog",
         "BuzzNet",
-        "Last.fm", //        "YouTube2"
+        "Last.fm",
+        "YouTube2"
     };
     static AbstractHeuristic[] operations = null;
 
@@ -916,11 +917,10 @@ public class ExecBigDataSets {
             //            hnv0, gd, gdit, 
             //            hnva
             ccm,
-            gd,
-//            gdt
+            gd, //            gdt
         //                        gc,  gdt
         //            gdft, 
-//            gdd
+                    gdd
         };
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
