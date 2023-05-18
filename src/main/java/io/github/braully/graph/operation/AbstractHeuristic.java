@@ -1,14 +1,11 @@
 package io.github.braully.graph.operation;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
-import static io.github.braully.graph.operation.GenericGreedy.description;
 import static java.lang.Math.abs;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
@@ -142,8 +139,12 @@ public abstract class AbstractHeuristic implements IGraphOperation {
     }
 
     public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
-        s = refineResultStep1(graph, s, targetSize);
-        s = refineResultStep2(graph, s, targetSize);
+        if (refine) {
+            s = refineResultStep1(graph, s, targetSize);
+        }
+        if (refine2) {
+            s = refineResultStep2(graph, s, targetSize);
+        }
         return s;
     }
 

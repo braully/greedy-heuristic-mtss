@@ -24,17 +24,15 @@ public class GreedyDistAndDifDelta
         extends AbstractHeuristic implements IGraphOperation {
 
     static final Logger log = Logger.getLogger(GreedyDistAndDifDelta.class.getSimpleName());
-    static final String description = "GreedyDistDifTotal-refine2";
+    static final String description = "GreedyDistDifTotal";
 
     public String getDescription() {
         return description;
     }
 
-    public String getName() {
-        return description;
-    }
-
     public GreedyDistAndDifDelta() {
+        this.refine = true;
+        this.refine2 = true;
     }
 
     public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {

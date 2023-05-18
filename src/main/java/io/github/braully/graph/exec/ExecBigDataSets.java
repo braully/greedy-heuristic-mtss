@@ -845,20 +845,19 @@ public class ExecBigDataSets {
 //    }
 
     static String[] dataSets = new String[]{
-//        "ca-GrQc",
-//        "ca-HepTh",
-//        "ca-CondMat",
-//        "ca-HepPh",
-//        "ca-AstroPh",
-//        "Douban",
-//        "Delicious",
-//        "BlogCatalog3",
-//        "BlogCatalog2",
-//        "Livemocha",
-//        "BlogCatalog",
-//        "BuzzNet",
-//        "Last.fm",
-        "YouTube2"
+        "ca-GrQc",
+        "ca-HepTh",
+        "ca-CondMat",
+        "ca-HepPh",
+        "ca-AstroPh",
+        "Douban",
+        "Delicious",
+        "BlogCatalog3",
+        "BlogCatalog2",
+        "Livemocha",
+        "BlogCatalog",
+        "BuzzNet",
+        "Last.fm", //        "YouTube2"
     };
     static AbstractHeuristic[] operations = null;
 
@@ -895,6 +894,9 @@ public class ExecBigDataSets {
         gdd.setRefine(true);
         gdd.setRefine2(true);
 
+        GreedyDistAndDifDelta gdd1 = new GreedyDistAndDifDelta();
+        gdd1.setRefine2(false);
+
         ccm.setRefine(true);
         ccm.setRefine2(true);
         gd.setRefine(true);
@@ -911,16 +913,17 @@ public class ExecBigDataSets {
             //            heur5t2
             //            optm,
             //            optm2,
-            tip,
+            //            tip,
             //            hnv0, //            hnv1, 
             //            hnv2
             //            hnv0, gd, gdit, 
             //            hnva
-            ccm,
-            gd, //            gdt
-        //                        gc,  gdt
-        //            gdft, 
-                    gdd
+            //            ccm,
+            //            gd, //            gdt
+            //                        gc,  gdt
+            //            gdft,
+            gdd1,
+            gdd
         };
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
@@ -940,8 +943,9 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            //            "m", //            "r",
-            "k", //            "random"
+            "m", 
+//            "r",
+        //            "k", //            "random"
         }) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
