@@ -845,19 +845,19 @@ public class ExecBigDataSets {
 //    }
 
     static String[] dataSets = new String[]{
-        "ca-GrQc",
-        "ca-HepTh",
-        "ca-CondMat",
-        "ca-HepPh",
-        "ca-AstroPh",
-        "Douban",
-        "Delicious",
-        "BlogCatalog3",
-        "BlogCatalog2",
-        "Livemocha",
-        "BlogCatalog",
-        "BuzzNet",
-        "Last.fm",
+//        "ca-GrQc",
+//        "ca-HepTh",
+//        "ca-CondMat",
+//        "ca-HepPh",
+//        "ca-AstroPh",
+//        "Douban",
+//        "Delicious",
+//        "BlogCatalog3",
+//        "BlogCatalog2",
+//        "Livemocha",
+//        "BlogCatalog",
+//        "BuzzNet",
+//        "Last.fm",
         "YouTube2"
     };
     static AbstractHeuristic[] operations = null;
