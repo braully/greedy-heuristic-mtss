@@ -190,7 +190,6 @@ public class GreedyDistAndDifDelta
                     wDistDetla += (degree[verti] - kr[verti]) - aux[verti];
                     wDelta++;
                 }
-                auxb[w] = wDifDelta;
 
                 if (bestVertice == -1
                         || wDifDelta > maxDifTotal //                        || (wDelta == maxDifTotal && wPartialBonus > maxBonusPartial)
@@ -325,7 +324,7 @@ public class GreedyDistAndDifDelta
 
         op.setVerbose(true);
 
-        op.setPercent(0.5);
+        op.setPercent(0.1);
         UtilProccess.printStartTime();
         Set<Integer> buildOptimizedHullSet = op.buildTargeSet(graph);
         UtilProccess.printEndTime();
@@ -334,6 +333,12 @@ public class GreedyDistAndDifDelta
                 "S[" + buildOptimizedHullSet.size() + "]: "
                 + buildOptimizedHullSet
         );
+
+        boolean checkIfHullSet = op.checkIfHullSet(graph, buildOptimizedHullSet);
+        if (!checkIfHullSet) {
+            System.out.println("ALERT: ----- THE RESULT IS NOT A HULL SET");
+//                            throw new IllegalStateException("IS NOT HULL SET");
+        }
     }
 
 }

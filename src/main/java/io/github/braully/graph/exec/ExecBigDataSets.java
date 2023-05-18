@@ -943,8 +943,7 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "m", 
-//            "r",
+            "m", //            "r",
         //            "k", //            "random"
         }) {
             if (op.equals("random")) {

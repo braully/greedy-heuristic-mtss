@@ -256,12 +256,15 @@ public abstract class AbstractHeuristic implements IGraphOperation {
 
         Set<Integer> fecho = new HashSet<>();
 
+        Collection<Integer> vertices = graph.getVertices();
+
         int vertexCount = graph.getVertexCount();
-        if (kr == null || kr.length < vertexCount) {
+        int maxVertex = graph.maxVertex();
+//        if (kr == null || kr.length < maxVertex + 1) {
             initKr(graph);
-        }
-        int[] aux = new int[(Integer) graph.maxVertex() + 1];
-        for (int i = 0; i < aux.length; i++) {
+//        }
+        int[] aux = new int[maxVertex + 1];
+        for (Integer i : vertices) {
             aux[i] = 0;
             if (kr[i] == 0) {
                 mustBeIncluded.add(i);
@@ -287,7 +290,7 @@ public abstract class AbstractHeuristic implements IGraphOperation {
             fecho.add(verti);
             aux[verti] += kr[verti];
         }
-        return fecho.size() == graph.getVertexCount();
+        return fecho.size() == vertexCount;
     }
 
 }
