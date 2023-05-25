@@ -23,6 +23,7 @@ import io.github.braully.graph.util.UtilGraph;
 import io.github.braully.graph.util.UtilProccess;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -56,7 +57,8 @@ public class ExecBigDataSets {
         //        "BlogCatalog",
         //        "BuzzNet",
         //        "Last.fm", 
-        "YouTube2"
+        //        "YouTube2"
+        "Facebook-users"
     };
     static AbstractHeuristic[] operations = null;
 
@@ -121,7 +123,7 @@ public class ExecBigDataSets {
             //            ccm,
             //            gd, //            gdt
             //                        gc,  gdt
-            gdft,
+//            gdft,
             gdd1,
             gdd
         };
@@ -143,8 +145,9 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "m", //            "r",
-        //            "k", //            "random"
+            //            "m", 
+//            "r", 
+            "k", //            "random"
         }) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
@@ -153,7 +156,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 1; k <= 7; k++) {
+                for (int k = 1; k <= 10; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);
@@ -212,9 +215,15 @@ public class ExecBigDataSets {
                     = null;
 
             try {
-                URI urigraph = URI.create("jar:file:data/big/all-big.zip!/" + s + "/" + s + ".txt");
-                InputStream streamgraph = urigraph.toURL().openStream();
-                graphES = UtilGraph.loadBigDataset(streamgraph);
+                File file = new File("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + ".txt");
+                if (file.exists()) {
+                    graphES = UtilGraph.loadBigDataset(new FileInputStream(file));
+                } else {
+
+                    URI urigraph = URI.create("jar:file:data/big/all-big.zip!/" + s + "/" + s + ".txt");
+                    InputStream streamgraph = urigraph.toURL().openStream();
+                    graphES = UtilGraph.loadBigDataset(streamgraph);
+                }
             } catch (FileNotFoundException e) {
                 URI urinode = URI.create("jar:file:data/big/all-big.zip!/" + s + "/nodes.csv");
                 URI uriedges = URI.create("jar:file:data/big/all-big.zip!/" + s + "/edges.csv");

@@ -200,16 +200,19 @@ public class TSSCordasco extends AbstractHeuristic implements IGraphOperation {
 
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
-        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
-        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
+//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
+//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
+//
+//        InputStream streamnode = urinode.toURL().openStream();
+//        InputStream streamedges = uriedges.toURL().openStream();
+//
+//        graph = UtilGraph.loadBigDataset(streamnode, streamedges);
+        graph = UtilGraph.loadBigDataset(new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/Facebook-users/Facebook-users.txt"));
 
-        InputStream streamnode = urinode.toURL().openStream();
-        InputStream streamedges = uriedges.toURL().openStream();
-
-        graph = UtilGraph.loadBigDataset(streamnode, streamedges);
-
+//        optss.setVerbose(true);
+        optss.setR(1);
         System.out.println(graph.toResumedString());
-        optss.setR(10);
+//        optss.setR(10);
 //        optss.setMarjority(2);
         UtilProccess.printStartTime();
         Set<Integer> buildOptimizedHullSet = optss.tssCordasco(graph);

@@ -5,6 +5,7 @@ import io.github.braully.graph.util.UtilBFS;
 import io.github.braully.graph.util.MapCountOpt;
 import io.github.braully.graph.util.UtilGraph;
 import io.github.braully.graph.util.UtilProccess;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -23,25 +24,25 @@ import java.util.logging.Logger;
 
 public class HNV0
         extends AbstractHeuristic implements IGraphOperation {
-
+    
     static final Logger log = Logger.getLogger(HNV0.class.getSimpleName());
     static final String description = "HNV0";
-
+    
     public String getDescription() {
         return description;
     }
-
+    
     public String getName() {
         return description;
     }
-
+    
     public HNV0() {
     }
-
+    
     public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {
         Integer hullNumber = 0;
         Set<Integer> minHullSet = null;
-
+        
         try {
             String inputData = graph.getInputData();
             if (inputData != null) {
@@ -49,9 +50,9 @@ public class HNV0
                 setR(parseInt);
             }
         } catch (Exception e) {
-
+            
         }
-
+        
         try {
             minHullSet = buildTargeSet(graph);
             if (minHullSet != null && !minHullSet.isEmpty()) {
@@ -69,22 +70,22 @@ public class HNV0
         response.put(IGraphOperation.DEFAULT_PARAM_NAME_RESULT, hullNumber);
         return response;
     }
-
+    
     int[] skip = null;
     int[] auxb = null;
     //
     protected UtilBFS bdls;
-
+    
     protected Queue<Integer> mustBeIncluded = new ArrayDeque<>();
     protected MapCountOpt auxCount;
     protected int bestVertice = -1;
-
+    
     protected double maxDifTotal = 0;
     protected int maxDelta = 0;
     protected double maxBonusPartial = 0;
     //has uncontaminated vertices on the current component
     protected boolean hasVerticesOnCC = false;
-
+    
     public Set<Integer> buildTargeSet(UndirectedSparseGraphTO<Integer, Integer> graph) {
         if (graph == null) {
             return null;
@@ -97,27 +98,27 @@ public class HNV0
         //
         Set<Integer> targetSet = new LinkedHashSet<>();
         Set<Integer> saux = new LinkedHashSet<>();
-
+        
         Integer maxVertex = (Integer) graph.maxVertex() + 1;
-
+        
         int[] aux = new int[maxVertex];
         degree = new int[maxVertex];
         skip = new int[maxVertex];
         auxb = new int[maxVertex];
         N = new Set[maxVertex];
-
+        
         for (Integer i : vertices) {
             aux[i] = 0;
             skip[i] = -1;
             N[i] = new LinkedHashSet<>(graph.getNeighborsUnprotected(i));
         }
         initKr(graph);
-
+        
         int countContaminatedVertices = 0;
         //mandatory vertices
         for (Integer v : vertices) {
             degree[v] = graph.degree(v);
-
+            
             if (degree[v] <= kr[v] - 1) {
                 countContaminatedVertices = countContaminatedVertices + addVertToS(v, saux, graph, aux);
             }
@@ -125,17 +126,17 @@ public class HNV0
                 countContaminatedVertices = countContaminatedVertices + addVertToAux(v, graph, aux);
             }
         }
-
+        
         int vertexCount = graph.getVertexCount();
         int offset = 0;
 
         //BFS for find vertices in current component
         bdls = UtilBFS.newBfsUtilSimple(maxVertex);
         bdls.labelDistances(graph, saux);
-
+        
         bestVertice = -1;
         auxCount = new MapCountOpt(maxVertex);
-
+        
         while (countContaminatedVertices < vertexCount) {
             if (bestVertice != -1) {
                 bdls.incBfs(graph, bestVertice);
@@ -144,7 +145,7 @@ public class HNV0
             maxDifTotal = 0;
             maxDelta = 0;
             maxBonusPartial = 0;
-
+            
             for (Integer w : vertices) {
                 //Ignore w if is already contamined OR skip review to next step
                 if (aux[w] >= kr[w] || skip[w] >= countContaminatedVertices) {
@@ -155,7 +156,7 @@ public class HNV0
                 if (distanceForSaux == -1 && (countContaminatedVertices > 0 && !hasVerticesOnCC)) {
                     continue;
                 }
-
+                
                 int wDelta = 0;
                 double wPartialBonus = 0;
                 double wDifDelta = 0;
@@ -191,7 +192,7 @@ public class HNV0
                         wPartialBonus += bonus;
                     }
                 }
-
+                
                 if (bestVertice == -1) {
                     bestVertice = w;
                     maxDelta = wDelta;
@@ -213,7 +214,7 @@ public class HNV0
             if (bestVertice == -1) {
                 hasVerticesOnCC = true;
                 saux = refineResult(graph, saux, countContaminatedVertices - offset);
-
+                
                 offset = countContaminatedVertices;
                 targetSet.addAll(saux);
                 saux.clear();
@@ -232,7 +233,7 @@ public class HNV0
         saux.clear();
         return targetSet;
     }
-
+    
     public int addVertToAux(Integer verti,
             UndirectedSparseGraphTO<Integer, Integer> graph,
             int[] aux) {
@@ -243,7 +244,7 @@ public class HNV0
         if (kr[verti] > 0 && aux[verti] >= kr[verti]) {
             return countIncluded;
         }
-
+        
         aux[verti] = aux[verti] + kr[verti];
         mustBeIncluded.clear();
         mustBeIncluded.add(verti);
@@ -257,10 +258,10 @@ public class HNV0
             }
             countIncluded++;
         }
-
+        
         return countIncluded;
     }
-
+    
     public int addVertToS(Integer verti, Set<Integer> s,
             UndirectedSparseGraphTO<Integer, Integer> graph,
             int[] aux) {
@@ -271,7 +272,7 @@ public class HNV0
         if (kr[verti] > 0 && aux[verti] >= kr[verti]) {
             return countIncluded;
         }
-
+        
         aux[verti] = aux[verti] + kr[verti];
         if (s != null) {
             s.add(verti);
@@ -288,16 +289,16 @@ public class HNV0
             }
             countIncluded++;
         }
-
+        
         return countIncluded;
     }
-
+    
     protected int[] scount = null;
-
+    
     public Set<Integer> refineResultStep1(UndirectedSparseGraphTO<Integer, Integer> graphRead,
             Set<Integer> tmp, int tamanhoAlvo) {
         Set<Integer> s = new LinkedHashSet<>(tmp);
-
+        
         for (Integer v : tmp) {
             Collection<Integer> nvs = N[v];
             int scont = 0;
@@ -312,15 +313,15 @@ public class HNV0
         }
         return s;
     }
-
+    
     public Set<Integer> refineResultStep2(UndirectedSparseGraphTO<Integer, Integer> graphRead,
             Set<Integer> tmp, int tamanhoAlvo) {
         Set<Integer> s = tmp;
-
+        
         if (s.size() <= 1) {
             return s;
         }
-
+        
         if (verbose) {
             System.out.println("tentando reduzir: " + s.size());
 //            System.out.println("s: " + s);
@@ -333,14 +334,14 @@ public class HNV0
             }
             Set<Integer> t = new LinkedHashSet<>(s);
             t.remove(v);
-
+            
             int contadd = 0;
             int[] aux = auxb;
-
+            
             for (int i = 0; i < aux.length; i++) {
                 aux[i] = 0;
             }
-
+            
             mustBeIncluded.clear();
             for (Integer iv : t) {
                 mustBeIncluded.add(iv);
@@ -360,12 +361,12 @@ public class HNV0
                 }
                 aux[verti] += kr[verti];
             }
-
+            
             if (contadd >= tamanhoAlvo) {
                 if (verbose) {
                     System.out.println(" - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
                             + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
-
+                    
                 }
                 s = t;
             }
@@ -378,13 +379,13 @@ public class HNV0
         }
         return s;
     }
-
+    
     public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep1(graph, s, targetSize);
 //        s = refineResultStep2(graph, s, targetSize);
         return s;
     }
-
+    
     public static void main(String... args) throws IOException {
         System.out.println("Execution Sample: Livemocha database R=2");
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
@@ -401,19 +402,20 @@ public class HNV0
         InputStream streamnode = urinode.toURL().openStream();
         InputStream streamedges = uriedges.toURL().openStream();
 
-        graph = UtilGraph.loadBigDataset(streamnode, streamedges);
-
+//        graph = UtilGraph.loadBigDataset(streamnode, streamedges);
+        graph = UtilGraph.loadBigDataset(new FileInputStream("/home/strike/Workspace/tss/TSSGenetico/Instancias/Facebook-users/Facebook-users.txt"));
+        
         op.setVerbose(true);
-
-        op.setPercent(0.5);
+        op.setR(1);
+//        op.setPercent(0.5);
         UtilProccess.printStartTime();
         Set<Integer> buildOptimizedHullSet = op.buildTargeSet(graph);
         UtilProccess.printEndTime();
-
+        
         System.out.println(
                 "S[" + buildOptimizedHullSet.size() + "]: "
                 + buildOptimizedHullSet
         );
     }
-
+    
 }

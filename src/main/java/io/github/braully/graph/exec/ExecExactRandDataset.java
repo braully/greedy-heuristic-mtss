@@ -58,18 +58,17 @@ public class ExecExactRandDataset {
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            opf,
-            tip,
-            tss,
-            //            hnv0,
-            //            gdft, 
-            gd,
-            //gdt, gdit,
-            //            hnv1,
-            //            hnv1,
-            //            hnv2
-            ccm,
-            gdd, //            hnva
+            opf, //            tip,
+        //            tss,
+        //            hnv0,
+        //            gdft, 
+        //            gd,
+        //gdt, gdit,
+        //            hnv1,
+        //            hnv1,
+        //            hnv2
+        //            ccm,
+        //            gdd, //            hnva
         //            gdxd
         };
         String[] grupo = new String[]{
@@ -102,11 +101,11 @@ public class ExecExactRandDataset {
         Integer[] result = new Integer[operations.length];
         long totalTime[] = new long[operations.length];
         List<String> ops = Arrays.asList(new String[]{
-            "k", //                        "r",
-        //            "m"
+            //            "k", //                        "r",
+            "m"
         });
-        for (int k = 1;
-                k <= 4; k++) {
+        for (int k = 5;
+                k <= 5; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
