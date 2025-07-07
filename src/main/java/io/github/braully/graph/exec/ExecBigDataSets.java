@@ -50,13 +50,18 @@ public class ExecBigDataSets {
         "ca-AstroPh", // "Douban",
         // "Delicious",
         "BlogCatalog3", //     "BlogCatalog2",
-    //     "Livemocha",
-    //     "BlogCatalog",
-    //     "BuzzNet",
-    //     "Last.fm",
-    // "YouTube2"
-    // "Facebook-users"
-    };
+        //     "Livemocha",
+        //     "BlogCatalog",
+        //     "BuzzNet",
+        //     "Last.fm",
+        // "YouTube2"
+        // "Facebook-users",
+        "amazon0302",
+        "amazon0312",
+        "amazon0505",
+        "amazon0601",
+        "facebook_combined",
+        "com-dblp",};
     static AbstractHeuristic[] operations = null;
 
     static long totalTime[];
@@ -70,6 +75,8 @@ public class ExecBigDataSets {
             InvocationTargetException, NoSuchMethodException {
 
         TSSCordasco tss = new TSSCordasco();
+        tss.setRefine(true);
+        tss.setRefine2(true);
         // GraphTSSGreedy tssg = new GraphTSSGreedy();
         // HNVA hnva = new HNVA();
         // HNV2 hnv2 = new HNV2();
@@ -122,7 +129,7 @@ public class ExecBigDataSets {
 
         operations = new AbstractHeuristic[]{
             //            gdxd,
-            //             tss,
+            tss,
             // heur1,
             // heur2,
             // heur3, heur4,
@@ -143,14 +150,14 @@ public class ExecBigDataSets {
             // gdft,
             // gdd1,
             // gdd,
-            gdft,
-            gdd1,
-            //            heur1,
-            //            heur2,
-            //            heur3,
-            heur4,
-//            heur5,
-            heur10,};
+            gdft, //            gdd1,
+        //            heur1,
+        //            heur2,
+        //            heur3,
+        //            heur4,
+        //            heur5,
+        //            heur10,
+        };
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
         delta = new Integer[operations.length];
@@ -167,9 +174,8 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "m",
             "r", // "k", // "random"
-        }) {
+            "m",}) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
                     ab.setR(null);
@@ -177,7 +183,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 1; k <= 5; k++) {
+                for (int k = 2; k <= 5; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);
