@@ -1,6 +1,5 @@
 package io.github.braully.graph.operation;
 
-import io.github.braully.graph.UndirectedSparseGraphTO;
 import static java.lang.Math.abs;
 import java.util.ArrayDeque;
 import java.util.Collection;
@@ -9,6 +8,8 @@ import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
+
+import io.github.braully.graph.UndirectedSparseGraphTO;
 
 /**
  *
@@ -96,11 +97,13 @@ public abstract class AbstractHeuristic implements IGraphOperation {
                 } else if (kTreshold != null) {
                     kr[i] = kTreshold;
                 } else if (percentTreshold != null) {
-                    //                kr[i] = roundUp(degree, majority
-//                    double ddgree = degree;
-//                    double ki = percentTreshold * ddgree;
-                    double ki = Math.ceil(percentTreshold * degree);
-                    int kii = (int) ki;
+                    // kr[i] = roundUp(degree, majority
+                    // double ddgree = degree;
+                    // double ki = percentTreshold * ddgree;
+                    // double ki = Math.ceil(percentTreshold * degree);
+
+                    // int kii = (int) ki;
+                    int kii = (int) Math.ceil((double) degree / 2);
                     kr[i] = kii;
                 } else if (randomTreshold != null) {
                     if (degree > 0) {
@@ -127,6 +130,7 @@ public abstract class AbstractHeuristic implements IGraphOperation {
         this.refine2 = refine2;
     }
 
+    @Override
     public String getName() {
         StringBuilder sb = new StringBuilder(getDescription());
         if (refine) {
@@ -150,6 +154,7 @@ public abstract class AbstractHeuristic implements IGraphOperation {
 
     public Set<Integer> refineResultStep1(UndirectedSparseGraphTO<Integer, Integer> graphRead,
             Set<Integer> tmp, int tamanhoAlvo) {
+        // System.err.println("----refineResultStep1------");
         Set<Integer> s = new LinkedHashSet<>(tmp);
 
         for (Integer v : tmp) {
@@ -177,7 +182,7 @@ public abstract class AbstractHeuristic implements IGraphOperation {
 
         if (verbose) {
             System.out.println("tentando reduzir: " + s.size());
-//            System.out.println("s: " + s);
+            // System.out.println("s: " + s);
         }
         int cont = 0;
         for (Integer v : tmp) {
@@ -217,8 +222,9 @@ public abstract class AbstractHeuristic implements IGraphOperation {
 
             if (contadd >= tamanhoAlvo) {
                 if (verbose) {
-                    System.out.println(" - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
-                            + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
+                    System.out.println(
+                            " - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
+                                    + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
 
                 }
                 s = t;
@@ -234,7 +240,7 @@ public abstract class AbstractHeuristic implements IGraphOperation {
     }
 
     public static int random(int num) {
-        //Probability ignored, for future use, , Integer probability
+        // Probability ignored, for future use, , Integer probability
         return randomUtil.nextInt(num);
     }
 
@@ -260,9 +266,9 @@ public abstract class AbstractHeuristic implements IGraphOperation {
 
         int vertexCount = graph.getVertexCount();
         int maxVertex = graph.maxVertex();
-//        if (kr == null || kr.length < maxVertex + 1) {
-            initKr(graph);
-//        }
+        // if (kr == null || kr.length < maxVertex + 1) {
+        initKr(graph);
+        // }
         int[] aux = new int[maxVertex + 1];
         for (Integer i : vertices) {
             aux[i] = 0;

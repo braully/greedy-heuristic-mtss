@@ -44,8 +44,24 @@ public class ExecExactRandDataset {
         GreedyDeltaTss gdt = new GreedyDeltaTss();
         GreedyBonusDist gdit = new GreedyBonusDist();
         GreedyDifTotal gdft = new GreedyDifTotal();
+        gdft.setRefine(true);
+        gdft.setRefine2(true);
         GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
         GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
+
+        GreedyDeltaDifExperimento exp = new GreedyDeltaDifExperimento();
+        GreedyDeltaDifExperimento heur1 = new GreedyDeltaDifExperimento();
+        heur1.setProporcao(0.1);
+        GreedyDeltaDifExperimento heur2 = new GreedyDeltaDifExperimento();
+        heur2.setProporcao(0.2);
+        GreedyDeltaDifExperimento heur3 = new GreedyDeltaDifExperimento();
+        heur3.setProporcao(0.3);
+        GreedyDeltaDifExperimento heur4 = new GreedyDeltaDifExperimento();
+        heur4.setProporcao(0.4);
+        GreedyDeltaDifExperimento heur5 = new GreedyDeltaDifExperimento();
+        heur5.setProporcao(0.5);
+        GreedyDeltaDifExperimento heur6 = new GreedyDeltaDifExperimento();
+        heur5.setProporcao(0.6);
 
         ccm.setRefine(true);
         ccm.setRefine2(true);
@@ -58,7 +74,15 @@ public class ExecExactRandDataset {
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            opf, //            tip,
+            gdft,
+            gdft,
+            heur1,
+            heur2,
+            heur3,
+            heur4,
+            heur5,
+            heur6, //            opf, 
+        //            tip,
         //            tss,
         //            hnv0,
         //            gdft, 
@@ -68,7 +92,8 @@ public class ExecExactRandDataset {
         //            hnv1,
         //            hnv2
         //            ccm,
-        //            gdd, //            hnva
+        //            gdd,
+        //            hnva
         //            gdxd
         };
         String[] grupo = new String[]{

@@ -1,10 +1,5 @@
 package io.github.braully.graph.operation;
 
-import io.github.braully.graph.UndirectedSparseGraphTO;
-import io.github.braully.graph.util.UtilBFS;
-import io.github.braully.graph.util.MapCountOpt;
-import io.github.braully.graph.util.UtilGraph;
-import io.github.braully.graph.util.UtilProccess;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -20,6 +15,12 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.github.braully.graph.UndirectedSparseGraphTO;
+import io.github.braully.graph.util.MapCountOpt;
+import io.github.braully.graph.util.UtilBFS;
+import io.github.braully.graph.util.UtilGraph;
+import io.github.braully.graph.util.UtilProccess;
 
 public class GreedyDeltaXDifTotal
         extends AbstractHeuristic implements IGraphOperation {
@@ -84,7 +85,7 @@ public class GreedyDeltaXDifTotal
     protected double maxBonusPartial = 0;
     protected int maxRank = 0;
 
-    //has uncontaminated vertices on the current component
+    // has uncontaminated vertices on the current component
     protected boolean hasVerticesOnCC = false;
 
     public Set<Integer> buildTargeSet(UndirectedSparseGraphTO<Integer, Integer> graph) {
@@ -92,10 +93,9 @@ public class GreedyDeltaXDifTotal
             return null;
         }
         List<Integer> vertices = new ArrayList<>((List<Integer>) graph.getVertices());
-        //Sort vertice on reverse order of degree
+        // Sort vertice on reverse order of degree
         vertices.sort(Comparator
-                .comparingInt((Integer v) -> -graph.degree(v))
-        );
+                .comparingInt((Integer v) -> -graph.degree(v)));
         //
         Set<Integer> targetSet = new LinkedHashSet<>();
         Set<Integer> saux = new LinkedHashSet<>();
@@ -116,7 +116,7 @@ public class GreedyDeltaXDifTotal
         initKr(graph);
 
         int countContaminatedVertices = 0;
-        //mandatory vertices
+        // mandatory vertices
         for (Integer v : vertices) {
             degree[v] = graph.degree(v);
 
@@ -131,7 +131,7 @@ public class GreedyDeltaXDifTotal
         int vertexCount = graph.getVertexCount();
         int offset = 0;
 
-        //BFS for find vertices in current component
+        // BFS for find vertices in current component
         bdls = UtilBFS.newBfsUtilSimple(maxVertex);
         bdls.labelDistances(graph, saux);
 
@@ -148,7 +148,7 @@ public class GreedyDeltaXDifTotal
             maxBonusPartial = 0;
 
             for (Integer w : vertices) {
-                //Ignore w if is already contamined OR skip review to next step
+                // Ignore w if is already contamined OR skip review to next step
                 if (aux[w] >= kr[w] || skip[w] >= countContaminatedVertices) {
                     continue;
                 }
@@ -162,12 +162,12 @@ public class GreedyDeltaXDifTotal
                 double wPartialBonus = 0;
                 int wDifDelta = 0;
 
-                //Clear and init w contamined count aux variavles
+                // Clear and init w contamined count aux variavles
                 auxCount.clear();
                 auxCount.setVal(w, kr[w]);
                 mustBeIncluded.clear();
                 mustBeIncluded.add(w);
-                //Propagate w contamination
+                // Propagate w contamination
                 while (!mustBeIncluded.isEmpty()) {
                     Integer verti = mustBeIncluded.remove();
                     Collection<Integer> neighbors = N[verti];
@@ -193,7 +193,7 @@ public class GreedyDeltaXDifTotal
                     maxRank = wRank;
                 }
             }
-            //Ended the current component of G
+            // Ended the current component of G
             if (bestVertice == -1) {
                 hasVerticesOnCC = true;
                 saux = refineResult(graph, saux, countContaminatedVertices - offset);
@@ -205,12 +205,12 @@ public class GreedyDeltaXDifTotal
                 continue;
             }
             hasVerticesOnCC = false;
-            //Add vert to S
+            // Add vert to S
             countContaminatedVertices = countContaminatedVertices + addVertToS(bestVertice, saux, graph, aux);
             bdls.incBfs(graph, bestVertice);
         }
         saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
-//        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
+        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
 
         targetSet.addAll(saux);
         saux.clear();
@@ -281,7 +281,7 @@ public class GreedyDeltaXDifTotal
     public Set<Integer> refineResultStep1(UndirectedSparseGraphTO<Integer, Integer> graphRead,
             Set<Integer> tmp, int tamanhoAlvo) {
         Set<Integer> s = new LinkedHashSet<>(tmp);
-
+        // System.out.println("----refineResultStep1------");
         for (Integer v : tmp) {
             Collection<Integer> nvs = N[v];
             int scont = 0;
@@ -299,6 +299,7 @@ public class GreedyDeltaXDifTotal
 
     public Set<Integer> refineResultStep2(UndirectedSparseGraphTO<Integer, Integer> graphRead,
             Set<Integer> tmp, int tamanhoAlvo) {
+        // System.out.println("----refineResultStep2------");
         Set<Integer> s = tmp;
 
         if (s.size() <= 1) {
@@ -307,7 +308,7 @@ public class GreedyDeltaXDifTotal
 
         if (verbose) {
             System.out.println("tentando reduzir: " + s.size());
-//            System.out.println("s: " + s);
+            // System.out.println("s: " + s);
         }
         int cont = 0;
         for (Integer v : tmp) {
@@ -347,8 +348,9 @@ public class GreedyDeltaXDifTotal
 
             if (contadd >= tamanhoAlvo) {
                 if (verbose) {
-                    System.out.println(" - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
-                            + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
+                    System.out.println(
+                            " - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
+                                    + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
 
                 }
                 s = t;
@@ -365,7 +367,7 @@ public class GreedyDeltaXDifTotal
 
     public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         s = refineResultStep1(graph, s, targetSize);
-//        s = refineResultStep2(graph, s, targetSize);
+        // s = refineResultStep2(graph, s, targetSize);
         return s;
     }
 
@@ -374,14 +376,20 @@ public class GreedyDeltaXDifTotal
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
         GreedyDeltaXDifTotal op = new GreedyDeltaXDifTotal();
 
-//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
-//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
-//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
-//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
+        // URI urinode =
+        // URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
+        // URI uriedges =
+        // URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
+        // URI urinode =
+        // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
+        // URI uriedges =
+        // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
         URI urinode = URI.create("jar:file:data/big/all-big.zip!/Last.fm/nodes.csv");
         URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Last.fm/edges.csv");
-//        URI urinode = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/nodes.csv");
-//        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/edges.csv");
+        // URI urinode =
+        // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/nodes.csv");
+        // URI uriedges =
+        // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/edges.csv");
         InputStream streamnode = urinode.toURL().openStream();
         InputStream streamedges = uriedges.toURL().openStream();
 
@@ -396,8 +404,7 @@ public class GreedyDeltaXDifTotal
 
         System.out.println(
                 "S[" + buildOptimizedHullSet.size() + "]: "
-                + buildOptimizedHullSet
-        );
+                        + buildOptimizedHullSet);
     }
 
 }

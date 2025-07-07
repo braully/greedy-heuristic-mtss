@@ -1,26 +1,5 @@
 package io.github.braully.graph.exec;
 
-import io.github.braully.graph.UndirectedSparseGraphTO;
-import io.github.braully.graph.operation.AbstractHeuristic;
-import io.github.braully.graph.operation.CCMPanizi;
-import io.github.braully.graph.operation.GreedyBonusDist;
-import io.github.braully.graph.operation.GreedyCordasco;
-import io.github.braully.graph.operation.GreedyDegree;
-import io.github.braully.graph.operation.GreedyDeltaTss;
-import io.github.braully.graph.operation.GreedyDeltaXDifTotal;
-import io.github.braully.graph.operation.GreedyDifTotal;
-import io.github.braully.graph.operation.GreedyDistAndDifDelta;
-import io.github.braully.graph.operation.HNV0;
-import io.github.braully.graph.operation.TSSCordasco;
-import io.github.braully.graph.operation.HNV1;
-import io.github.braully.graph.operation.HNV2;
-import io.github.braully.graph.operation.HNVA;
-import io.github.braully.graph.operation.IGraphOperation;
-import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
-import io.github.braully.graph.operation.TIPDecomp;
-import io.github.braully.graph.util.UtilDatabase;
-import io.github.braully.graph.util.UtilGraph;
-import io.github.braully.graph.util.UtilProccess;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +14,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import io.github.braully.graph.UndirectedSparseGraphTO;
+import io.github.braully.graph.operation.AbstractHeuristic;
+import io.github.braully.graph.operation.CCMPanizi;
+import io.github.braully.graph.operation.GreedyBonusDist;
+import io.github.braully.graph.operation.GreedyCordasco;
+import io.github.braully.graph.operation.GreedyDegree;
+import io.github.braully.graph.operation.GreedyDeltaDifExperimento;
+import io.github.braully.graph.operation.GreedyDeltaTss;
+import io.github.braully.graph.operation.GreedyDeltaXDifTotal;
+import io.github.braully.graph.operation.GreedyDifTotal;
+import io.github.braully.graph.operation.GreedyDistAndDifDelta;
+import io.github.braully.graph.operation.HNV1;
+import io.github.braully.graph.operation.IGraphOperation;
+import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
+import io.github.braully.graph.operation.TIPDecomp;
+import io.github.braully.graph.operation.TSSCordasco;
+import io.github.braully.graph.util.UtilDatabase;
+import io.github.braully.graph.util.UtilGraph;
+import io.github.braully.graph.util.UtilProccess;
+
 /**
  *
  * @author strike
@@ -43,22 +42,22 @@ public class ExecBigDataSets {
 
     public static final Map<String, int[]> resultadoArquivado = new HashMap<>();
 
-    static String[] dataSets = new String[]{
-        //        "ca-GrQc",
-        //        "ca-HepTh",
-        //        "ca-CondMat",
-        //        "ca-HepPh",
-        //        "ca-AstroPh",
-        //        "Douban",
-        //        "Delicious",
-        //        "BlogCatalog3",
-        //        "BlogCatalog2",
-        //        "Livemocha",
-        //        "BlogCatalog",
-        //        "BuzzNet",
-        //        "Last.fm", 
-        //        "YouTube2"
-        "Facebook-users"
+    static String[] dataSets = new String[] {
+            "ca-GrQc",
+            "ca-HepTh",
+            "ca-CondMat",
+            "ca-HepPh",
+            "ca-AstroPh",
+            // "Douban",
+            // "Delicious",
+            // "BlogCatalog3",
+            // "BlogCatalog2",
+            // "Livemocha",
+            // "BlogCatalog",
+            // "BuzzNet",
+            // "Last.fm",
+            // "YouTube2"
+            // "Facebook-users"
     };
     static AbstractHeuristic[] operations = null;
 
@@ -69,15 +68,16 @@ public class ExecBigDataSets {
     static int[] contPior;
     static int[] contIgual;
 
-    public static void main(String... args) throws FileNotFoundException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    public static void main(String... args) throws FileNotFoundException, IOException, IllegalAccessException,
+            InvocationTargetException, NoSuchMethodException {
 
         TSSCordasco tss = new TSSCordasco();
-//        GraphTSSGreedy tssg = new GraphTSSGreedy();
-//        HNVA hnva = new HNVA();
-//        HNV2 hnv2 = new HNV2();
+        // GraphTSSGreedy tssg = new GraphTSSGreedy();
+        // HNVA hnva = new HNVA();
+        // HNV2 hnv2 = new HNV2();
         HNV1 hnv1 = new HNV1();
         hnv1.setVerbose(true);
-//        HNV0 hnv0 = new HNV0();
+        // HNV0 hnv0 = new HNV0();
         CCMPanizi ccm = new CCMPanizi();
 
         TIPDecomp tip = new TIPDecomp();
@@ -90,8 +90,23 @@ public class ExecBigDataSets {
         GreedyBonusDist gdit = new GreedyBonusDist();
         GreedyDifTotal gdft = new GreedyDifTotal();
         gdft.setRefine(true);
-//        gdft.setRefine2(true);
+        gdft.setRefine2(true);
+        // gdft.setRefine2(true);
+        GreedyDeltaDifExperimento heur1 = new GreedyDeltaDifExperimento();
+        heur1.setProporcao(0.1);
+        GreedyDeltaDifExperimento heur2 = new GreedyDeltaDifExperimento();
+        heur2.setProporcao(0.2);
+        GreedyDeltaDifExperimento heur3 = new GreedyDeltaDifExperimento();
+        heur3.setProporcao(0.3);
+        GreedyDeltaDifExperimento heur4 = new GreedyDeltaDifExperimento();
+        heur4.setProporcao(0.4);
+        GreedyDeltaDifExperimento heur5 = new GreedyDeltaDifExperimento();
+        heur5.setProporcao(0.5);
+        // GreedyDeltaDifExperimento heur5t = new GreedyDeltaDifExperimento();
+        // heur5t.setProporcao(0.5);
         GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
+        gdxd.setRefine(true);
+        gdxd.setRefine2(true);
         GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
         gdd.setRefine(true);
         gdd.setRefine2(true);
@@ -104,28 +119,35 @@ public class ExecBigDataSets {
         gd.setRefine(true);
         gd.setRefine2(true);
 
-        operations = new AbstractHeuristic[]{
-            tss,
-            //            heur1,
-            //            heur2, 
-            //            heur3, heur4,
-            //            heur5,
-            //            heur5t,
-            //            tssg,
-            //            heur5t2
-            //            optm,
-            //            optm2,
-            //            tip,
-            //            hnv0, //            hnv1, 
-            //            hnv2
-            //            hnv0, gd, gdit, 
-            //            hnva
-            //            ccm,
-            //            gd, //            gdt
-            //                        gc,  gdt
-//            gdft,
-            gdd1,
-            gdd
+        operations = new AbstractHeuristic[] {
+                gdxd,
+                // tss,
+                // heur1,
+                // heur2,
+                // heur3, heur4,
+                // heur5,
+                // heur5t,
+                // tssg,
+                // heur5t2
+                // optm,
+                // optm2,
+                // tip,
+                // hnv0, // hnv1,
+                // hnv2
+                // hnv0, gd, gdit,
+                // hnva
+                // ccm,
+                // gd, // gdt
+                // gc, gdt
+                // gdft,
+                // gdd1,
+                // gdd,
+                gdft,
+                heur1,
+                heur2,
+                heur3,
+                heur4,
+                heur5,
         };
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
@@ -133,9 +155,7 @@ public class ExecBigDataSets {
         contMelhor = new int[operations.length];
         contPior = new int[operations.length];
         contIgual = new int[operations.length];
-        for (int i = 0;
-                i < operations.length;
-                i++) {
+        for (int i = 0; i < operations.length; i++) {
             contMelhor[i] = contPior[i] = contIgual[i] = 0;
         }
 
@@ -144,10 +164,10 @@ public class ExecBigDataSets {
         String strResultFile = "resultado-" + ExecBigDataSets.class.getSimpleName() + ".txt";
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
-        for (String op : new String[]{
-            //            "m", 
-//            "r", 
-            "k", //            "random"
+        for (String op : new String[] {
+                "m",
+                // "r",
+                // "k", // "random"
         }) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
@@ -156,7 +176,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 1; k <= 10; k++) {
+                for (int k = 5; k <= 5; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);
@@ -179,9 +199,7 @@ public class ExecBigDataSets {
                     execOperations(op, k, writer);
                     System.out.println(
                             " Partial ");
-                    for (int i = 1;
-                            i < operations.length;
-                            i++) {
+                    for (int i = 1; i < operations.length; i++) {
                         System.out.println(" -Operation: " + operations[i].getName());
                         System.out.println("   * Best: " + contMelhor[i]);
                         System.out.println("   * Worst: " + contPior[i]);
@@ -197,9 +215,7 @@ public class ExecBigDataSets {
 
         System.out.println(
                 "RESUME  GERAL");
-        for (int i = 1;
-                i < operations.length;
-                i++) {
+        for (int i = 1; i < operations.length; i++) {
             System.out.println(" - Operation: " + operations[i].getName());
             System.out.println("   * Best: " + contMelhor[i]);
             System.out.println("   * Worst: " + contPior[i]);
@@ -207,12 +223,12 @@ public class ExecBigDataSets {
         }
     }
 
-    static void execOperations(String op, int k, BufferedWriter writer) throws FileNotFoundException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    static void execOperations(String op, int k, BufferedWriter writer) throws FileNotFoundException, IOException,
+            IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         for (String s : dataSets) {
             System.out.println("\n-DATASET: " + s);
 
-            UndirectedSparseGraphTO<Integer, Integer> graphES
-                    = null;
+            UndirectedSparseGraphTO<Integer, Integer> graphES = null;
 
             try {
                 File file = new File("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + ".txt");
@@ -264,7 +280,8 @@ public class ExecBigDataSets {
                     doOperation = operations[i].doOperation(graphES);
                     result[i] = (Integer) doOperation.get(IGraphOperation.DEFAULT_PARAM_NAME_RESULT);
                     totalTime[i] += UtilProccess.printEndTime();
-                    System.out.println(" resultadoArquivado.put(\"" + arquivadoStr + "\", new int[]{" + result[i] + ", " + totalTime[i] + "});");
+                    System.out.println(" resultadoArquivado.put(\"" + arquivadoStr + "\", new int[]{" + result[i] + ", "
+                            + totalTime[i] + "});");
                 }
                 System.out.println(" - Result: " + result[i]);
 
@@ -279,10 +296,11 @@ public class ExecBigDataSets {
                 writer.flush();
 
                 if (doOperation != null) {
-                    boolean checkIfHullSet = operations[0].checkIfHullSet(graphES, ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
+                    boolean checkIfHullSet = operations[0].checkIfHullSet(graphES,
+                            ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
                     if (!checkIfHullSet) {
                         System.out.println("ALERT: ----- THE RESULT IS NOT A HULL SET");
-//                            throw new IllegalStateException("IS NOT HULL SET");
+                        // throw new IllegalStateException("IS NOT HULL SET");
                     }
                 }
                 if (i == 0) {
