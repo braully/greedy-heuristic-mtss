@@ -33,10 +33,9 @@ public class GreedyDifTotal
         return description;
     }
 
-    public String getName() {
-        return description;
-    }
-
+//    public String getName() {
+//        return description;
+//    }
     public GreedyDifTotal() {
     }
 
@@ -200,7 +199,7 @@ public class GreedyDifTotal
 
                 if (bestVertice == -1
                         || wDifDelta > maxDifTotal // || (wDelta == maxDifTotal && wPartialBonus > maxBonusPartial)
-                ) {
+                        ) {
                     bestVertice = w;
                     maxDelta = wDelta;
                     maxBonusPartial = wPartialBonus;
@@ -229,8 +228,12 @@ public class GreedyDifTotal
             countContaminatedVertices = countContaminatedVertices + added;
             // bdls.incBfs(graph, bestVertice);
         }
-        saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
-        // saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
+        if (this.refine) {
+            saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
+        }
+        if (this.refine2) {
+            saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
+        }
 
         targetSet.addAll(saux);
         saux.clear();
@@ -382,7 +385,7 @@ public class GreedyDifTotal
                 if (verbose) {
                     System.out.println(
                             " - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
-                                    + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
+                            + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
 
                 }
                 s = t;
@@ -400,8 +403,8 @@ public class GreedyDifTotal
     @Override
     public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
         // System.err.println("----refineResult------");
-        s = refineResultStep1(graph, s, targetSize);
-        s = refineResultStep2(graph, s, targetSize);
+//        s = refineResultStep1(graph, s, targetSize);
+//        s = refineResultStep2(graph, s, targetSize);
         return s;
     }
 
@@ -438,7 +441,7 @@ public class GreedyDifTotal
 
         System.out.println(
                 "S[" + buildOptimizedHullSet.size() + "]: "
-                        + buildOptimizedHullSet);
+                + buildOptimizedHullSet);
     }
 
 }

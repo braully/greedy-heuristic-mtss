@@ -76,7 +76,7 @@ public class ExecBigDataSets {
 
         TSSCordasco tss = new TSSCordasco();
         tss.setRefine(true);
-        tss.setRefine2(true);
+//        tss.setRefine2(true);
         // GraphTSSGreedy tssg = new GraphTSSGreedy();
         // HNVA hnva = new HNVA();
         // HNV2 hnv2 = new HNV2();
@@ -95,7 +95,7 @@ public class ExecBigDataSets {
         GreedyBonusDist gdit = new GreedyBonusDist();
         GreedyDifTotal gdft = new GreedyDifTotal();
         gdft.setRefine(true);
-        gdft.setRefine2(true);
+//        gdft.setRefine2(true);
         // gdft.setRefine2(true);
         GreedyDeltaDifExperimento heur1 = new GreedyDeltaDifExperimento();
         heur1.setProporcao(0.1);
