@@ -42,22 +42,20 @@ public class ExecBigDataSets {
 
     public static final Map<String, int[]> resultadoArquivado = new HashMap<>();
 
-    static String[] dataSets = new String[] {
-            "ca-GrQc",
-            "ca-HepTh",
-            "ca-CondMat",
-            "ca-HepPh",
-            "ca-AstroPh",
-            // "Douban",
-            // "Delicious",
-            // "BlogCatalog3",
-            // "BlogCatalog2",
-            // "Livemocha",
-            // "BlogCatalog",
-            // "BuzzNet",
-            // "Last.fm",
-            // "YouTube2"
-            // "Facebook-users"
+    static String[] dataSets = new String[]{
+        "ca-GrQc",
+        "ca-HepTh",
+        "ca-CondMat",
+        "ca-HepPh",
+        "ca-AstroPh", // "Douban",
+        // "Delicious",
+        "BlogCatalog3", //     "BlogCatalog2",
+    //     "Livemocha",
+    //     "BlogCatalog",
+    //     "BuzzNet",
+    //     "Last.fm",
+    // "YouTube2"
+    // "Facebook-users"
     };
     static AbstractHeuristic[] operations = null;
 
@@ -112,43 +110,47 @@ public class ExecBigDataSets {
         gdd.setRefine2(true);
 
         GreedyDistAndDifDelta gdd1 = new GreedyDistAndDifDelta();
-        gdd1.setRefine2(false);
+//        gdd1.setRefine2(false);
 
         ccm.setRefine(true);
         ccm.setRefine2(true);
         gd.setRefine(true);
         gd.setRefine2(true);
 
-        operations = new AbstractHeuristic[] {
-                gdxd,
-                // tss,
-                // heur1,
-                // heur2,
-                // heur3, heur4,
-                // heur5,
-                // heur5t,
-                // tssg,
-                // heur5t2
-                // optm,
-                // optm2,
-                // tip,
-                // hnv0, // hnv1,
-                // hnv2
-                // hnv0, gd, gdit,
-                // hnva
-                // ccm,
-                // gd, // gdt
-                // gc, gdt
-                // gdft,
-                // gdd1,
-                // gdd,
-                gdft,
-                heur1,
-                heur2,
-                heur3,
-                heur4,
-                heur5,
-        };
+        GreedyDeltaDifExperimento heur10 = new GreedyDeltaDifExperimento();
+        heur10.setProporcao(1);
+
+        operations = new AbstractHeuristic[]{
+            //            gdxd,
+            //             tss,
+            // heur1,
+            // heur2,
+            // heur3, heur4,
+            // heur5,
+            // heur5t,
+            // tssg,
+            // heur5t2
+            // optm,
+            // optm2,
+            // tip,
+            // hnv0, // hnv1,
+            // hnv2
+            // hnv0, gd, gdit,
+            // hnva
+            // ccm,
+            // gd, // gdt
+            // gc, gdt
+            // gdft,
+            // gdd1,
+            // gdd,
+            gdft,
+            gdd1,
+            //            heur1,
+            //            heur2,
+            //            heur3,
+            heur4,
+//            heur5,
+            heur10,};
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
         delta = new Integer[operations.length];
@@ -164,10 +166,9 @@ public class ExecBigDataSets {
         String strResultFile = "resultado-" + ExecBigDataSets.class.getSimpleName() + ".txt";
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
-        for (String op : new String[] {
-                "m",
-                // "r",
-                // "k", // "random"
+        for (String op : new String[]{
+            "m",
+            "r", // "k", // "random"
         }) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
@@ -176,7 +177,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 5; k <= 5; k++) {
+                for (int k = 1; k <= 5; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);

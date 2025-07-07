@@ -3,14 +3,15 @@ package io.github.braully.graph.operation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,29 +22,21 @@ import io.github.braully.graph.util.UtilBFS;
 import io.github.braully.graph.util.UtilGraph;
 import io.github.braully.graph.util.UtilProccess;
 
-public class GreedyDeltaDifExperimento
+public class GreedyDeltaDistDivDifTotal
         extends AbstractHeuristic implements IGraphOperation {
 
-    static final Logger log = Logger.getLogger(GreedyDeltaDifExperimento.class.getSimpleName());
-    static final String description = "GreedyDeltaDifExperimento";
-
-    double proporcao = 0.1;
+    static final Logger log = Logger.getLogger(GreedyDeltaDistDivDifTotal.class.getSimpleName());
+    static final String description = "GreedyDeltaDivDifTotal";
 
     public String getDescription() {
         return description;
     }
 
-    public void setProporcao(double proporcao) {
-        this.proporcao = proporcao;
-    }
-
     public String getName() {
-        return description + "-" + proporcao;
+        return description;
     }
 
-    public GreedyDeltaDifExperimento() {
-        this.refine = true;
-        this.refine2 = true;
+    public GreedyDeltaDistDivDifTotal() {
     }
 
     public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {
@@ -79,24 +72,19 @@ public class GreedyDeltaDifExperimento
     }
 
     int[] skip = null;
+    int[] auxb = null;
     //
     protected UtilBFS bdls;
 
-    protected Set<Integer> touched = new HashSet<>();
+    protected Queue<Integer> mustBeIncluded = new ArrayDeque<>();
     protected MapCountOpt auxCount;
     protected int bestVertice = -1;
-    protected int difBest = 0;
-    protected int distBest = 0;
 
-    protected int maxDifTotal = 0;
-    protected int maxDist = 0;
+    protected double maxDifTotal = 0, maxDistDelta = 0;
     protected int maxDelta = 0;
-
-    protected int minDifTotal = -1;
-    protected int minDist = -1;
-    protected int minDelta = -1;
-
     protected double maxBonusPartial = 0;
+    protected int maxRank = 0;
+
     // has uncontaminated vertices on the current component
     protected boolean hasVerticesOnCC = false;
 
@@ -123,7 +111,6 @@ public class GreedyDeltaDifExperimento
         for (Integer i : vertices) {
             aux[i] = 0;
             skip[i] = -1;
-            auxb[i] = -1;
             N[i] = new LinkedHashSet<>(graph.getNeighborsUnprotected(i));
         }
         initKr(graph);
@@ -150,9 +137,9 @@ public class GreedyDeltaDifExperimento
 
         bestVertice = -1;
         auxCount = new MapCountOpt(maxVertex);
-        boolean lastDelta = true;
+
         while (countContaminatedVertices < vertexCount) {
-            if (bestVertice != -1 && bdls.isEmpty(graph, bestVertice)) {
+            if (bestVertice != -1) {
                 bdls.incBfs(graph, bestVertice);
             }
             bestVertice = -1;
@@ -172,13 +159,10 @@ public class GreedyDeltaDifExperimento
                 }
 
                 int wDelta = 0;
-                int wPartialBonus = 0;
+                double wPartialBonus = 0;
                 int wDifDelta = 0;
-                int wDifPartial = 0;
-                int wPartial = 0;
                 int wDistDetla = 0;
 
-                // Cache
                 // Clear and init w contamined count aux variavles
                 auxCount.clear();
                 auxCount.setVal(w, kr[w]);
@@ -196,90 +180,21 @@ public class GreedyDeltaDifExperimento
                         if ((inc + aux[vertn]) == kr[vertn]) {
                             mustBeIncluded.add(vertn);
                             skip[vertn] = countContaminatedVertices;
-                        } else {
-                            // if (inc == 1) {
-                            // wPartial++;
-                            // wDifPartial += (kr[vertn] - aux[vertn]);
-                            // }
                         }
                     }
-                    wDifDelta += (kr[verti] - aux[verti]);
+                    int currentDifficultyContamination = (kr[verti] - aux[verti]);
+                    wDifDelta += currentDifficultyContamination;
                     wDistDetla += (degree[verti] - kr[verti]) - aux[verti];
                     wDelta++;
                 }
-
-                int vfObjetivo = 0;
-                int mfObjetivo = 0;
-
-                if (bestVertice == -1) {
+                int wRank = (int) (((double) wDistDetla / ((double) wDifDelta  + 1.0)) * 1000);
+                if (bestVertice == -1 || wRank > maxRank) {
                     bestVertice = w;
-                    difBest = wDifDelta;
-                    distBest = wDistDetla;
+                    maxDelta = wDelta;
                     maxDifTotal = wDifDelta;
-                    minDifTotal = wDifDelta;
-                    maxDist = wDistDetla;
-                    minDist = wDistDetla;
-                } else {
-                    // Normalize the values
-                    if (maxDifTotal == 0) {
-                        maxDifTotal = 1;
-                    }
-                    if (maxDist == 0) {
-                        maxDist = 1;
-                    }
-                    if (minDifTotal == -1) {
-                        minDifTotal = 0;
-                    }
-                    if (minDist == -1) {
-                        minDist = 0;
-                    }
-                    // Normalize the values
-                    double wDifDeltaNorm = (double) (wDifDelta - minDifTotal) / (maxDifTotal - minDifTotal);
-                    double wDistDetlaNorm = (double) (wDistDetla - minDist) / (maxDist - minDist);
-                    double bestDifDeltaNorm = (double) (difBest - minDifTotal) / (maxDifTotal - minDifTotal);
-                    double bestDistDetlaNorm = (double) (distBest - minDist) / (maxDist - minDist);
-                    // Calculate the objective function
-
-//                    vfObjetivo = (int) (proporcao * wDifDeltaNorm + (1.0 - proporcao) * wDistDetlaNorm);
-//                    mfObjetivo = (int) (proporcao * bestDifDeltaNorm + (1.0 - proporcao) * bestDistDetlaNorm);
-                    if (proporcao >= 1.0) {
-                        vfObjetivo = wDifDelta + wDistDetla;
-                        mfObjetivo = difBest + distBest;
-                    } else {
-                        vfObjetivo = (int) (proporcao * wDifDelta + (1.0 - proporcao) * wDistDetla);
-                        mfObjetivo = (int) (proporcao * difBest + (1.0 - proporcao) * distBest);
-                    }
+                    maxDistDelta = wDistDetla;
+                    maxRank = wRank;
                 }
-
-                if (vfObjetivo > mfObjetivo) {
-                    bestVertice = w;
-                    difBest = wDifDelta;
-                    distBest = wDistDetla;
-                }
-
-                if (wDifDelta > maxDifTotal) {
-                    maxDifTotal = wDifDelta;
-                }
-                if (wDifDelta < minDifTotal) {
-                    minDifTotal = wDifDelta;
-                }
-                if (wDistDetla > maxDist) {
-                    maxDist = wDistDetla;
-                }
-                if (wDistDetla < minDist) {
-                    minDist = wDistDetla;
-                }
-
-                // if (bestVertice == -1
-                // || wDifDelta > maxDifTotal // || (wDelta == maxDifTotal && wPartialBonus >
-                // maxBonusPartial)
-                // || (wDifDelta == maxDifTotal && wDistDetla > maxDist)) {
-                // bestVertice = w;
-                // maxDelta = wDelta;
-                // maxBonusPartial = wPartialBonus;
-                // maxDifTotal = wDifDelta;
-                // maxDist = wDistDetla;
-                // }
             }
             // Ended the current component of G
             if (bestVertice == -1) {
@@ -294,26 +209,15 @@ public class GreedyDeltaDifExperimento
             }
             hasVerticesOnCC = false;
             // Add vert to S
-            int added = addVertToS(bestVertice, saux, graph, aux);
-            if (added > 1) {
-                lastDelta = true;
-            } else {
-                lastDelta = false;
-            }
-            countContaminatedVertices = countContaminatedVertices + added;
-            // bdls.incBfs(graph, bestVertice);
+            countContaminatedVertices = countContaminatedVertices + addVertToS(bestVertice, saux, graph, aux);
+            bdls.incBfs(graph, bestVertice);
         }
-        saux = refineResult(graph, saux, countContaminatedVertices - offset);
+        saux = refineResultStep1(graph, saux, countContaminatedVertices - offset);
+        saux = refineResultStep2(graph, saux, countContaminatedVertices - offset);
 
         targetSet.addAll(saux);
         saux.clear();
         return targetSet;
-    }
-
-    public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
-        s = refineResultStep1(graph, s, targetSize);
-        s = refineResultStep2(graph, s, targetSize);
-        return s;
     }
 
     public int addVertToAux(Integer verti,
@@ -361,39 +265,119 @@ public class GreedyDeltaDifExperimento
         }
         mustBeIncluded.clear();
         mustBeIncluded.add(verti);
-        touched.clear();
         while (!mustBeIncluded.isEmpty()) {
             verti = mustBeIncluded.remove();
             Collection<Integer> neighbors = N[verti];
             for (Integer vertn : neighbors) {
                 if ((++aux[vertn]) == kr[vertn]) {
                     mustBeIncluded.add(vertn);
-                    // touched.add(vertn);
-                } else if (aux[vertn] < kr[vertn]) {
-                    touched.add(vertn);
                 }
             }
             countIncluded++;
         }
 
-        // if (countIncluded == 1) {
-        // Recalc v from touched
-        for (Integer vx : touched) {
-            auxb[vx] = -1;
-            for (Integer vnn : N[vx]) {
-                auxb[vnn] = -1;
-            }
-        }
-        // }
         return countIncluded;
     }
 
     protected int[] scount = null;
 
+    public Set<Integer> refineResultStep1(UndirectedSparseGraphTO<Integer, Integer> graphRead,
+            Set<Integer> tmp, int tamanhoAlvo) {
+        Set<Integer> s = new LinkedHashSet<>(tmp);
+        // System.out.println("----refineResultStep1------");
+        for (Integer v : tmp) {
+            Collection<Integer> nvs = N[v];
+            int scont = 0;
+            for (Integer nv : nvs) {
+                if (s.contains(nv)) {
+                    scont++;
+                }
+            }
+            if (scont >= kr[v]) {
+                s.remove(v);
+            }
+        }
+        return s;
+    }
+
+    public Set<Integer> refineResultStep2(UndirectedSparseGraphTO<Integer, Integer> graphRead,
+            Set<Integer> tmp, int tamanhoAlvo) {
+        // System.out.println("----refineResultStep2------");
+        Set<Integer> s = tmp;
+
+        if (s.size() <= 1) {
+            return s;
+        }
+
+        if (verbose) {
+            System.out.println("tentando reduzir: " + s.size());
+            // System.out.println("s: " + s);
+        }
+        int cont = 0;
+        for (Integer v : tmp) {
+            cont++;
+            if (graphRead.degree(v) < kr[v]) {
+                continue;
+            }
+            Set<Integer> t = new LinkedHashSet<>(s);
+            t.remove(v);
+
+            int contadd = 0;
+            int[] aux = auxb;
+
+            for (int i = 0; i < aux.length; i++) {
+                aux[i] = 0;
+            }
+
+            mustBeIncluded.clear();
+            for (Integer iv : t) {
+                mustBeIncluded.add(iv);
+                aux[iv] = kr[iv];
+            }
+            while (!mustBeIncluded.isEmpty()) {
+                Integer verti = mustBeIncluded.remove();
+                contadd++;
+                Collection<Integer> neighbors = N[verti];
+                for (Integer vertn : neighbors) {
+                    if (aux[vertn] <= kr[vertn] - 1) {
+                        aux[vertn] = aux[vertn] + 1;
+                        if (aux[vertn] == kr[vertn]) {
+                            mustBeIncluded.add(vertn);
+                        }
+                    }
+                }
+                aux[verti] += kr[verti];
+            }
+
+            if (contadd >= tamanhoAlvo) {
+                if (verbose) {
+                    System.out.println(
+                            " - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
+                            + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
+
+                }
+                s = t;
+            }
+        }
+        if (verbose) {
+            int delt = tmp.size() - s.size();
+            if (delt > 0) {
+                System.out.println(tmp.size() + "/" + s.size() + " removido " + delt + " vertices");
+            }
+        }
+        return s;
+    }
+
+    public Set<Integer> refineResult(UndirectedSparseGraphTO<Integer, Integer> graph, Set<Integer> s, int targetSize) {
+        s = refineResultStep1(graph, s, targetSize);
+        s = refineResultStep2(graph, s, targetSize);
+        return s;
+    }
+
     public static void main(String... args) throws IOException {
         System.out.println("Execution Sample: Livemocha database R=2");
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
-        GreedyDistAndDifDelta op = new GreedyDistAndDifDelta();
+        GreedyDeltaDistDivDifTotal op = new GreedyDeltaDistDivDifTotal();
 
         // URI urinode =
         // URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
@@ -424,11 +408,6 @@ public class GreedyDeltaDifExperimento
         System.out.println(
                 "S[" + buildOptimizedHullSet.size() + "]: "
                 + buildOptimizedHullSet);
-
-        boolean checkIfHullSet = op.checkIfHullSet(graph, buildOptimizedHullSet);
-        if (!checkIfHullSet) {
-            System.out.println("ALERT: ----- THE RESULT IS NOT A HULL SET");
-            // throw new IllegalStateException("IS NOT HULL SET");
-        }
     }
+
 }

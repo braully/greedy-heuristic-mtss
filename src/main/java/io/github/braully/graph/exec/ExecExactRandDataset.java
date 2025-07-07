@@ -61,7 +61,17 @@ public class ExecExactRandDataset {
         GreedyDeltaDifExperimento heur5 = new GreedyDeltaDifExperimento();
         heur5.setProporcao(0.5);
         GreedyDeltaDifExperimento heur6 = new GreedyDeltaDifExperimento();
-        heur5.setProporcao(0.6);
+        heur6.setProporcao(0.6);
+        GreedyDeltaDifExperimento heur7 = new GreedyDeltaDifExperimento();
+        heur7.setProporcao(0.7);
+        GreedyDeltaDifExperimento heur8 = new GreedyDeltaDifExperimento();
+        heur8.setProporcao(0.8);
+        GreedyDeltaDifExperimento heur9 = new GreedyDeltaDifExperimento();
+        heur9.setProporcao(0.9);
+        GreedyDeltaDifExperimento heur10 = new GreedyDeltaDifExperimento();
+        heur10.setProporcao(1);
+
+        GreedyDeltaDistDivDifTotal div = new GreedyDeltaDistDivDifTotal();
 
         ccm.setRefine(true);
         ccm.setRefine2(true);
@@ -81,7 +91,12 @@ public class ExecExactRandDataset {
             heur3,
             heur4,
             heur5,
-            heur6, //            opf, 
+            heur6,
+            heur7,
+            heur8,
+            heur9,
+            heur10,
+            div, //            opf, 
         //            tip,
         //            tss,
         //            hnv0,
@@ -191,7 +206,7 @@ public class ExecExactRandDataset {
                                 + "\t" + result[i] + "\t" + totalTime[i] + "\n";
 
 //                        System.out.print("xls: " + out);
-                        System.out.print(out);
+//                        System.out.print(out);
                         if (doOperation != null) {
                             boolean checkIfHullSet = operations[i].checkIfHullSet(graph, ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
                             if (!checkIfHullSet) {
