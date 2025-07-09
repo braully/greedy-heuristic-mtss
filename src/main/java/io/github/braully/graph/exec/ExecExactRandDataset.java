@@ -45,7 +45,7 @@ public class ExecExactRandDataset {
         GreedyBonusDist gdit = new GreedyBonusDist();
         GreedyDifTotal gdft = new GreedyDifTotal();
         gdft.setRefine(true);
-        gdft.setRefine2(true);
+//        gdft.setRefine2(true);
         GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
         GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
 
@@ -73,6 +73,8 @@ public class ExecExactRandDataset {
 
         GreedyDeltaDistDivDifTotal div = new GreedyDeltaDistDivDifTotal();
 
+        BRKGATSS brkgatss = new BRKGATSS();
+
         ccm.setRefine(true);
         ccm.setRefine2(true);
         gd.setRefine(true);
@@ -84,19 +86,20 @@ public class ExecExactRandDataset {
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
+            tss,
             gdft,
-            gdft,
-            heur1,
-            heur2,
-            heur3,
-            heur4,
-            heur5,
-            heur6,
-            heur7,
-            heur8,
-            heur9,
-            heur10,
-            div, //            opf, 
+            brkgatss, //            gdft,
+        //            heur1,
+        //            heur2,
+        //            heur3,
+        //            heur4,
+        //            heur5,
+        //            heur6,
+        //            heur7,
+        //            heur8,
+        //            heur9,
+        //            heur10,
+        //            div, //            opf, 
         //            tip,
         //            tss,
         //            hnv0,
@@ -141,10 +144,11 @@ public class ExecExactRandDataset {
         Integer[] result = new Integer[operations.length];
         long totalTime[] = new long[operations.length];
         List<String> ops = Arrays.asList(new String[]{
-            //            "k", //                        "r",
+            //            "k", 
+            "r",
             "m"
         });
-        for (int k = 5;
+        for (int k = 2;
                 k <= 5; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
@@ -206,7 +210,7 @@ public class ExecExactRandDataset {
                                 + "\t" + result[i] + "\t" + totalTime[i] + "\n";
 
 //                        System.out.print("xls: " + out);
-//                        System.out.print(out);
+                        System.out.print(out);
                         if (doOperation != null) {
                             boolean checkIfHullSet = operations[i].checkIfHullSet(graph, ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
                             if (!checkIfHullSet) {

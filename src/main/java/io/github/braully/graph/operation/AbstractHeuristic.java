@@ -97,13 +97,13 @@ public abstract class AbstractHeuristic implements IGraphOperation {
                 } else if (kTreshold != null) {
                     kr[i] = kTreshold;
                 } else if (percentTreshold != null) {
-                    // kr[i] = roundUp(degree, majority
-                    // double ddgree = degree;
-                    // double ki = percentTreshold * ddgree;
-                    // double ki = Math.ceil(percentTreshold * degree);
+//                     kr[i] = roundUp(degree, majority
+                    double ddgree = degree;
+//                     double ki = percentTreshold * ddgree;
+                    double ki = Math.ceil(percentTreshold * ddgree);
 
-                    // int kii = (int) ki;
-                    int kii = (int) Math.ceil((double) degree / 2);
+                    int kii = (int) ki;
+//                    int kii = (int) Math.ceil((double) degree / 2);
                     kr[i] = kii;
                 } else if (randomTreshold != null) {
                     if (degree > 0) {
@@ -224,7 +224,7 @@ public abstract class AbstractHeuristic implements IGraphOperation {
                 if (verbose) {
                     System.out.println(
                             " - removido: " + v + " na pos " + cont + "/" + s.size() + " det " + v + ": " + degree[v]
-                                    + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
+                            + "/" + kr[v] + " " + ((float) kr[v] * 100 / (float) degree[v]));
 
                 }
                 s = t;

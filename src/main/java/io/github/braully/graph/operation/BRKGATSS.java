@@ -4,6 +4,7 @@
  */
 package io.github.braully.graph.operation;
 
+import io.github.braully.graph.UndirectedSparseGraphTO;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.*;
 import java.io.*;
@@ -14,7 +15,12 @@ import java.time.Instant;
  *
  * @author braully
  */
-public class BRKGATSS {
+public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
+
+    @Override
+    public String getDescription() {
+        return "BRKGATSS";
+    }
 
     public static class Utils {
 
@@ -74,7 +80,7 @@ public class BRKGATSS {
         }
     }
 
-    public static class BRKGA {
+    public static class BRKGA extends AbstractHeuristic {
 
         protected List<List<Integer>> G;
         protected int n, m;
@@ -92,6 +98,30 @@ public class BRKGATSS {
 
         public BRKGA() {
             // Default constructor
+        }
+
+        public static BRKGA create(UndirectedSparseGraphTO<Integer, Integer> graphr) {
+            List<List<Integer>> graph = new ArrayList<>(graphr.getVertexCount());
+            for (Integer v : (Collection<Integer>) graphr.getVertices()) {
+                graph.add(new ArrayList(graphr.getNeighborsUnprotected(v)));
+            }
+
+//            // vértice 0 conectado a 1 e 2
+//            graph.add(Arrays.asList(1, 2));
+//            // vértice 1 conectado a 0 e 3
+//            graph.add(Arrays.asList(0, 3));
+//            // vértice 2 conectado a 0 e 4
+//            graph.add(Arrays.asList(0, 4));
+//            // vértice 3 conectado a 1
+//            graph.add(Arrays.asList(1));
+//            // vértice 4 conectado a 2
+//            graph.add(Arrays.asList(2));
+//
+//            int n = 5;
+//            int m = 4;
+//            return new BRKGA(graph, n, m);
+//            return new BRKGA(graph, graphr.getVertexCount(), graphr.getEdgeCount());
+            return new FastBRKGA(graph, graphr.getVertexCount(), graphr.getEdgeCount());
         }
 
         public BRKGA(List<List<Integer>> graph, int v, int e) {
@@ -354,7 +384,20 @@ public class BRKGATSS {
 
                 for (int v : G.get(u)) {
                     d.set(v, d.get(v) + 1);
-                    if (d.get(v) == (deg.get(v) + 1) / 2) {
+                    int degree = deg.get(v);
+                    //Adaptation to variable treshold
+                    int treshold = (deg.get(v) + 1) / 2;
+                    if (rTreshold != null) {
+                        treshold = Math.min(rTreshold, degree);
+                    } else if (kTreshold != null) {
+                        treshold = kTreshold;
+                    } else if (percentTreshold != null) {
+                        double ddgree = degree;
+                        double ki = Math.ceil(percentTreshold * ddgree);
+                        int kii = (int) Math.ceil((double) degree / 2);
+                        treshold = kii;
+                    }
+                    if (d.get(v) == treshold) {
                         q.add(v);
                     }
                 }
@@ -366,6 +409,16 @@ public class BRKGATSS {
         @Override
         public String toString() {
             return "n: " + n + " m: " + m;
+        }
+
+        @Override
+        public String getDescription() {
+            return "BRKGATSS";
+        }
+
+        @Override
+        public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {
+            throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         }
     }
 
@@ -494,6 +547,40 @@ public class BRKGATSS {
             int x = Utils.sample(pelitePowerLaw);
             return 0.5 + 0.01 * x;
         }
+    }
+
+    public Set<Integer> brkgatss(UndirectedSparseGraphTO<Integer, Integer> graph) {
+        Set<Integer> result = new HashSet<>();
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> doOperation(UndirectedSparseGraphTO<Integer, Integer> graph) {
+        /* Processar a buscar pelo hullset e hullnumber */
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+
+            BRKGA brkga = BRKGA.create(graph);
+            brkga.setK(this.kTreshold);
+            brkga.setR(this.rTreshold);
+            brkga.setPercent(this.percentTreshold);
+            List<Integer> result = brkga.run();
+
+            System.out.print("Resultado: ");
+            Utils.printVector(result);
+            System.out.println();
+
+            response.put("BRKGA", result);
+            response.put(IGraphOperation.DEFAULT_PARAM_NAME_SET, result);
+            response.put("|TSS|", result.size());
+            response.put(IGraphOperation.DEFAULT_PARAM_NAME_RESULT, result.size());
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return response;
     }
 
 }
