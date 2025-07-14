@@ -95,7 +95,7 @@ public class UndirectedSparseGraphTO<V extends Number, E extends Number> extends
     }
 
     @Override
-    public Collection getVertices() {
+    public Collection<V> getVertices() {
         return cacheVertices();
     }
 
@@ -302,6 +302,10 @@ public class UndirectedSparseGraphTO<V extends Number, E extends Number> extends
             setPairs = Collections.unmodifiableSet(new HashSet<>(this.getPairs()));
         }
         return setPairs;
+    }
+
+    public Collection<V> getNeighbors(V vertex) {
+        return super.getNeighbors(vertex);
     }
 
     /* Extra methodos, for generate  */
