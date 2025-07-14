@@ -394,8 +394,8 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
                     } else if (percentTreshold != null) {
                         double ddgree = degree;
                         double ki = Math.ceil(percentTreshold * ddgree);
-                        int kii = (int) Math.ceil((double) degree / 2);
-                        treshold = kii;
+//                        int kii = (int) Math.ceil((double) degree / 2);
+                        treshold = (int) ki;
                     }
                     if (d.get(v) == treshold) {
                         q.add(v);

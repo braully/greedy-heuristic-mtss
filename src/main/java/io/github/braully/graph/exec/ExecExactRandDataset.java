@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -212,7 +213,7 @@ public class ExecExactRandDataset {
 //                        System.out.print("xls: " + out);
                         System.out.print(out);
                         if (doOperation != null) {
-                            boolean checkIfHullSet = operations[i].checkIfHullSet(graph, ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
+                            boolean checkIfHullSet = operations[i].checkIfHullSet(graph, ((Collection<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
                             if (!checkIfHullSet) {
                                 System.out.println("ALERT: ----- RESULTADO ANTERIOR IS NOT HULL SET");
                                 System.out.println(line);
