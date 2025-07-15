@@ -85,7 +85,8 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
         protected List<List<Integer>> G;
         protected int n, m;
         protected double timeLimit = 100;
-        protected int nInd = 46;
+//        protected int nInd = 46;
+        protected int nInd = 20;
         protected double pe = 0.24, pm = 0.13, pelite = 0.69;
         protected boolean seed = true;
         protected List<Integer> deg;
@@ -103,7 +104,9 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
         public static BRKGA create(UndirectedSparseGraphTO<Integer, Integer> graphr) {
             List<List<Integer>> graph = new ArrayList<>(graphr.getVertexCount());
             for (Integer v : (Collection<Integer>) graphr.getVertices()) {
-                graph.add(new ArrayList(graphr.getNeighborsUnprotected(v)));
+                List<Integer> ns = new ArrayList(graphr.getNeighborsUnprotected(v));
+                Collections.sort(ns);
+                graph.add(ns);
             }
 
 //            // vértice 0 conectado a 1 e 2
@@ -174,7 +177,7 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
             return pelite;
         }
 
-        public List<Integer> run(int threshold, String filename) {
+        public Collection<Integer> run(int threshold, String filename) {
             for (int i = 0; i < nInd; i++) {
                 for (int j = 0; j < n; j++) {
                     P.get(i).set(j, Utils.randomFloat());
@@ -229,18 +232,22 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
                     bestCnt = cnt;
                     int bestValId = score.indexOf(bestVal);
                     bestRes = new ArrayList<>(result.get(bestValId));
-
-                    try (FileWriter fw = new FileWriter(filename, true)) {
-                        fw.write(elapsedTime + " " + cnt + " " + best + " ");
-                        for (int i = 0; i < n; i++) {
-                            if (result.get(bestValId).get(i) == 1) {
-                                fw.write(i + " ");
-                            }
+                    for (int i = 0; i < n; i++) {
+                        if (result.get(bestValId).get(i) == 1) {
+                            bestRes.add(i);
                         }
-                        fw.write("\n");
-                    } catch (IOException e) {
-                        System.err.println("Erro ao escrever no arquivo: " + e.getMessage());
                     }
+//                    try ( FileWriter fw = new FileWriter(filename, true)) {
+//                        fw.write(elapsedTime + " " + cnt + " " + best + " ");
+//                        for (int i = 0; i < n; i++) {
+//                            if (result.get(bestValId).get(i) == 1) {
+//                                fw.write(i + " ");
+//                            }
+//                        }
+//                        fw.write("\n");
+//                    } catch (IOException e) {
+//                        System.err.println("Erro ao escrever no arquivo: " + e.getMessage());
+//                    }
 
                     if (best <= threshold) {
                         break;
@@ -249,11 +256,14 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
                 cnt++;
             }
 
-            try (FileWriter fw = new FileWriter(filename, true)) {
+            Set<Integer> rs = new HashSet<>();
+
+            try ( FileWriter fw = new FileWriter(filename, true)) {
                 fw.write("Finish " + bestTime + " " + best + " " + bestCnt + " ");
                 for (int i = 0; i < n; i++) {
                     if (bestRes.get(i) == 1) {
                         fw.write(i + " ");
+                        rs.add(i);
                     }
                 }
                 fw.write("\n");
@@ -262,10 +272,10 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
             }
 
             System.out.println("Best: " + best + " Time: " + bestTime);
-            return bestRes;
+            return rs;
         }
 
-        public List<Integer> run() {
+        public Collection<Integer> run() {
             return run(0, "BRKGA.txt");
         }
 
@@ -397,7 +407,7 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
 //                        int kii = (int) Math.ceil((double) degree / 2);
                         treshold = (int) ki;
                     }
-                    if (d.get(v) == treshold) {
+                    if (d.get(v) <= treshold) {
                         q.add(v);
                     }
                 }
@@ -452,10 +462,11 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
         int m = 4;
 
         BRKGA brkga = new BRKGA(graph, n, m);
-        List<Integer> result = brkga.run();
+        Collection<Integer> result = brkga.run();
 
         System.out.print("Resultado: ");
-        Utils.printVector(result);
+        System.out.println(result);
+//        Utils.printVector(result);
         System.out.println();
     }
 
@@ -566,10 +577,10 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
             brkga.setK(this.kTreshold);
             brkga.setR(this.rTreshold);
             brkga.setPercent(this.percentTreshold);
-            List<Integer> result = brkga.run();
+            Collection<Integer> result = brkga.run();
 
-            System.out.print("Resultado: ");
-            Utils.printVector(result);
+            System.out.print("Resultado: " + result);
+//            Utils.printVector(result);
             System.out.println();
 
             response.put("BRKGA", result);
