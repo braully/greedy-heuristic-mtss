@@ -2,6 +2,11 @@ package io.github.braully.graph.operation;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import static io.github.braully.graph.operation.TSSCordasco.log;
+import io.github.braully.graph.util.UtilGraph;
+import io.github.braully.graph.util.UtilProccess;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class VirAds extends AbstractHeuristic {
@@ -28,15 +34,10 @@ public class VirAds extends AbstractHeuristic {
         Collection<Integer> s = null;
         int dmax = 100;
 
-        for (int d = 1; d <= dmax; d += 10) {
-            Collection<Integer> tmp = run(graph, d);
-            if (s == null || tmp.size() < s.size()) {
-                s = tmp;
-            }
-        }
+        s = buildTss(dmax, graph);
 
         try {
-            response.put("R", this.rTreshold);
+//            response.put("R", this.rTreshold);
             response.put("VirAds", "" + s);
             response.put(IGraphOperation.DEFAULT_PARAM_NAME_SET, s);
             response.put("|VirAds|", s.size());
@@ -46,6 +47,22 @@ public class VirAds extends AbstractHeuristic {
             log.log(Level.SEVERE, null, ex);
         }
         return response;
+    }
+
+    public Collection<Integer> buildTss(UndirectedSparseGraphTO<Integer, Integer> graph) {
+        return buildTss(100, graph);
+    }
+
+    public Collection<Integer> buildTss(int dmax, UndirectedSparseGraphTO<Integer, Integer> graph) {
+        Collection<Integer> s = null;
+        initKr(graph);
+        for (int d = 1; d <= dmax; d += 10) {
+            Collection<Integer> tmp = run(graph, d);
+            if (s == null || tmp.size() < s.size()) {
+                s = tmp;
+            }
+        }
+        return s;
     }
 
     public Collection run(UndirectedSparseGraphTO<Integer, Integer> graph, int d) {
@@ -145,10 +162,46 @@ public class VirAds extends AbstractHeuristic {
                     inactiveCount++;
                 }
             }
-            System.out.printf("VirAds Inactive: %d%n", inactiveCount);
+//            System.out.printf("VirAds Inactive: %d%n", inactiveCount);
         }
 
-        long endTime = System.currentTimeMillis();
+//        long endTime = System.currentTimeMillis();
         return P;
+    }
+
+    public static void main(String... args) throws IOException {
+//        System.out.println("Execution Sample: Livemocha database R=2");
+        UndirectedSparseGraphTO<Integer, Integer> graph = null;
+        VirAds op = new VirAds();
+
+        // URI urinode =
+        // URI.create("jar:file:data/big/all-big.zip!/Livemocha/nodes.csv");
+        // URI uriedges =
+        // URI.create("jar:file:data/big/all-big.zip!/Livemocha/edges.csv");
+        // URI urinode =
+        // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
+        // URI uriedges =
+        // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
+        URI urinode = URI.create("jar:file:data/big/all-big2.zip!/Last.fm/nodes.csv");
+        URI uriedges = URI.create("jar:file:data/big/all-big2.zip!/Last.fm/edges.csv");
+        // URI urinode =
+        // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/nodes.csv");
+        // URI uriedges =
+        // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/edges.csv");
+        InputStream streamnode = urinode.toURL().openStream();
+        InputStream streamedges = uriedges.toURL().openStream();
+
+        graph = UtilGraph.loadBigDataset(streamnode, streamedges);
+
+        op.setVerbose(true);
+
+        op.setPercent(0.5);
+//        UtilProccess.printStartTime();
+        Collection<Integer> buildOptimizedHullSet = op.buildTss(graph);
+//        UtilProccess.printEndTime();
+
+        System.out.println(
+                "S[" + buildOptimizedHullSet.size() + "]: "
+                + buildOptimizedHullSet);
     }
 }

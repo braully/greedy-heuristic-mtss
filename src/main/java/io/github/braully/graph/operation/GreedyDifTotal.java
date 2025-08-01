@@ -421,8 +421,8 @@ public class GreedyDifTotal
         // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/nodes.csv");
         // URI uriedges =
         // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog/edges.csv");
-        URI urinode = URI.create("jar:file:data/big/all-big.zip!/Last.fm/nodes.csv");
-        URI uriedges = URI.create("jar:file:data/big/all-big.zip!/Last.fm/edges.csv");
+        URI urinode = URI.create("jar:file:data/big/all-big2.zip!/Last.fm/nodes.csv");
+        URI uriedges = URI.create("jar:file:data/big/all-big2.zip!/Last.fm/edges.csv");
         // URI urinode =
         // URI.create("jar:file:data/big/all-big.zip!/BlogCatalog3/nodes.csv");
         // URI uriedges =
