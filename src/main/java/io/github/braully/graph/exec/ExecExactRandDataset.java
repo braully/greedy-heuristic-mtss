@@ -2,9 +2,6 @@ package io.github.braully.graph.exec;
 
 import io.github.braully.graph.operation.*;
 import io.github.braully.graph.UndirectedSparseGraphTO;
-import static io.github.braully.graph.exec.ExecBigDataSets.operations;
-import static io.github.braully.graph.exec.ExecBigDataSets.result;
-import static io.github.braully.graph.exec.ExecBigDataSets.totalTime;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
 import io.github.braully.graph.util.MapCountOpt;
 import io.github.braully.graph.util.UtilDatabase;
@@ -20,7 +17,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Exec Exact Algorithm for Rand

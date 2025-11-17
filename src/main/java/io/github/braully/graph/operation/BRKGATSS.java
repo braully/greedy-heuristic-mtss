@@ -258,20 +258,32 @@ public class BRKGATSS extends AbstractHeuristic implements IGraphOperation {
 
             Set<Integer> rs = new HashSet<>();
 
-            try ( FileWriter fw = new FileWriter(filename, true)) {
-                fw.write("Finish " + bestTime + " " + best + " " + bestCnt + " ");
+//            try (FileWriter fw = new FileWriter(filename, true)) {
+//                fw.write("Finish " + bestTime + " " + best + " " + bestCnt + " ");
+//                for (int i = 0; i < n; i++) {
+//                    if (bestRes.get(i) == 1) {
+//                        fw.write(i + " ");
+//                        rs.add(i);
+//                    }
+//                }
+//                fw.write("\n");
+//            } catch (IOException e) {
+//                System.err.println("Erro ao escrever no arquivo: " + e.getMessage());
+//            }
+            try {
+
                 for (int i = 0; i < n; i++) {
                     if (bestRes.get(i) == 1) {
-                        fw.write(i + " ");
                         rs.add(i);
                     }
                 }
-                fw.write("\n");
-            } catch (IOException e) {
+
+            } catch (Exception e) {
                 System.err.println("Erro ao escrever no arquivo: " + e.getMessage());
             }
 
             System.out.println("Best: " + best + " Time: " + bestTime);
+            
             return rs;
         }
 

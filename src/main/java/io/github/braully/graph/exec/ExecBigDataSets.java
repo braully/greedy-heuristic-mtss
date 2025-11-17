@@ -42,14 +42,18 @@ public class ExecBigDataSets {
 
     public static final Map<String, int[]> resultadoArquivado = new HashMap<>();
 
+    public static final int NUM_BIG_DATA_SET = 10;
+
     static String[] dataSets = new String[]{
         "ca-GrQc",
         "ca-HepTh",
         "ca-CondMat",
         "ca-HepPh",
-        "ca-AstroPh", // "Douban",
+        "ca-AstroPh",
+        // "Douban",
         // "Delicious",
-        "BlogCatalog3", //     "BlogCatalog2",
+        "BlogCatalog3",
+        //     "BlogCatalog2",
         //     "Livemocha",
         //     "BlogCatalog",
         //     "BuzzNet",
@@ -76,88 +80,24 @@ public class ExecBigDataSets {
 
         TSSCordasco tss = new TSSCordasco();
         tss.setRefine(true);
-//        tss.setRefine2(true);
-        // GraphTSSGreedy tssg = new GraphTSSGreedy();
-        // HNVA hnva = new HNVA();
-        // HNV2 hnv2 = new HNV2();
-        HNV1 hnv1 = new HNV1();
-        hnv1.setVerbose(true);
-        // HNV0 hnv0 = new HNV0();
+        tss.setRefine2(true);
+
         CCMPanizi ccm = new CCMPanizi();
+        ccm.setRefine2(true);
+        ccm.setRefine2(true);
 
         TIPDecomp tip = new TIPDecomp();
+        tip.setRefine(true);
+        tip.setRefine2(true);
 
-        GreedyCordasco gc = new GreedyCordasco();
-        GreedyDegree gd = new GreedyDegree();
-        gd.setRefine2(true);
-        GreedyDeltaTss gdt = new GreedyDeltaTss();
-        gdt.setRefine2(true);
-        GreedyBonusDist gdit = new GreedyBonusDist();
         GreedyDifTotal gdft = new GreedyDifTotal();
         gdft.setRefine(true);
-//        gdft.setRefine2(true);
-        // gdft.setRefine2(true);
-        GreedyDeltaDifExperimento heur1 = new GreedyDeltaDifExperimento();
-        heur1.setProporcao(0.1);
-        GreedyDeltaDifExperimento heur2 = new GreedyDeltaDifExperimento();
-        heur2.setProporcao(0.2);
-        GreedyDeltaDifExperimento heur3 = new GreedyDeltaDifExperimento();
-        heur3.setProporcao(0.3);
-        GreedyDeltaDifExperimento heur4 = new GreedyDeltaDifExperimento();
-        heur4.setProporcao(0.4);
-        GreedyDeltaDifExperimento heur5 = new GreedyDeltaDifExperimento();
-        heur5.setProporcao(0.5);
-        // GreedyDeltaDifExperimento heur5t = new GreedyDeltaDifExperimento();
-        // heur5t.setProporcao(0.5);
-        GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
-        gdxd.setRefine(true);
-        gdxd.setRefine2(true);
-        GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
-        gdd.setRefine(true);
-        gdd.setRefine2(true);
-
-        GreedyDistAndDifDelta gdd1 = new GreedyDistAndDifDelta();
-//        gdd1.setRefine2(false);
-
-        ccm.setRefine(true);
-        ccm.setRefine2(true);
-        gd.setRefine(true);
-        gd.setRefine2(true);
-
-        GreedyDeltaDifExperimento heur10 = new GreedyDeltaDifExperimento();
-        heur10.setProporcao(1);
+        gdft.setRefine2(true);
 
         operations = new AbstractHeuristic[]{
-            //            gdxd,
             tss,
-            // heur1,
-            // heur2,
-            // heur3, heur4,
-            // heur5,
-            // heur5t,
-            // tssg,
-            // heur5t2
-            // optm,
-            // optm2,
-            // tip,
-            // hnv0, // hnv1,
-            // hnv2
-            // hnv0, gd, gdit,
-            // hnva
-            // ccm,
-            // gd, // gdt
-            // gc, gdt
-            // gdft,
-            // gdd1,
-            // gdd,
-            gdft, //            gdd1,
-        //            heur1,
-        //            heur2,
-        //            heur3,
-        //            heur4,
-        //            heur5,
-        //            heur10,
-        };
+            tip,
+            gdft,};
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
         delta = new Integer[operations.length];
@@ -183,7 +123,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 2; k <= 5; k++) {
+                for (int k = 1; k <= 5; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);
@@ -237,27 +177,10 @@ public class ExecBigDataSets {
 
             UndirectedSparseGraphTO<Integer, Integer> graphES = null;
 
-            try {
-                File file = new File("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + ".txt");
-                if (file.exists()) {
-                    graphES = UtilGraph.loadBigDataset(new FileInputStream(file));
-                } else {
-
-                    URI urigraph = URI.create("jar:file:data/big/all-big.zip!/" + s + "/" + s + ".txt");
-                    InputStream streamgraph = urigraph.toURL().openStream();
-                    graphES = UtilGraph.loadBigDataset(streamgraph);
-                }
-            } catch (FileNotFoundException e) {
-                URI urinode = URI.create("jar:file:data/big/all-big.zip!/" + s + "/nodes.csv");
-                URI uriedges = URI.create("jar:file:data/big/all-big.zip!/" + s + "/edges.csv");
-
-                InputStream streamnode = urinode.toURL().openStream();
-                InputStream streamedges = uriedges.toURL().openStream();
-                graphES = UtilGraph.loadBigDataset(streamnode,
-                        streamedges);
-            }
+            graphES = loadGraph(s);
             if (graphES == null) {
-                System.out.println("Fail to Load GRAPH: " + s);
+                System.err.println("Fail to Load GRAPH: " + s + " will be ignored!");
+                continue;
             }
             System.out.println("Loaded Graph: " + s + " " + graphES.getVertexCount() + " " + graphES.getEdgeCount());
             if (op.equals("random")) {
@@ -341,5 +264,36 @@ public class ExecBigDataSets {
                 System.out.println();
             }
         }
+    }
+
+    private static UndirectedSparseGraphTO<Integer, Integer> loadGraph(String s) throws IOException {
+        UndirectedSparseGraphTO<Integer, Integer> graphES = null;
+        for (int i = 0; i < NUM_BIG_DATA_SET; i++) {
+            if (graphES != null) {
+                break;
+            }
+            try {
+                File file = new File("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + ".txt");
+                if (file.exists()) {
+                    graphES = UtilGraph.loadBigDataset(new FileInputStream(file));
+                } else {
+                    URI urigraph = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/" + s + ".txt");
+                    InputStream streamgraph = urigraph.toURL().openStream();
+                    graphES = UtilGraph.loadBigDataset(streamgraph);
+                }
+            } catch (FileNotFoundException e) {
+                try {
+                    URI urinode = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/nodes.csv");
+                    URI uriedges = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/edges.csv");
+                    InputStream streamnode = urinode.toURL().openStream();
+                    InputStream streamedges = uriedges.toURL().openStream();
+                    graphES = UtilGraph.loadBigDataset(streamnode,
+                            streamedges);
+                } catch (FileNotFoundException ex) {
+
+                }
+            }
+        }
+        return graphES;
     }
 }
