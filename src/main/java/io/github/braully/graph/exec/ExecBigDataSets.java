@@ -17,15 +17,7 @@ import java.util.Set;
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.operation.AbstractHeuristic;
 import io.github.braully.graph.operation.CCMPanizi;
-import io.github.braully.graph.operation.GreedyBonusDist;
-import io.github.braully.graph.operation.GreedyCordasco;
-import io.github.braully.graph.operation.GreedyDegree;
-import io.github.braully.graph.operation.GreedyDeltaDifExperimento;
-import io.github.braully.graph.operation.GreedyDeltaTss;
-import io.github.braully.graph.operation.GreedyDeltaXDifTotal;
 import io.github.braully.graph.operation.GreedyDifTotal;
-import io.github.braully.graph.operation.GreedyDistAndDifDelta;
-import io.github.braully.graph.operation.HNV1;
 import io.github.braully.graph.operation.IGraphOperation;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
 import io.github.braully.graph.operation.TIPDecomp;
@@ -50,22 +42,24 @@ public class ExecBigDataSets {
         "ca-CondMat",
         "ca-HepPh",
         "ca-AstroPh",
-        // "Douban",
-        // "Delicious",
         "BlogCatalog3",
-        //     "BlogCatalog2",
-        //     "Livemocha",
-        //     "BlogCatalog",
-        //     "BuzzNet",
-        //     "Last.fm",
-        // "YouTube2"
-        // "Facebook-users",
         "amazon0302",
         "amazon0312",
         "amazon0505",
         "amazon0601",
         "facebook_combined",
-        "com-dblp",};
+        "com-dblp",
+        // Precisa do dataset3
+        "BlogCatalog2",
+        "Livemocha",
+        "BlogCatalog",
+        "BuzzNet",
+        "Last.fm",
+        "YouTube2",
+        "Facebook-users",
+        "Douban",
+        "Delicious"
+    };
     static AbstractHeuristic[] operations = null;
 
     static long totalTime[];
@@ -77,6 +71,8 @@ public class ExecBigDataSets {
 
     public static void main(String... args) throws FileNotFoundException, IOException, IllegalAccessException,
             InvocationTargetException, NoSuchMethodException {
+
+        TSSCordasco tssraw = new TSSCordasco();
 
         TSSCordasco tss = new TSSCordasco();
         tss.setRefine(true);
@@ -96,6 +92,7 @@ public class ExecBigDataSets {
 
         operations = new AbstractHeuristic[]{
             tss,
+            tssraw,
             tip,
             gdft,};
         totalTime = new long[operations.length];
@@ -110,11 +107,12 @@ public class ExecBigDataSets {
 
         Arrays.sort(dataSets);
 
-        String strResultFile = "resultado-" + ExecBigDataSets.class.getSimpleName() + ".txt";
+        String strResultFile = "resultado-" + ExecBigDataSets.class
+                .getSimpleName() + ".txt";
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "r", // "k", // "random"
+            "r", "k", // "random"
             "m",}) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
