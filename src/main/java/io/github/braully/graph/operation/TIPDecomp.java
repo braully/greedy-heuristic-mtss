@@ -66,7 +66,7 @@ public class TIPDecomp extends AbstractHeuristic implements IGraphOperation {
         while (flag) {
             Integer v = null;
             float minDist = Float.POSITIVE_INFINITY;
-            for (var vi : S) {
+            for (Integer vi : S) {
                 if (dist[vi] >= 0 && dist[vi] < minDist) {
                     v = vi;
                     minDist = dist[vi];
