@@ -13,6 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.util.CombinationsFacade;
@@ -112,6 +118,8 @@ public class TSSBruteForceOptmParalelo
         return ceilling;
     }
 
+    AtomicBoolean found = new AtomicBoolean(false);
+
     public Set<Integer> findHullSetBruteForce(UndirectedSparseGraphTO<Integer, Integer> graph, int currentSetSize) {
         Set<Integer> hullSet = null;
         if (graph == null || graph.getVertexCount() <= 0) {
@@ -135,17 +143,75 @@ public class TSSBruteForceOptmParalelo
         if (size == 0 || currentSetSize <= 0) {
             return hullSet;
         }
-        int[] currentSet = new int[currentSetSize];
         long maxCombinations = CombinationsFacade.maxCombinations(size, currentSetSize);
-        CombinationsFacade.initialCombination(size, currentSetSize, currentSet);
-        // Iterator<int[]> combinationsIterator =
-        // CombinatoricsUtils.combinationsIterator(size, currentSetSize);
-        // while (combinationsIterator.hasNext()) {
-        boolean found = false;
+        long inicio = 0;
+        long fim = maxCombinations;
+        found.set(false);
+
+        hullSet = findTssRangeParallel(currentSetSize, size, inicio, fim, verticesElegiveis, obg, graph, tamanhoAlvo);
+        return hullSet;
+    }
+
+    private Set<Integer> findTssRangeParallel(int currentSetSize, int size, long inicio, long fim, 
+            List<Integer> verticesElegiveis, Set<Integer> obg, 
+            UndirectedSparseGraphTO<Integer, Integer> graph, int tamanhoAlvo) {
+        
+        int numThreads = Runtime.getRuntime().availableProcessors();
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        List<Future<Set<Integer>>> futures = new ArrayList<>();
+        
+        long totalCombinations = fim - inicio;
+        long chunkSize = totalCombinations / numThreads;
+        
+        // Dividir o intervalo em chunks para cada thread
+        for (int i = 0; i < numThreads; i++) {
+            final long chunkInicio = inicio + (i * chunkSize);
+            final long chunkFim = (i == numThreads - 1) ? fim : chunkInicio + chunkSize;
+            
+            Callable<Set<Integer>> task = () -> {
+                return findTssRange(currentSetSize, size, chunkInicio, chunkFim, 
+                        verticesElegiveis, obg, graph, tamanhoAlvo);
+            };
+            
+            futures.add(executor.submit(task));
+        }
+        
+        Set<Integer> result = null;
+        
+        // Coletar resultados das threads
+        for (Future<Set<Integer>> future : futures) {
+            try {
+                Set<Integer> partialResult = future.get();
+                if (partialResult != null && result == null) {
+                    result = partialResult;
+                    // Cancelar as demais threads quando encontrar resultado
+                    for (Future<Set<Integer>> f : futures) {
+                        f.cancel(true);
+                    }
+                    break;
+                }
+            } catch (Exception e) {
+                // Thread foi cancelada ou erro ocorreu
+            }
+        }
+        
+        executor.shutdownNow();
+        try {
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
+        return result;
+    }
+
+    private Set<Integer> findTssRange(int currentSetSize, int size, long inicio, long fim, List<Integer> verticesElegiveis, Set<Integer> obg, UndirectedSparseGraphTO<Integer, Integer> graph, int tamanhoAlvo) {
+        Set<Integer> hullSet = null;
         int[] aux = new int[auxb.length];
         Queue<Integer> mustBeIncluded = new ArrayDeque<>();
-
-        for (long combIndex = 0; combIndex < maxCombinations && !found; combIndex++) {
+        int[] currentSet = new int[currentSetSize];
+        CombinationsFacade.initialCombination(size, currentSetSize, currentSet, inicio);
+        for (long combIndex = inicio; combIndex < fim && !found.get(); combIndex++) {
             // int[] currentSet = combinationsIterator.next();
             mustBeIncluded.clear();
             for (int i = 0; i < aux.length; i++) {
@@ -186,7 +252,7 @@ public class TSSBruteForceOptmParalelo
                 for (int i : currentSet) {
                     hullSet.add(verticesElegiveis.get(i));
                 }
-                found = true;
+                found.set(true);
                 break;
             }
             CombinationsFacade.nextCombination(size, currentSetSize, currentSet);
@@ -216,28 +282,29 @@ public class TSSBruteForceOptmParalelo
             throw new IllegalStateException("CORDASSO IS NOT HULL SET");
         }
         Set<Integer> optmHullSet = null;
-        String strFile = "database/grafos-rand-densall-n5-100.txt";
+        String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
-        AbstractHeuristic[] operations = new AbstractHeuristic[] {
-                opf,
-                tss,
-                hnv1,
-                hnv2
+        AbstractHeuristic[] operations = new AbstractHeuristic[]{
+            opf,
+            tss,
+            hnv1,
+            hnv2
         };
-        String[] grupo = new String[] {
-                "Optm",
-                "TSS",
-                "HNV",
-                "HNV"
+        String[] grupo = new String[]{
+            "Optm",
+            "TSS",
+            "HNV",
+            "HNV"
         };
         Integer[] result = new Integer[operations.length];
         long totalTime[] = new long[operations.length];
 
-        for (String op : new String[] {
-                "m", // "k",
-                // "r"
+        for (String op : new String[]{
+            "m", 
+            "r",
+            "k",
         }) {
-            for (int k = 1; k <= 9; k++) {
+            for (int k = 1; k <= 5; k++) {
                 if (op.equals("r")) {
                     tss.setR(k);
                     opf.setR(k);

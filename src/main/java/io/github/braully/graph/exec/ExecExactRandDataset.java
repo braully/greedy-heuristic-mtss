@@ -94,7 +94,7 @@ public class ExecExactRandDataset {
             "r",
             "m"
         });
-        for (int k = 2;
+        for (int k = 1;
                 k <= 5; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
