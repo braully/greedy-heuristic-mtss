@@ -58,8 +58,12 @@ public class ExecBigDataSets {
         "YouTube2",
         "Facebook-users",
         "Douban",
-        "Delicious"
-    };
+        "Delicious",
+        "Digg",
+        "email-Enron", "email-Eu",
+        "Flickr", "Flixster", "Foursquare", "Hyves", "LiveJournal",
+        "wiki-Talk", "YouTube",
+        "Twitter",};
     static AbstractHeuristic[] operations = null;
 
     static long totalTime[];
@@ -279,7 +283,7 @@ public class ExecBigDataSets {
                     InputStream streamgraph = urigraph.toURL().openStream();
                     graphES = UtilGraph.loadBigDataset(streamgraph);
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 try {
                     URI urinode = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/nodes.csv");
                     URI uriedges = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/edges.csv");
@@ -287,7 +291,7 @@ public class ExecBigDataSets {
                     InputStream streamedges = uriedges.toURL().openStream();
                     graphES = UtilGraph.loadBigDataset(streamnode,
                             streamedges);
-                } catch (FileNotFoundException ex) {
+                } catch (Exception ex) {
 
                 }
             }

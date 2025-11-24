@@ -29,87 +29,36 @@ public class ExecExactRandDataset {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         TSSBruteForceOptm opf = new TSSBruteForceOptm();
+        TSSCordasco tssraw = new TSSCordasco();
         TSSCordasco tss = new TSSCordasco();
+        tss.setRefine(true);
+        tss.setRefine2(true);
+
         TIPDecomp tip = new TIPDecomp();
-        HNVA hnva = new HNVA();
-        HNV2 hnv2 = new HNV2();
-        HNV1 hnv1 = new HNV1();
-        HNV0 hnv0 = new HNV0();
-        CCMPanizi ccm = new CCMPanizi();
-        GreedyCordasco gc = new GreedyCordasco();
-        GreedyDegree gd = new GreedyDegree();
-        GreedyDeltaTss gdt = new GreedyDeltaTss();
-        GreedyBonusDist gdit = new GreedyBonusDist();
+        tip.setRefine(true);
+        tip.setRefine2(true);
+
         GreedyDifTotal gdft = new GreedyDifTotal();
         gdft.setRefine(true);
-//        gdft.setRefine2(true);
-        GreedyDeltaXDifTotal gdxd = new GreedyDeltaXDifTotal();
-        GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
+        gdft.setRefine2(true);
 
-        GreedyDeltaDifExperimento exp = new GreedyDeltaDifExperimento();
-        GreedyDeltaDifExperimento heur1 = new GreedyDeltaDifExperimento();
-        heur1.setProporcao(0.1);
-        GreedyDeltaDifExperimento heur2 = new GreedyDeltaDifExperimento();
-        heur2.setProporcao(0.2);
-        GreedyDeltaDifExperimento heur3 = new GreedyDeltaDifExperimento();
-        heur3.setProporcao(0.3);
-        GreedyDeltaDifExperimento heur4 = new GreedyDeltaDifExperimento();
-        heur4.setProporcao(0.4);
-        GreedyDeltaDifExperimento heur5 = new GreedyDeltaDifExperimento();
-        heur5.setProporcao(0.5);
-        GreedyDeltaDifExperimento heur6 = new GreedyDeltaDifExperimento();
-        heur6.setProporcao(0.6);
-        GreedyDeltaDifExperimento heur7 = new GreedyDeltaDifExperimento();
-        heur7.setProporcao(0.7);
-        GreedyDeltaDifExperimento heur8 = new GreedyDeltaDifExperimento();
-        heur8.setProporcao(0.8);
-        GreedyDeltaDifExperimento heur9 = new GreedyDeltaDifExperimento();
-        heur9.setProporcao(0.9);
-        GreedyDeltaDifExperimento heur10 = new GreedyDeltaDifExperimento();
-        heur10.setProporcao(1);
-
-        GreedyDeltaDistDivDifTotal div = new GreedyDeltaDistDivDifTotal();
-
-        BRKGATSS brkgatss = new BRKGATSS();
-
+//        GreedyDeltaDistDivDifTotal div = new GreedyDeltaDistDivDifTotal();
+//        BRKGATSS brkgatss = new BRKGATSS();
+        CCMPanizi ccm = new CCMPanizi();
         ccm.setRefine(true);
         ccm.setRefine2(true);
-        gd.setRefine(true);
-        gd.setRefine2(true);
 
-        hnv1.setVerbose(true);
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
         AbstractHeuristic[] operations = new AbstractHeuristic[]{
+            opf,
             tss,
+            tssraw,
             gdft,
-            brkgatss, //            gdft,
-        //            heur1,
-        //            heur2,
-        //            heur3,
-        //            heur4,
-        //            heur5,
-        //            heur6,
-        //            heur7,
-        //            heur8,
-        //            heur9,
-        //            heur10,
-        //            div, //            opf, 
-        //            tip,
-        //            tss,
-        //            hnv0,
-        //            gdft, 
-        //            gd,
-        //gdt, gdit,
-        //            hnv1,
-        //            hnv1,
-        //            hnv2
-        //            ccm,
-        //            gdd,
-        //            hnva
-        //            gdxd
+            tip,
+            ccm
         };
         String[] grupo = new String[]{
             "Optm",

@@ -9,10 +9,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.operation.AbstractHeuristic;
@@ -167,9 +173,7 @@ public class ExecBigDatasetParallel {
         for (String s : dataSets) {
             System.out.println("\n-DATASET: " + s);
 
-            UndirectedSparseGraphTO<Integer, Integer> graphES = null;
-
-            graphES = loadGraph(s);
+            final UndirectedSparseGraphTO<Integer, Integer> graphES = loadGraph(s);
             if (graphES == null) {
                 System.err.println("Fail to Load GRAPH: " + s + " will be ignored!");
                 continue;
@@ -184,78 +188,124 @@ public class ExecBigDatasetParallel {
                     operations[i].setKr(operations[0].getKr());
                 }
             }
-            for (int i = 0; i < operations.length; i++) {
-
-                String arquivadoStr = operations[i].getName() + "-" + op + k + "-" + s;
-                Map<String, Object> doOperation = null;
-                System.out.println("*************");
-                System.out.print(" - EXEC: " + arquivadoStr + " g:" + s + " " + graphES.getVertexCount() + " ");
-                int[] get = resultadoArquivado.get(arquivadoStr);
-                if (get == null) {
-                    get = UtilDatabase.getResultCache(arquivadoStr);
+            
+            // Executar primeiro a operação 0 (baseline) de forma síncrona
+            try {
+                executarOperacao(0, op, k, s, graphES, writer);
+            } catch (IOException e) {
+                System.err.println("Erro ao executar operação 0: " + e.getMessage());
+                e.printStackTrace();
+            }
+            
+            // Executar as demais operações em paralelo
+            if (operations.length > 1) {
+                ExecutorService executor = Executors.newFixedThreadPool(operations.length - 1);
+                List<Future<?>> futures = new ArrayList<>();
+                
+                for (int i = 1; i < operations.length; i++) {
+                    final int index = i;
+                    final String datasetName = s;
+                    Future<?> future = executor.submit(() -> {
+                        try {
+                            executarOperacao(index, op, k, datasetName, graphES, writer);
+                        } catch (IOException e) {
+                            System.err.println("Erro ao executar operação " + index + ": " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    });
+                    futures.add(future);
                 }
-                if (get != null) {
-                    result[i] = get[0];
-                    totalTime[i] = get[1];
-                } else {
-                    UtilProccess.printStartTime();
-                    doOperation = operations[i].doOperation(graphES);
-                    result[i] = (Integer) doOperation.get(IGraphOperation.DEFAULT_PARAM_NAME_RESULT);
-                    totalTime[i] += UtilProccess.printEndTime();
-                    System.out.println(" resultadoArquivado.put(\"" + arquivadoStr + "\", new int[]{" + result[i] + ", "
-                            + totalTime[i] + "});");
-                }
-                System.out.println(" - Result: " + result[i]);
-
-                String out = "Big\t" + s + "\t" + graphES.getVertexCount() + "\t"
-                        + graphES.getEdgeCount()
-                        + "\t" + op + "\t" + k + "\t" + " " + "\t" + operations[i].getName()
-                        + "\t" + result[i] + "\t" + totalTime[i] + "\n";
-
-                System.out.print("xls: " + out);
-
-                writer.write(out);
-                writer.flush();
-
-                if (doOperation != null) {
-                    boolean checkIfHullSet = operations[0].checkIfHullSet(graphES,
-                            ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
-                    if (!checkIfHullSet) {
-                        System.out.println("ALERT: ----- THE RESULT IS NOT A HULL SET");
-                        // throw new IllegalStateException("IS NOT HULL SET");
+                
+                // Aguardar conclusão de todas as tarefas
+                for (Future<?> future : futures) {
+                    try {
+                        future.get();
+                    } catch (Exception e) {
+                        System.err.println("Erro ao aguardar conclusão da tarefa: " + e.getMessage());
+                        e.printStackTrace();
                     }
                 }
-                if (i == 0) {
-                    if (get == null) {
-                        delta[i] = 0;
-                    }
-                } else {
-                    delta[i] = result[0] - result[i];
-
-                    long deltaTempo = totalTime[0] - totalTime[i];
-                    System.out.print(operations[i].getName() + " - g:" + s + " " + op + " " + k + "  tempo: ");
-
-                    if (deltaTempo >= 0) {
-                        System.out.print(" +FAST " + deltaTempo);
-                    } else {
-                        System.out.print(" +SLOW " + deltaTempo);
-                    }
-                    System.out.print(" - Delta: " + delta[i] + " ");
-                    if (delta[i] == 0) {
-                        System.out.print(" = same");
-                        contIgual[i]++;
-                    } else if (delta[i] > 0) {
-                        System.out.print(" +GOOD ");
-                        contMelhor[i]++;
-                    } else {
-                        System.out.print(" -BAD");
-                        contPior[i]++;
-                    }
-                    System.out.println(delta[i]);
+                
+                executor.shutdown();
+                try {
+                    executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+                } catch (InterruptedException e) {
+                    System.err.println("Erro ao aguardar término do executor: " + e.getMessage());
+                    e.printStackTrace();
                 }
-                System.out.println();
             }
         }
+    }
+
+    private static synchronized void executarOperacao(int i, String op, int k, String s, UndirectedSparseGraphTO<Integer, Integer> graphES, BufferedWriter writer) throws IOException {
+        String arquivadoStr = operations[i].getName() + "-" + op + k + "-" + s;
+        Map<String, Object> doOperation = null;
+        System.out.println("*************");
+        System.out.print(" - EXEC: " + arquivadoStr + " g:" + s + " " + graphES.getVertexCount() + " ");
+        int[] get = resultadoArquivado.get(arquivadoStr);
+        if (get == null) {
+            get = UtilDatabase.getResultCache(arquivadoStr);
+        }
+        if (get != null) {
+            result[i] = get[0];
+            totalTime[i] = get[1];
+        } else {
+            UtilProccess.printStartTime();
+            doOperation = operations[i].doOperation(graphES);
+            result[i] = (Integer) doOperation.get(IGraphOperation.DEFAULT_PARAM_NAME_RESULT);
+            totalTime[i] += UtilProccess.printEndTime();
+            System.out.println(" resultadoArquivado.put(\"" + arquivadoStr + "\", new int[]{" + result[i] + ", "
+                    + totalTime[i] + "});");
+        }
+        System.out.println(" - Result: " + result[i]);
+        
+        String out = "Big\t" + s + "\t" + graphES.getVertexCount() + "\t"
+                + graphES.getEdgeCount()
+                + "\t" + op + "\t" + k + "\t" + " " + "\t" + operations[i].getName()
+                + "\t" + result[i] + "\t" + totalTime[i] + "\n";
+        
+        System.out.print("xls: " + out);
+        
+        writer.write(out);
+        writer.flush();
+        
+        if (doOperation != null) {
+            boolean checkIfHullSet = operations[0].checkIfHullSet(graphES,
+                    ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
+            if (!checkIfHullSet) {
+                System.out.println("ALERT: ----- THE RESULT IS NOT A HULL SET");
+                // throw new IllegalStateException("IS NOT HULL SET");
+            }
+        }
+        if (i == 0) {
+            if (get == null) {
+                delta[i] = 0;
+            }
+        } else {
+            delta[i] = result[0] - result[i];
+            
+            long deltaTempo = totalTime[0] - totalTime[i];
+            System.out.print(operations[i].getName() + " - g:" + s + " " + op + " " + k + "  tempo: ");
+            
+            if (deltaTempo >= 0) {
+                System.out.print(" +FAST " + deltaTempo);
+            } else {
+                System.out.print(" +SLOW " + deltaTempo);
+            }
+            System.out.print(" - Delta: " + delta[i] + " ");
+            if (delta[i] == 0) {
+                System.out.print(" = same");
+                contIgual[i]++;
+            } else if (delta[i] > 0) {
+                System.out.print(" +GOOD ");
+                contMelhor[i]++;
+            } else {
+                System.out.print(" -BAD");
+                contPior[i]++;
+            }
+            System.out.println(delta[i]);
+        }
+        System.out.println();
     }
 
     private static UndirectedSparseGraphTO<Integer, Integer> loadGraph(String s) throws IOException {
