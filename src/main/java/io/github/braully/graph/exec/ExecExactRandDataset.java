@@ -1,13 +1,5 @@
 package io.github.braully.graph.exec;
 
-import io.github.braully.graph.operation.*;
-import io.github.braully.graph.UndirectedSparseGraphTO;
-import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
-import io.github.braully.graph.util.MapCountOpt;
-import io.github.braully.graph.util.UtilDatabase;
-import io.github.braully.graph.util.UtilGraph;
-import io.github.braully.graph.util.UtilProccess;
-import static io.github.braully.graph.util.UtilProccess.printTimeFormated;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -17,6 +9,22 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.github.braully.graph.UndirectedSparseGraphTO;
+import io.github.braully.graph.operation.AbstractHeuristic;
+import io.github.braully.graph.operation.CCMPanizi;
+import io.github.braully.graph.operation.GreedyDifTotal;
+import io.github.braully.graph.operation.IGraphOperation;
+import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
+import io.github.braully.graph.operation.TIPDecomp;
+import io.github.braully.graph.operation.TSSBruteForceOptm;
+import io.github.braully.graph.operation.TSSBruteForceOptmParalelo;
+import io.github.braully.graph.operation.TSSCordasco;
+import io.github.braully.graph.util.MapCountOpt;
+import io.github.braully.graph.util.UtilDatabase;
+import io.github.braully.graph.util.UtilGraph;
+import io.github.braully.graph.util.UtilProccess;
+import static io.github.braully.graph.util.UtilProccess.printTimeFormated;
 
 /**
  * Exec Exact Algorithm for Rand
@@ -29,6 +37,7 @@ public class ExecExactRandDataset {
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         TSSBruteForceOptm opf = new TSSBruteForceOptm();
+        TSSBruteForceOptmParalelo opfpar = new TSSBruteForceOptmParalelo();
         TSSCordasco tssraw = new TSSCordasco();
         TSSCordasco tss = new TSSCordasco();
         tss.setRefine(true);
@@ -42,8 +51,8 @@ public class ExecExactRandDataset {
         gdft.setRefine(true);
         gdft.setRefine2(true);
 
-//        GreedyDeltaDistDivDifTotal div = new GreedyDeltaDistDivDifTotal();
-//        BRKGATSS brkgatss = new BRKGATSS();
+        // GreedyDeltaDistDivDifTotal div = new GreedyDeltaDistDivDifTotal();
+        // BRKGATSS brkgatss = new BRKGATSS();
         CCMPanizi ccm = new CCMPanizi();
         ccm.setRefine(true);
         ccm.setRefine2(true);
@@ -52,22 +61,23 @@ public class ExecExactRandDataset {
 
         String strFile = "data/rand/grafos-rand-densall-n5-100.txt";
 
-        AbstractHeuristic[] operations = new AbstractHeuristic[]{
-            opf,
-            tss,
-            tssraw,
-            gdft,
-            tip,
-            ccm
+        AbstractHeuristic[] operations = new AbstractHeuristic[] {
+                // opf,
+                opfpar,
+                tss,
+                tssraw,
+                gdft,
+                tip,
+                ccm
         };
-        String[] grupo = new String[]{
-            "Optm",
-            "Decomp",
-            "TSS",
-            "HNV",
-            "HNV",
-            "HNV",
-            "CCM"
+        String[] grupo = new String[] {
+                "Optm",
+                "Decomp",
+                "TSS",
+                "HNV",
+                "HNV",
+                "HNV",
+                "CCM"
         };
         Map<String, Boolean> piorou = new HashMap<>();
         Integer[] delta = new Integer[operations.length];
@@ -81,21 +91,18 @@ public class ExecExactRandDataset {
 
         MapCountOpt mapCount = new MapCountOpt((operations.length + 1) * OFFSET * 10);
 
-        for (int i = 0;
-                i < operations.length;
-                i++) {
+        for (int i = 0; i < operations.length; i++) {
             contMelhorGlobal[i] = contPiorGlobal[i] = contIgualGlobal[i] = contMelhor[i] = contPior[i] = contIgual[i] = 0;
         }
 
         Integer[] result = new Integer[operations.length];
         long totalTime[] = new long[operations.length];
-        List<String> ops = Arrays.asList(new String[]{
-            //            "k", 
-            "r",
-            "m"
+        List<String> ops = Arrays.asList(new String[] {
+                // "k",
+                "r",
+                "m"
         });
-        for (int k = 1;
-                k <= 5; k++) {
+        for (int k = 1; k <= 5; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
@@ -150,15 +157,16 @@ public class ExecExactRandDataset {
                         String out = "Rand\t" + gname + "\t" + graph.getVertexCount() + "\t"
                                 + graph.getEdgeCount()
                                 + "\t" + op + "\t" + k + "\t"
-                                //                                + grupo[i]
+                                // + grupo[i]
                                 + "grupo"
                                 + "\t" + operations[i].getName()
                                 + "\t" + result[i] + "\t" + totalTime[i] + "\n";
 
-//                        System.out.print("xls: " + out);
+                        // System.out.print("xls: " + out);
                         System.out.print(out);
                         if (doOperation != null) {
-                            boolean checkIfHullSet = operations[i].checkIfHullSet(graph, ((Collection<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
+                            boolean checkIfHullSet = operations[i].checkIfHullSet(graph,
+                                    ((Collection<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
                             if (!checkIfHullSet) {
                                 System.out.println("ALERT: ----- RESULTADO ANTERIOR IS NOT HULL SET");
                                 System.out.println(line);
@@ -189,8 +197,8 @@ public class ExecExactRandDataset {
                             contPiorGlobal[i]++;
                             Boolean get1 = piorou.get(id);
                             if (get1 != null && get1) {
-//                                    System.out.println("grafo piorou: " + id + " em k: " + k);
-//                                    System.out.println(graphES.getEdgeString());
+                                // System.out.println("grafo piorou: " + id + " em k: " + k);
+                                // System.out.println(graphES.getEdgeString());
                                 piorou.remove(id);
                             }
                         }
@@ -211,8 +219,7 @@ public class ExecExactRandDataset {
                     System.out.println("------------");
                     System.out.println("Melhor: " + (contMelhor[i] * 100 / total) + "pct");
                     System.out.println("Igual: " + ((total - (contMelhor[i] + contPior[i]))
-                            * 100 / total) + "pct"
-                    );
+                            * 100 / total) + "pct");
                     System.out.println("Pior: " + (contPior[i] * 100 / total) + "pct");
                 }
                 for (int i = 0; i < operations.length; i++) {
@@ -225,9 +232,7 @@ public class ExecExactRandDataset {
         System.out.println(
                 "\n\nResumo Global");
         System.out.println("OPs:" + ops);
-        for (int i = 1;
-                i < operations.length;
-                i++) {
+        for (int i = 1; i < operations.length; i++) {
             System.out.println("***************");
             System.out.println("Operacao: " + operations[i].getName());
             if (contMelhorGlobal[i] > contPiorGlobal[i]) {
@@ -252,19 +257,16 @@ public class ExecExactRandDataset {
             if (total > 0) {
                 System.out.println("Melhor: " + (contMelhorGlobal[i] * 100 / total) + "pct");
                 System.out.println("Igual: " + ((total - (contMelhorGlobal[i] + contPiorGlobal[i]))
-                        * 100 / total) + "pct"
-                );
+                        * 100 / total) + "pct");
                 System.out.println("Pior: " + (contPiorGlobal[i] * 100 / total) + "pct");
             }
 
         }
-        for (int i = 0;
-                i < operations.length;
-                i++) {
+        for (int i = 0; i < operations.length; i++) {
             System.out.println(operations[i].getName());
             System.out.print("time: ");
             printTimeFormated(totalTime[i]);
-//            System.out.println();
+            // System.out.println();
 
         }
 
