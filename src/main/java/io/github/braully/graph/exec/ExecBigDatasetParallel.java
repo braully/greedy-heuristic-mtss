@@ -42,28 +42,28 @@ public class ExecBigDatasetParallel {
 
     public static final int NUM_BIG_DATA_SET = 10;
 
-    static String[] dataSets = new String[]{
-        "ca-GrQc",
-        "ca-HepTh",
-        "ca-CondMat",
-        "ca-HepPh",
-        "ca-AstroPh",
-        // "Douban",
-        // "Delicious",
-        "BlogCatalog3",
-        //     "BlogCatalog2",
-        //     "Livemocha",
-        //     "BlogCatalog",
-        //     "BuzzNet",
-        //     "Last.fm",
-        // "YouTube2"
-        // "Facebook-users",
-        "amazon0302",
-        "amazon0312",
-        "amazon0505",
-        "amazon0601",
-        "facebook_combined",
-        "com-dblp",};
+    static String[] dataSets = new String[] {
+            "ca-GrQc",
+            "ca-HepTh",
+            "ca-CondMat",
+            "ca-HepPh",
+            "ca-AstroPh",
+            "Douban",
+            "Delicious",
+            "BlogCatalog3",
+            "BlogCatalog2",
+            "BlogCatalog",
+            "Livemocha",
+            "BuzzNet",
+            "Last.fm",
+            "YouTube2",
+            "Facebook-users",
+            "amazon0302",
+            "amazon0312",
+            "amazon0505",
+            "amazon0601",
+            "facebook_combined",
+            "com-dblp", };
     static AbstractHeuristic[] operations = null;
 
     static long totalTime[];
@@ -92,10 +92,10 @@ public class ExecBigDatasetParallel {
         gdft.setRefine(true);
         gdft.setRefine2(true);
 
-        operations = new AbstractHeuristic[]{
-            tss,
-            tip,
-            gdft,};
+        operations = new AbstractHeuristic[] {
+                tss,
+                tip,
+                gdft, };
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
         delta = new Integer[operations.length];
@@ -111,9 +111,9 @@ public class ExecBigDatasetParallel {
         String strResultFile = "resultado-" + ExecBigDatasetParallel.class.getSimpleName() + ".txt";
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
-        for (String op : new String[]{
-            "r", // "k", // "random"
-            "m",}) {
+        for (String op : new String[] {
+                "r", // "k", // "random"
+                "m", }) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
                     ab.setR(null);
@@ -188,7 +188,7 @@ public class ExecBigDatasetParallel {
                     operations[i].setKr(operations[0].getKr());
                 }
             }
-            
+
             // Executar primeiro a operação 0 (baseline) de forma síncrona
             try {
                 executarOperacao(0, op, k, s, graphES, writer);
@@ -196,12 +196,12 @@ public class ExecBigDatasetParallel {
                 System.err.println("Erro ao executar operação 0: " + e.getMessage());
                 e.printStackTrace();
             }
-            
+
             // Executar as demais operações em paralelo
             if (operations.length > 1) {
                 ExecutorService executor = Executors.newFixedThreadPool(operations.length - 1);
                 List<Future<?>> futures = new ArrayList<>();
-                
+
                 for (int i = 1; i < operations.length; i++) {
                     final int index = i;
                     final String datasetName = s;
@@ -215,7 +215,7 @@ public class ExecBigDatasetParallel {
                     });
                     futures.add(future);
                 }
-                
+
                 // Aguardar conclusão de todas as tarefas
                 for (Future<?> future : futures) {
                     try {
@@ -225,7 +225,7 @@ public class ExecBigDatasetParallel {
                         e.printStackTrace();
                     }
                 }
-                
+
                 executor.shutdown();
                 try {
                     executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
@@ -237,7 +237,8 @@ public class ExecBigDatasetParallel {
         }
     }
 
-    private static synchronized void executarOperacao(int i, String op, int k, String s, UndirectedSparseGraphTO<Integer, Integer> graphES, BufferedWriter writer) throws IOException {
+    private static synchronized void executarOperacao(int i, String op, int k, String s,
+            UndirectedSparseGraphTO<Integer, Integer> graphES, BufferedWriter writer) throws IOException {
         String arquivadoStr = operations[i].getName() + "-" + op + k + "-" + s;
         Map<String, Object> doOperation = null;
         System.out.println("*************");
@@ -258,17 +259,17 @@ public class ExecBigDatasetParallel {
                     + totalTime[i] + "});");
         }
         System.out.println(" - Result: " + result[i]);
-        
+
         String out = "Big\t" + s + "\t" + graphES.getVertexCount() + "\t"
                 + graphES.getEdgeCount()
                 + "\t" + op + "\t" + k + "\t" + " " + "\t" + operations[i].getName()
                 + "\t" + result[i] + "\t" + totalTime[i] + "\n";
-        
+
         System.out.print("xls: " + out);
-        
+
         writer.write(out);
         writer.flush();
-        
+
         if (doOperation != null) {
             boolean checkIfHullSet = operations[0].checkIfHullSet(graphES,
                     ((Set<Integer>) doOperation.get(DEFAULT_PARAM_NAME_SET)));
@@ -283,10 +284,10 @@ public class ExecBigDatasetParallel {
             }
         } else {
             delta[i] = result[0] - result[i];
-            
+
             long deltaTempo = totalTime[0] - totalTime[i];
             System.out.print(operations[i].getName() + " - g:" + s + " " + op + " " + k + "  tempo: ");
-            
+
             if (deltaTempo >= 0) {
                 System.out.print(" +FAST " + deltaTempo);
             } else {
