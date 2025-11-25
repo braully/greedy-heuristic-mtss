@@ -121,7 +121,7 @@ public class ExecBigDatasetParallel {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 1; k <= 5; k++) {
+                for (int k = 2; k <= 5; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);
@@ -192,7 +192,7 @@ public class ExecBigDatasetParallel {
             // Executar primeiro a operação 0 (baseline) de forma síncrona
             try {
                 executarOperacao(0, op, k, s, graphES, writer);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 System.err.println("Erro ao executar operação 0: " + e.getMessage());
                 e.printStackTrace();
             }
@@ -208,7 +208,7 @@ public class ExecBigDatasetParallel {
                     Future<?> future = executor.submit(() -> {
                         try {
                             executarOperacao(index, op, k, datasetName, graphES, writer);
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             System.err.println("Erro ao executar operação " + index + ": " + e.getMessage());
                             e.printStackTrace();
                         }
