@@ -62,8 +62,9 @@ public class ExecBigDatasetParallel {
             "amazon0312",
             "amazon0505",
             "amazon0601",
-            "facebook_combined",
-            "com-dblp", };
+            // "facebook_combined",
+            // "com-dblp", 
+        };
     static AbstractHeuristic[] operations = null;
 
     static long totalTime[];
