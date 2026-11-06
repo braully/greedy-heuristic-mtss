@@ -23,9 +23,11 @@ import java.util.concurrent.TimeUnit;
 import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.operation.AbstractHeuristic;
 import io.github.braully.graph.operation.CCMPanizi;
+import io.github.braully.graph.operation.GreedyDeltaDistDivDifTotal;
 import io.github.braully.graph.operation.GreedyDifTotal;
 import io.github.braully.graph.operation.IGraphOperation;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
+import io.github.braully.graph.operation.RandP3;
 import io.github.braully.graph.operation.TIPDecomp;
 import io.github.braully.graph.operation.TSSCordasco;
 import io.github.braully.graph.util.UtilDatabase;
@@ -42,29 +44,37 @@ public class ExecBigDatasetParallel {
 
     public static final int NUM_BIG_DATA_SET = 10;
 
-    static String[] dataSets = new String[] {
-            "ca-GrQc",
-            "ca-HepTh",
-            "ca-CondMat",
-            "ca-HepPh",
-            "ca-AstroPh",
-            "Douban",
-            "Delicious",
-            "BlogCatalog3",
-            "BlogCatalog2",
-            "BlogCatalog",
-            "Livemocha",
-            "BuzzNet",
-            "Last.fm",
+    static String[] dataSets = new String[]{
+//        "ca-GrQc",
+//        "ca-HepTh",
+//        "ca-CondMat",
+//        "ca-HepPh",
+//        "ca-AstroPh",
+//        "Douban",
+//        "Delicious",
+//        "BlogCatalog3",
+//        "BlogCatalog2",
+//        "BlogCatalog",
+//        "Livemocha",
+//        "BuzzNet",
+//        "Last.fm",
             "YouTube2",
-            "Facebook-users",
-            "amazon0302",
-            "amazon0312",
-            "amazon0505",
-            "amazon0601",
-            // "facebook_combined",
-            // "com-dblp", 
-        };
+        //            "Facebook-users",
+        //            "amazon0302",
+        //            "amazon0312",
+        //            "amazon0505",
+        //            "amazon0601",
+        // "facebook_combined",
+//         "com-dblp", 
+
+//        "Amazon0302",
+//        "Amazon0312",
+//        "Amazon0505",
+//        "Amazon0601",
+//        "com-dblp",
+//        "com-youtube",
+//        "com-orkut",
+    };
     static AbstractHeuristic[] operations = null;
 
     static long totalTime[];
@@ -85,18 +95,26 @@ public class ExecBigDatasetParallel {
         ccm.setRefine2(true);
         ccm.setRefine2(true);
 
-        TIPDecomp tip = new TIPDecomp();
-        tip.setRefine(true);
-        tip.setRefine2(true);
+         TIPDecomp tip = new TIPDecomp();
+         tip.setRefine(true);
+         tip.setRefine2(true);
+        RandP3 randp3 = new RandP3();
 
         GreedyDifTotal gdft = new GreedyDifTotal();
         gdft.setRefine(true);
-        gdft.setRefine2(true);
+//        gdft.setRefine2(true);
 
-        operations = new AbstractHeuristic[] {
-                tss,
-                tip,
-                gdft, };
+        // GreedyDeltaDistDivDifTotal gdddt = new GreedyDeltaDistDivDifTotal();
+
+
+        operations = new AbstractHeuristic[]{
+            tss,
+            // tip,
+            // gdft,
+            randp3,
+//            tip,
+//            tip,
+        };
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
         delta = new Integer[operations.length];
@@ -109,12 +127,13 @@ public class ExecBigDatasetParallel {
 
         Arrays.sort(dataSets);
 
-        String strResultFile = "resultado-" + ExecBigDatasetParallel.class.getSimpleName() + ".txt";
+        String strResultFile = "resultado-" + ExecBigDatasetParallel.class
+                .getSimpleName() + ".txt";
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
-        for (String op : new String[] {
-                "r", // "k", // "random"
-                "m", }) {
+        for (String op : new String[]{
+            "k", // "r", //  // "random" // "m", 
+        }) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
                     ab.setR(null);
@@ -122,7 +141,7 @@ public class ExecBigDatasetParallel {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 2; k <= 5; k++) {
+                for (int k = 2; k <= 2; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);
@@ -156,7 +175,6 @@ public class ExecBigDatasetParallel {
         }
 
         writer.flush();
-
         writer.close();
 
         System.out.println(
@@ -312,28 +330,40 @@ public class ExecBigDatasetParallel {
 
     private static UndirectedSparseGraphTO<Integer, Integer> loadGraph(String s) throws IOException {
         UndirectedSparseGraphTO<Integer, Integer> graphES = null;
+        File file = new File("data/big/" + s + "/" + s + ".txt");
+        if (file.exists()) {
+            graphES = UtilGraph.loadBigDataset(new FileInputStream(file));
+        } else {
+            File fileNode = new File("data/big/" + s + "/" + s + "/nodes.csv");
+            File fileEdge = new File("data/big/" + s + "/" + s + "/edges.csv");
+            if (fileNode.exists() && fileEdge.exists()) {
+                graphES = UtilGraph.loadBigDataset(new FileInputStream(fileNode),
+                        new FileInputStream(fileEdge));
+            }
+        }
+
+        if (graphES != null) {
+            return graphES;
+        }
+
         for (int i = 0; i < NUM_BIG_DATA_SET; i++) {
             if (graphES != null) {
                 break;
             }
             try {
-                File file = new File("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + ".txt");
-                if (file.exists()) {
-                    graphES = UtilGraph.loadBigDataset(new FileInputStream(file));
-                } else {
-                    URI urigraph = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/" + s + ".txt");
-                    InputStream streamgraph = urigraph.toURL().openStream();
-                    graphES = UtilGraph.loadBigDataset(streamgraph);
-                }
-            } catch (FileNotFoundException e) {
+                URI urigraph = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/" + s + ".txt");
+                InputStream streamgraph = urigraph.toURL().openStream();
+                graphES = UtilGraph.loadBigDataset(streamgraph);
+            } catch (Exception e) {
                 try {
                     URI urinode = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/nodes.csv");
                     URI uriedges = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/edges.csv");
+
                     InputStream streamnode = urinode.toURL().openStream();
                     InputStream streamedges = uriedges.toURL().openStream();
                     graphES = UtilGraph.loadBigDataset(streamnode,
                             streamedges);
-                } catch (FileNotFoundException ex) {
+                } catch (Exception ex) {
 
                 }
             }

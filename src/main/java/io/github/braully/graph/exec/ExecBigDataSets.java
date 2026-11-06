@@ -18,8 +18,10 @@ import io.github.braully.graph.UndirectedSparseGraphTO;
 import io.github.braully.graph.operation.AbstractHeuristic;
 import io.github.braully.graph.operation.CCMPanizi;
 import io.github.braully.graph.operation.GreedyDifTotal;
+import io.github.braully.graph.operation.GreedyDistAndDifDelta;
 import io.github.braully.graph.operation.IGraphOperation;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
+import io.github.braully.graph.operation.RandP3;
 import io.github.braully.graph.operation.TIPDecomp;
 import io.github.braully.graph.operation.TSSCordasco;
 import io.github.braully.graph.util.UtilDatabase;
@@ -43,27 +45,34 @@ public class ExecBigDataSets {
         "ca-HepPh",
         "ca-AstroPh",
         "BlogCatalog3",
-        "amazon0302",
-        "amazon0312",
-        "amazon0505",
-        "amazon0601",
-        "facebook_combined",
-        "com-dblp",
-        // Precisa do dataset3
+//        "amazon0302",
+//        "amazon0312",
+//        "amazon0505",
+//        "amazon0601",
+//        "facebook_combined",
+//        "com-dblp",
+//        // Precisa do dataset3
         "BlogCatalog2",
         "Livemocha",
         "BlogCatalog",
         "BuzzNet",
         "Last.fm",
-        "YouTube2",
-        "Facebook-users",
+//        "YouTube2",
+//        "Facebook-users",
         "Douban",
         "Delicious",
-        "Digg",
-        "email-Enron", "email-Eu",
-        "Flickr", "Flixster", "Foursquare", "Hyves", "LiveJournal",
-        "wiki-Talk", "YouTube",
-        "Twitter",};
+//        "Digg",
+//        "email-Enron",
+//        "email-Eu",
+        "Flickr",
+        "Flixster",
+        "Foursquare",
+//        "Hyves",
+//        "LiveJournal",
+//        "wiki-Talk",
+        "YouTube",
+//        "Twitter",
+    };
     static AbstractHeuristic[] operations = null;
 
     static long totalTime[];
@@ -77,6 +86,7 @@ public class ExecBigDataSets {
             InvocationTargetException, NoSuchMethodException {
 
         TSSCordasco tssraw = new TSSCordasco();
+        RandP3 randp3 = new RandP3();
 
         TSSCordasco tss = new TSSCordasco();
         tss.setRefine(true);
@@ -90,15 +100,22 @@ public class ExecBigDataSets {
         tip.setRefine(true);
         tip.setRefine2(true);
 
+        GreedyDistAndDifDelta gdd = new GreedyDistAndDifDelta();
+        gdd.setRefine(true);
+        gdd.setRefine2(true);
+
         GreedyDifTotal gdft = new GreedyDifTotal();
         gdft.setRefine(true);
         gdft.setRefine2(true);
 
         operations = new AbstractHeuristic[]{
-            tss,
-            tssraw,
-            tip,
-            gdft,};
+            //            tss,
+//            tssraw,
+//            gdd,
+            //            tip,
+            //            gdft,
+            randp3
+        };
         totalTime = new long[operations.length];
         result = new Integer[operations.length];
         delta = new Integer[operations.length];
@@ -116,8 +133,10 @@ public class ExecBigDataSets {
         File resultFile = new File(strResultFile);
         BufferedWriter writer = new BufferedWriter(new FileWriter(resultFile, true));
         for (String op : new String[]{
-            "r", "k", // "random"
-            "m",}) {
+            //            "r", 
+            "k", // "random"
+        //            "m",
+        }) {
             if (op.equals("random")) {
                 for (AbstractHeuristic ab : operations) {
                     ab.setR(null);
@@ -125,7 +144,7 @@ public class ExecBigDataSets {
                 execOperations(op, 0, writer);
 
             } else {
-                for (int k = 1; k <= 5; k++) {
+                for (int k = 2; k <= 2; k++) {
                     if (op.equals("r")) {
                         for (AbstractHeuristic ab : operations) {
                             ab.setR(k);
@@ -270,23 +289,35 @@ public class ExecBigDataSets {
 
     private static UndirectedSparseGraphTO<Integer, Integer> loadGraph(String s) throws IOException {
         UndirectedSparseGraphTO<Integer, Integer> graphES = null;
+        File file = new File("/home/braully/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + ".txt");
+        if (file.exists()) {
+            graphES = UtilGraph.loadBigDataset(new FileInputStream(file));
+        } else {
+            File fileNode = new File("/home/braully/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + "/nodes.csv");
+            File fileEdge = new File("/home/braully/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + "/edges.csv");
+            if (fileNode.exists() && fileEdge.exists()) {
+                graphES = UtilGraph.loadBigDataset(new FileInputStream(fileNode),
+                        new FileInputStream(fileEdge));
+            }
+        }
+
+        if (graphES != null) {
+            return graphES;
+        }
+
         for (int i = 0; i < NUM_BIG_DATA_SET; i++) {
             if (graphES != null) {
                 break;
             }
             try {
-                File file = new File("/home/strike/Workspace/tss/TSSGenetico/Instancias/" + s + "/" + s + ".txt");
-                if (file.exists()) {
-                    graphES = UtilGraph.loadBigDataset(new FileInputStream(file));
-                } else {
-                    URI urigraph = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/" + s + ".txt");
-                    InputStream streamgraph = urigraph.toURL().openStream();
-                    graphES = UtilGraph.loadBigDataset(streamgraph);
-                }
+                URI urigraph = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/" + s + ".txt");
+                InputStream streamgraph = urigraph.toURL().openStream();
+                graphES = UtilGraph.loadBigDataset(streamgraph);
             } catch (Exception e) {
                 try {
                     URI urinode = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/nodes.csv");
                     URI uriedges = URI.create("jar:file:data/big/all-big" + i + ".zip!/" + s + "/edges.csv");
+
                     InputStream streamnode = urinode.toURL().openStream();
                     InputStream streamedges = uriedges.toURL().openStream();
                     graphES = UtilGraph.loadBigDataset(streamnode,

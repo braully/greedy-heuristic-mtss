@@ -253,22 +253,27 @@ public abstract class AbstractHeuristic implements IGraphOperation {
         this.verbose = verbose;
     }
 
-    public boolean checkIfHullSet(UndirectedSparseGraphTO<Integer, Integer> graph,
+    public Set<Integer> hullClosure(UndirectedSparseGraphTO<Integer, Integer> graph,
             Iterable<Integer> currentSet) {
-        if (currentSet == null) {
-            return false;
-        }
+        initKr(graph);
+        return hullClosure(graph, currentSet, this.kr);
+    }
+
+    /**
+     * Versão thread-safe do fecho: recebe o array {@code kr} como parâmetro
+     * (somente leitura) e usa estruturas auxiliares locais, permitindo que
+     * várias threads calculem fechos simultaneamente sem tocar em estado
+     * compartilhado.
+     */
+    public Set<Integer> hullClosure(UndirectedSparseGraphTO<Integer, Integer> graph,
+            Iterable<Integer> currentSet, int[] kr) {
         Queue<Integer> mustBeIncluded = new ArrayDeque<>();
 
         Set<Integer> fecho = new HashSet<>();
 
         Collection<Integer> vertices = graph.getVertices();
 
-        int vertexCount = graph.getVertexCount();
         int maxVertex = graph.maxVertex();
-        // if (kr == null || kr.length < maxVertex + 1) {
-        initKr(graph);
-        // }
         int[] aux = new int[maxVertex + 1];
         for (Integer i : vertices) {
             aux[i] = 0;
@@ -296,6 +301,16 @@ public abstract class AbstractHeuristic implements IGraphOperation {
             fecho.add(verti);
             aux[verti] += kr[verti];
         }
+        return fecho;
+    }
+
+    public boolean checkIfHullSet(UndirectedSparseGraphTO<Integer, Integer> graph,
+            Iterable<Integer> currentSet) {
+        if (currentSet == null) {
+            return false;
+        }
+        int vertexCount = graph.getVertexCount();
+        Set<Integer> fecho = this.hullClosure(graph, currentSet);
         return fecho.size() == vertexCount;
     }
 

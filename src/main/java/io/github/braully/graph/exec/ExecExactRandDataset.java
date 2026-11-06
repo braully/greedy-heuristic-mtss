@@ -16,6 +16,7 @@ import io.github.braully.graph.operation.CCMPanizi;
 import io.github.braully.graph.operation.GreedyDifTotal;
 import io.github.braully.graph.operation.IGraphOperation;
 import static io.github.braully.graph.operation.IGraphOperation.DEFAULT_PARAM_NAME_SET;
+import io.github.braully.graph.operation.RandP3;
 import io.github.braully.graph.operation.TIPDecomp;
 import io.github.braully.graph.operation.TSSBruteForceOptm;
 import io.github.braully.graph.operation.TSSBruteForceOptmParalelo;
@@ -56,6 +57,7 @@ public class ExecExactRandDataset {
         CCMPanizi ccm = new CCMPanizi();
         ccm.setRefine(true);
         ccm.setRefine2(true);
+        RandP3 randp3 = new RandP3();
 
         UndirectedSparseGraphTO<Integer, Integer> graph = null;
 
@@ -63,15 +65,16 @@ public class ExecExactRandDataset {
 
         AbstractHeuristic[] operations = new AbstractHeuristic[] {
                 // opf,
-                opfpar,
+                // opfpar,
                 tss,
                 tssraw,
                 gdft,
                 tip,
-                ccm
+                // ccm
+                randp3
         };
         String[] grupo = new String[] {
-                "Optm",
+                // "Optm",
                 "Decomp",
                 "TSS",
                 "HNV",
@@ -98,11 +101,11 @@ public class ExecExactRandDataset {
         Integer[] result = new Integer[operations.length];
         long totalTime[] = new long[operations.length];
         List<String> ops = Arrays.asList(new String[] {
-                // "k",
-                "r",
-                "m"
+                "k",
+                // "r",
+                // "m"
         });
-        for (int k = 1; k <= 5; k++) {
+        for (int k = 2; k <= 2; k++) {
             for (String op : ops) {
                 if (op.equals("r")) {
                     for (AbstractHeuristic ab : operations) {
